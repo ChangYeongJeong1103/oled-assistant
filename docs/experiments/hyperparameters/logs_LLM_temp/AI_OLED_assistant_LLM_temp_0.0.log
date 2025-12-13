@@ -1,0 +1,47 @@
+2025-12-10 13:03:18,566 - INFO - 📝 Logging initialized: logs/AI_OLED_assistant_20251210_130318.log
+2025-12-10 13:03:25,338 - INFO - Skip loading/chunking because DB already exists at ../chroma_db
+2025-12-10 13:03:28,578 - INFO - NumExpr defaulting to 12 threads.
+2025-12-10 13:03:33,035 - INFO - Load pretrained SentenceTransformer: BAAI/bge-m3
+2025-12-10 13:03:36,416 - INFO - Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2025-12-10 13:03:37,175 - INFO - 🧪 Starting experiment with config: {'chunk_size': 3000, 'chunk_overlap': 500, 'top_k': 4, 'temperature': 0.0, 'relevance_threshold': 0.55, 'sigmoid_midpoint': 0.5, 'sigmoid_steepness': 12}
+2025-12-10 13:03:37,176 - INFO - 🔍 Processing query: What are the key degradation mechanisms of a blue ...
+2025-12-10 13:04:34,770 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-10 13:04:34,776 - INFO - ✅ Query completed in 57.60s | Mode: RAG | Relevance: 0.796
+2025-12-10 13:04:34,778 - INFO - 🔍 Processing query: How does exciton diffusion length affect charge se...
+2025-12-10 13:05:01,022 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-10 13:05:01,023 - INFO - ✅ Query completed in 26.24s | Mode: RAG | Relevance: 0.761
+2025-12-10 13:05:01,024 - INFO - 🔍 Processing query: What are the major challenges in mass transfer pro...
+2025-12-10 13:05:28,105 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-10 13:05:28,106 - INFO - ✅ Query completed in 27.08s | Mode: RAG | Relevance: 0.593
+2025-12-10 13:05:28,107 - INFO - 🔍 Processing query: How does doping concentration affect the electron ...
+2025-12-10 13:05:42,452 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-10 13:05:42,457 - INFO - ✅ Query completed in 14.35s | Mode: NO_ANSWER_IN_DOCS | Relevance: 0.701
+2025-12-10 13:05:42,460 - INFO - 🔍 Processing query: Describe the physical principles used to reduce ae...
+2025-12-10 13:05:42,540 - INFO - 🚫 Low relevance rejection: 0.437
+2025-12-10 13:05:42,541 - INFO - ✅ Query completed in 0.08s | Mode: OFF_TOPIC | Relevance: 0.437
+2025-12-10 13:05:42,542 - INFO - 🔍 Processing query: Recommend a good hiking trail near Santa Clara for...
+2025-12-10 13:05:42,637 - INFO - 🚫 Low relevance rejection: 0.302
+2025-12-10 13:05:42,638 - INFO - ✅ Query completed in 0.10s | Mode: OFF_TOPIC | Relevance: 0.302
+2025-12-10 13:05:42,647 - INFO - 🔍 Processing query: What are the key degradation mechanisms of a blue ...
+2025-12-10 13:06:05,825 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-10 13:06:05,826 - INFO - ✅ Query completed in 23.18s | Mode: RAG | Relevance: 0.796
+2025-12-10 13:06:08,700 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-10 13:06:08,700 - INFO - 🔍 Processing query: How does exciton diffusion length affect charge se...
+2025-12-10 13:06:37,031 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-10 13:06:37,035 - INFO - ✅ Query completed in 28.33s | Mode: RAG | Relevance: 0.761
+2025-12-10 13:06:40,439 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-10 13:06:40,442 - INFO - 🔍 Processing query: What are the major challenges in mass transfer pro...
+2025-12-10 13:07:07,883 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-10 13:07:07,886 - INFO - ✅ Query completed in 27.44s | Mode: RAG | Relevance: 0.593
+2025-12-10 13:07:11,152 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-10 13:07:11,155 - INFO - 🔍 Processing query: How does doping concentration affect the electron ...
+2025-12-10 13:07:25,503 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-10 13:07:25,506 - INFO - ✅ Query completed in 14.35s | Mode: NO_ANSWER_IN_DOCS | Relevance: 0.701
+2025-12-10 13:07:25,510 - INFO - 🔍 Processing query: Describe the physical principles used to reduce ae...
+2025-12-10 13:07:25,588 - INFO - 🚫 Low relevance rejection: 0.437
+2025-12-10 13:07:25,591 - INFO - ✅ Query completed in 0.08s | Mode: OFF_TOPIC | Relevance: 0.437
+2025-12-10 13:07:25,591 - INFO - 🔍 Processing query: Recommend a good hiking trail near Santa Clara for...
+2025-12-10 13:07:25,635 - INFO - 🚫 Low relevance rejection: 0.302
+2025-12-10 13:07:25,635 - INFO - ✅ Query completed in 0.04s | Mode: OFF_TOPIC | Relevance: 0.302
+2025-12-10 13:07:25,658 - INFO - 💾 Experiment saved to hyperparameter_experiments.csv
+2025-12-10 13:07:25,658 - INFO - 📊 Summary: Avg time=20.91s, Cost=$0.0000

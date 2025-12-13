@@ -1,0 +1,3 @@
+timestamp,chunk_size,chunk_overlap,top_k,temperature,relevance_threshold,sigmoid_midpoint,sigmoid_steepness,avg_response_time_sec,total_tokens,estimated_cost_usd,mode_rag_count,mode_no_answer_count,mode_off_topic_count,mode_error_count,avg_relevance_score,avg_rag_score,avg_rag_specificity,avg_rag_relevance,avg_rag_factuality,rel_mean_pos,rel_mean_neg,rel_gap,rel_margin,notes
+2025-12-11 05:43:09,3000,500,4,0.2,0.6,0.5,18,17.42,833,$0.0000,3,1,2,0,0.655,7.67,8.00,8.33,6.67,0.919,0.329,0.590,0.475,"model=mistral-nemo, provider=llama_local, Strict RAG Evaluation: 3/6 answered."
+2025-12-11 05:50:56,3000,500,4,0.2,0.6,0.5,18,2.98,632,$0.0003,2,2,2,0,0.656,9.33,9.00,10.00,9.00,0.919,0.345,0.574,0.475,"model=gpt-4o-mini, provider=openai, Strict RAG Evaluation: 1/6 answered."

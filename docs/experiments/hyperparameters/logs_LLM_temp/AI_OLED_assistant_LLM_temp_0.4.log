@@ -1,0 +1,44 @@
+2025-12-10 13:43:53,282 - INFO - 📝 Logging initialized: logs/AI_OLED_assistant_20251210_134353.log
+2025-12-10 13:43:53,292 - INFO - Skip loading/chunking because DB already exists at ../chroma_db
+2025-12-10 13:43:53,302 - INFO - Load pretrained SentenceTransformer: BAAI/bge-m3
+2025-12-10 13:43:56,496 - INFO - 🧪 Starting experiment with config: {'chunk_size': 3000, 'chunk_overlap': 500, 'top_k': 4, 'temperature': 0.4, 'relevance_threshold': 0.55, 'sigmoid_midpoint': 0.5, 'sigmoid_steepness': 12}
+2025-12-10 13:43:56,497 - INFO - 🔍 Processing query: What are the key degradation mechanisms of a blue ...
+2025-12-10 13:44:24,604 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-10 13:44:24,610 - INFO - ✅ Query completed in 28.11s | Mode: RAG | Relevance: 0.796
+2025-12-10 13:44:24,613 - INFO - 🔍 Processing query: How does exciton diffusion length affect charge se...
+2025-12-10 13:44:50,670 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-10 13:44:50,676 - INFO - ✅ Query completed in 26.06s | Mode: RAG | Relevance: 0.761
+2025-12-10 13:44:50,680 - INFO - 🔍 Processing query: What are the major challenges in mass transfer pro...
+2025-12-10 13:45:02,480 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-10 13:45:02,485 - INFO - ✅ Query completed in 11.80s | Mode: NO_ANSWER_IN_DOCS | Relevance: 0.593
+2025-12-10 13:45:02,488 - INFO - 🔍 Processing query: How does doping concentration affect the electron ...
+2025-12-10 13:45:16,338 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-10 13:45:16,342 - INFO - ✅ Query completed in 13.85s | Mode: NO_ANSWER_IN_DOCS | Relevance: 0.701
+2025-12-10 13:45:16,346 - INFO - 🔍 Processing query: Describe the physical principles used to reduce ae...
+2025-12-10 13:45:16,441 - INFO - 🚫 Low relevance rejection: 0.437
+2025-12-10 13:45:16,442 - INFO - ✅ Query completed in 0.10s | Mode: OFF_TOPIC | Relevance: 0.437
+2025-12-10 13:45:16,443 - INFO - 🔍 Processing query: Recommend a good hiking trail near Santa Clara for...
+2025-12-10 13:45:16,470 - INFO - 🚫 Low relevance rejection: 0.302
+2025-12-10 13:45:16,471 - INFO - ✅ Query completed in 0.03s | Mode: OFF_TOPIC | Relevance: 0.302
+2025-12-10 13:45:16,489 - INFO - 🔍 Processing query: What are the key degradation mechanisms of a blue ...
+2025-12-10 13:45:38,733 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-10 13:45:38,734 - INFO - ✅ Query completed in 22.25s | Mode: RAG | Relevance: 0.796
+2025-12-10 13:45:41,628 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-10 13:45:41,632 - INFO - 🔍 Processing query: How does exciton diffusion length affect charge se...
+2025-12-10 13:46:00,863 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-10 13:46:00,866 - INFO - ✅ Query completed in 19.23s | Mode: RAG | Relevance: 0.761
+2025-12-10 13:46:03,552 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-10 13:46:03,555 - INFO - 🔍 Processing query: What are the major challenges in mass transfer pro...
+2025-12-10 13:46:16,023 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-10 13:46:16,025 - INFO - ✅ Query completed in 12.47s | Mode: NO_ANSWER_IN_DOCS | Relevance: 0.593
+2025-12-10 13:46:16,026 - INFO - 🔍 Processing query: How does doping concentration affect the electron ...
+2025-12-10 13:46:29,885 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-10 13:46:29,888 - INFO - ✅ Query completed in 13.86s | Mode: NO_ANSWER_IN_DOCS | Relevance: 0.701
+2025-12-10 13:46:29,890 - INFO - 🔍 Processing query: Describe the physical principles used to reduce ae...
+2025-12-10 13:46:29,992 - INFO - 🚫 Low relevance rejection: 0.437
+2025-12-10 13:46:29,993 - INFO - ✅ Query completed in 0.10s | Mode: OFF_TOPIC | Relevance: 0.437
+2025-12-10 13:46:29,993 - INFO - 🔍 Processing query: Recommend a good hiking trail near Santa Clara for...
+2025-12-10 13:46:30,020 - INFO - 🚫 Low relevance rejection: 0.302
+2025-12-10 13:46:30,020 - INFO - ✅ Query completed in 0.03s | Mode: OFF_TOPIC | Relevance: 0.302
+2025-12-10 13:46:30,036 - INFO - 💾 Experiment saved to hyperparameter_experiments.csv
+2025-12-10 13:46:30,036 - INFO - 📊 Summary: Avg time=13.33s, Cost=$0.0000

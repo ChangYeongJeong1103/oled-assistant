@@ -1,0 +1,45 @@
+2025-12-11 00:26:35,970 - INFO - 📝 Logging initialized: logs/AI_OLED_assistant_20251211_002635.log
+2025-12-11 00:26:40,291 - INFO - Skip loading/chunking because DB already exists at ../chroma_db
+2025-12-11 00:26:42,597 - INFO - NumExpr defaulting to 12 threads.
+2025-12-11 00:26:47,120 - INFO - Load pretrained SentenceTransformer: BAAI/bge-m3
+2025-12-11 00:26:51,300 - INFO - Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2025-12-11 00:26:51,981 - INFO - 🧪 Starting experiment with config: {'chunk_size': 3000, 'chunk_overlap': 500, 'top_k': 4, 'temperature': 0.2, 'relevance_threshold': 0.55, 'sigmoid_midpoint': 0.58, 'sigmoid_steepness': 8}
+2025-12-11 00:26:51,986 - INFO - 🔍 Processing query: What are the key degradation mechanisms of a blue ...
+2025-12-11 00:28:01,113 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-11 00:28:01,159 - INFO - ✅ Query completed in 69.17s | Mode: RAG | Relevance: 0.566
+2025-12-11 00:28:01,161 - INFO - 🔍 Processing query: How does exciton diffusion length affect charge se...
+2025-12-11 00:28:02,206 - INFO - 🚫 Low relevance rejection: 0.533
+2025-12-11 00:28:02,207 - INFO - ✅ Query completed in 1.05s | Mode: OFF_TOPIC | Relevance: 0.533
+2025-12-11 00:28:02,208 - INFO - 🔍 Processing query: What are the major challenges in mass transfer pro...
+2025-12-11 00:28:02,303 - INFO - 🚫 Low relevance rejection: 0.392
+2025-12-11 00:28:02,304 - INFO - ✅ Query completed in 0.10s | Mode: OFF_TOPIC | Relevance: 0.392
+2025-12-11 00:28:02,305 - INFO - 🔍 Processing query: How does doping concentration affect the electron ...
+2025-12-11 00:28:02,391 - INFO - 🚫 Low relevance rejection: 0.482
+2025-12-11 00:28:02,392 - INFO - ✅ Query completed in 0.09s | Mode: OFF_TOPIC | Relevance: 0.482
+2025-12-11 00:28:02,393 - INFO - 🔍 Processing query: Describe the physical principles used to reduce ae...
+2025-12-11 00:28:02,425 - INFO - 🚫 Low relevance rejection: 0.308
+2025-12-11 00:28:02,425 - INFO - ✅ Query completed in 0.03s | Mode: OFF_TOPIC | Relevance: 0.308
+2025-12-11 00:28:02,426 - INFO - 🔍 Processing query: Recommend a good hiking trail near Santa Clara for...
+2025-12-11 00:28:02,505 - INFO - 🚫 Low relevance rejection: 0.232
+2025-12-11 00:28:02,508 - INFO - ✅ Query completed in 0.08s | Mode: OFF_TOPIC | Relevance: 0.232
+2025-12-11 00:28:02,520 - INFO - 🔍 Processing query: What are the key degradation mechanisms of a blue ...
+2025-12-11 00:28:16,058 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-11 00:28:16,060 - INFO - ✅ Query completed in 13.54s | Mode: RAG | Relevance: 0.566
+2025-12-11 00:28:19,098 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-11 00:28:19,099 - INFO - 🔍 Processing query: How does exciton diffusion length affect charge se...
+2025-12-11 00:28:19,196 - INFO - 🚫 Low relevance rejection: 0.533
+2025-12-11 00:28:19,197 - INFO - ✅ Query completed in 0.10s | Mode: OFF_TOPIC | Relevance: 0.533
+2025-12-11 00:28:19,198 - INFO - 🔍 Processing query: What are the major challenges in mass transfer pro...
+2025-12-11 00:28:19,241 - INFO - 🚫 Low relevance rejection: 0.392
+2025-12-11 00:28:19,242 - INFO - ✅ Query completed in 0.04s | Mode: OFF_TOPIC | Relevance: 0.392
+2025-12-11 00:28:19,242 - INFO - 🔍 Processing query: How does doping concentration affect the electron ...
+2025-12-11 00:28:19,272 - INFO - 🚫 Low relevance rejection: 0.482
+2025-12-11 00:28:19,273 - INFO - ✅ Query completed in 0.03s | Mode: OFF_TOPIC | Relevance: 0.482
+2025-12-11 00:28:19,273 - INFO - 🔍 Processing query: Describe the physical principles used to reduce ae...
+2025-12-11 00:28:19,300 - INFO - 🚫 Low relevance rejection: 0.308
+2025-12-11 00:28:19,300 - INFO - ✅ Query completed in 0.03s | Mode: OFF_TOPIC | Relevance: 0.308
+2025-12-11 00:28:19,301 - INFO - 🔍 Processing query: Recommend a good hiking trail near Santa Clara for...
+2025-12-11 00:28:19,329 - INFO - 🚫 Low relevance rejection: 0.232
+2025-12-11 00:28:19,330 - INFO - ✅ Query completed in 0.03s | Mode: OFF_TOPIC | Relevance: 0.232
+2025-12-11 00:28:19,355 - INFO - 💾 Experiment saved to hyperparameter_experiments.csv
+2025-12-11 00:28:19,356 - INFO - 📊 Summary: Avg time=11.75s, Cost=$0.0000

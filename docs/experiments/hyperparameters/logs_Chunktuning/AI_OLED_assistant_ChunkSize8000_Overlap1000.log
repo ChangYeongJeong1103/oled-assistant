@@ -1,0 +1,126 @@
+2025-12-10 08:35:57,281 - INFO - 📝 Logging initialized: logs/AI_OLED_assistant_20251210_083557.log
+2025-12-10 08:36:03,179 - INFO - 📂 Scanning folder: ../data
+2025-12-10 08:36:03,183 - INFO - Found 27 PDFs and 0 DOCX files
+2025-12-10 08:36:03,260 - WARNING - Ignoring wrong pointing object 10 0 (offset 0)
+2025-12-10 08:36:03,264 - WARNING - Ignoring wrong pointing object 15 0 (offset 0)
+2025-12-10 08:36:03,264 - WARNING - Ignoring wrong pointing object 17 0 (offset 0)
+2025-12-10 08:36:03,265 - WARNING - Ignoring wrong pointing object 24 0 (offset 0)
+2025-12-10 08:36:03,265 - WARNING - Ignoring wrong pointing object 47 0 (offset 0)
+2025-12-10 08:36:03,266 - WARNING - Ignoring wrong pointing object 50 0 (offset 0)
+2025-12-10 08:36:03,435 - INFO - ✅ Loaded: The role of charge generation layers in the operational stability of tandem organic light-emitting diodes.pdf (8 pages/sections)
+2025-12-10 08:36:03,794 - INFO - ✅ Loaded: [Review] Approaches to high performance white organic light-emitting diodes for general lighting.pdf (18 pages/sections)
+2025-12-10 08:36:03,951 - INFO - ✅ Loaded: !!! 중요 !!! Blue-emitting organic electrofluorescence materials - progress and prospective.pdf (7 pages/sections)
+2025-12-10 08:36:04,487 - INFO - ✅ Loaded: [Review] Recent Advancement in Boron-Based Efficient and Pure Blue Thermally Activated.pdf (16 pages/sections)
+2025-12-10 08:36:05,018 - INFO - ✅ Loaded: [Review - IMP!] Approaches for Long Lifetime Organic Light Emitting Diodes.pdf (29 pages/sections)
+2025-12-10 08:36:05,276 - INFO - ✅ Loaded: [Review] Recent Developments in Light Extraction Technologies of Organic Light Emitting Diodes.pdf (15 pages/sections)
+2025-12-10 08:36:05,281 - WARNING - Ignoring wrong pointing object 144 0 (offset 0)
+2025-12-10 08:36:05,284 - WARNING - Ignoring wrong pointing object 395 0 (offset 0)
+2025-12-10 08:36:05,305 - WARNING - Ignoring wrong pointing object 1973 0 (offset 0)
+2025-12-10 08:36:18,713 - INFO - ✅ Loaded: [Franky So] Organic Electronics Materials, Processing, Devices and Applications.pdf (545 pages/sections)
+2025-12-10 08:36:18,716 - WARNING - Ignoring wrong pointing object 6 0 (offset 0)
+2025-12-10 08:36:18,717 - WARNING - Ignoring wrong pointing object 20 0 (offset 0)
+2025-12-10 08:36:18,718 - WARNING - Ignoring wrong pointing object 54 0 (offset 0)
+2025-12-10 08:36:18,719 - WARNING - Ignoring wrong pointing object 113 0 (offset 0)
+2025-12-10 08:36:18,719 - WARNING - Ignoring wrong pointing object 118 0 (offset 0)
+2025-12-10 08:36:18,720 - WARNING - Ignoring wrong pointing object 145 0 (offset 0)
+2025-12-10 08:36:18,721 - WARNING - Ignoring wrong pointing object 158 0 (offset 0)
+2025-12-10 08:36:18,722 - WARNING - Ignoring wrong pointing object 261 0 (offset 0)
+2025-12-10 08:36:18,723 - WARNING - Ignoring wrong pointing object 301 0 (offset 0)
+2025-12-10 08:36:18,723 - WARNING - Ignoring wrong pointing object 304 0 (offset 0)
+2025-12-10 08:36:18,724 - WARNING - Ignoring wrong pointing object 312 0 (offset 0)
+2025-12-10 08:36:18,724 - WARNING - Ignoring wrong pointing object 314 0 (offset 0)
+2025-12-10 08:36:18,725 - WARNING - Ignoring wrong pointing object 343 0 (offset 0)
+2025-12-10 08:36:18,726 - WARNING - Ignoring wrong pointing object 438 0 (offset 0)
+2025-12-10 08:36:18,727 - WARNING - Ignoring wrong pointing object 462 0 (offset 0)
+2025-12-10 08:36:18,728 - WARNING - Ignoring wrong pointing object 464 0 (offset 0)
+2025-12-10 08:36:18,728 - WARNING - Ignoring wrong pointing object 486 0 (offset 0)
+2025-12-10 08:36:18,729 - WARNING - Ignoring wrong pointing object 514 0 (offset 0)
+2025-12-10 08:36:18,729 - WARNING - Ignoring wrong pointing object 533 0 (offset 0)
+2025-12-10 08:36:18,731 - WARNING - Ignoring wrong pointing object 616 0 (offset 0)
+2025-12-10 08:36:18,732 - WARNING - Ignoring wrong pointing object 646 0 (offset 0)
+2025-12-10 08:36:18,733 - WARNING - Ignoring wrong pointing object 693 0 (offset 0)
+2025-12-10 08:36:18,734 - WARNING - Ignoring wrong pointing object 746 0 (offset 0)
+2025-12-10 08:36:18,735 - WARNING - Ignoring wrong pointing object 814 0 (offset 0)
+2025-12-10 08:36:18,735 - WARNING - Ignoring wrong pointing object 819 0 (offset 0)
+2025-12-10 08:36:18,736 - WARNING - Ignoring wrong pointing object 840 0 (offset 0)
+2025-12-10 08:36:18,738 - WARNING - Ignoring wrong pointing object 1272 0 (offset 0)
+2025-12-10 08:36:18,738 - WARNING - Ignoring wrong pointing object 1294 0 (offset 0)
+2025-12-10 08:36:18,741 - WARNING - Ignoring wrong pointing object 1368 0 (offset 0)
+2025-12-10 08:36:18,741 - WARNING - Ignoring wrong pointing object 1403 0 (offset 0)
+2025-12-10 08:36:18,742 - WARNING - Ignoring wrong pointing object 1412 0 (offset 0)
+2025-12-10 08:36:18,742 - WARNING - Ignoring wrong pointing object 1425 0 (offset 0)
+2025-12-10 08:36:18,743 - WARNING - Ignoring wrong pointing object 1459 0 (offset 0)
+2025-12-10 08:36:18,744 - WARNING - Ignoring wrong pointing object 1489 0 (offset 0)
+2025-12-10 08:36:18,744 - WARNING - Ignoring wrong pointing object 1510 0 (offset 0)
+2025-12-10 08:36:24,475 - INFO - ✅ Loaded: OLED Display Fundamentals and Applications - 2017 - Tsujimura.pdf (270 pages/sections)
+2025-12-10 08:36:24,629 - INFO - ✅ Loaded: 4.Highly Effi cient Red - Phosphorescent Iridium Complexes.pdf (22 pages/sections)
+2025-12-10 08:36:24,755 - INFO - ✅ Loaded: 2.Spin Correlations in Organic Light - Emitting Diodes.pdf (32 pages/sections)
+2025-12-10 08:36:25,398 - INFO - ✅ Loaded: 1.Triplet Emitters for Organic Light - Emitting Diodes - Basic Properties.pdf (98 pages/sections)
+2025-12-10 08:36:25,546 - INFO - ✅ Loaded: 7.Phosphorescent Platinum(II) Materials for OLED Applications.pdf (24 pages/sections)
+2025-12-10 08:36:25,748 - INFO - ✅ Loaded: 6.Physical Processes in Polymer - Based Electrophosphorescent Devices.pdf (38 pages/sections)
+2025-12-10 08:36:25,999 - INFO - ✅ Loaded: 11.Molecular Engineering of Iridium Complexes and their Application in Organic Light Emitting Devices.pdf (28 pages/sections)
+2025-12-10 08:36:26,214 - INFO - ✅ Loaded: 5.Pyridyl Azolate Based Luminescent Complexes - Strategic Design, Photophysics, and Applications.pdf (36 pages/sections)
+2025-12-10 08:36:26,300 - INFO - ✅ Loaded: 9.High-Efficiency Phosphorescent Polymer LEDs.pdf (18 pages/sections)
+2025-12-10 08:36:26,470 - INFO - ✅ Loaded: 3.Cyclometallated Organoiridium Complexes as Emitters in Electrophosphorescent Devices.pdf (32 pages/sections)
+2025-12-10 08:36:26,604 - INFO - ✅ Loaded: 8.Energy - Transfer Processes between Phosphorescent Guest and Fluorescent Host Molecules in Phosphorescent OLEDs.pdf (28 pages/sections)
+2025-12-10 08:36:26,763 - INFO - ✅ Loaded: 12.Progress in Electroluminescence Based on Lanthanide Complexes.pdf (30 pages/sections)
+2025-12-10 08:36:26,993 - INFO - ✅ Loaded: 10.Electroluminescence from Metal - Containing Polymers and Metal Complexes with Functional Ligands.pdf (34 pages/sections)
+2025-12-10 08:36:26,995 - WARNING - Ignoring wrong pointing object 17 0 (offset 0)
+2025-12-10 08:36:26,998 - WARNING - Ignoring wrong pointing object 95 0 (offset 0)
+2025-12-10 08:36:26,999 - WARNING - Ignoring wrong pointing object 205 0 (offset 0)
+2025-12-10 08:36:27,000 - WARNING - Ignoring wrong pointing object 207 0 (offset 0)
+2025-12-10 08:36:27,195 - INFO - ✅ Loaded: Chapter 1 Introduction to Organic Semiconductors.pdf (17 pages/sections)
+2025-12-10 08:36:28,640 - INFO - ✅ Loaded: Chapter 2 Structure.pdf (84 pages/sections)
+2025-12-10 08:36:30,825 - INFO - ✅ Loaded: Chapter 5 Materials Growth and Patterning.pdf (148 pages/sections)
+2025-12-10 08:36:36,036 - INFO - ✅ Loaded: Chapter 3 Optics.pdf (199 pages/sections)
+2025-12-10 08:36:42,392 - INFO - ✅ Loaded: Chapter 4 Electronic properties.pdf (260 pages/sections)
+2025-12-10 08:36:51,004 - INFO - ✅ Loaded: Chapter 7 Organic Light Detectors.pdf (467 pages/sections)
+2025-12-10 08:36:57,979 - INFO - ✅ Loaded: Chapter 6 Organic Light Emitters.pdf (425 pages/sections)
+2025-12-10 08:36:57,979 - INFO - Successfully loaded 2928 document sections
+2025-12-10 08:36:58,035 - INFO - Created 2912 text chunks (size=8000, overlap=1000)
+2025-12-10 08:36:59,921 - INFO - NumExpr defaulting to 12 threads.
+2025-12-10 08:37:03,532 - INFO - Load pretrained SentenceTransformer: BAAI/bge-m3
+2025-12-10 08:37:08,110 - INFO - Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2025-12-10 09:42:15,785 - INFO - 🧪 Starting experiment with config: {'chunk_size': 8000, 'chunk_overlap': 1000, 'top_k': 4, 'temperature': 0.0, 'relevance_threshold': 0.55, 'sigmoid_midpoint': 0.5, 'sigmoid_steepness': 12}
+2025-12-10 09:42:15,790 - INFO - 🔍 Processing query: What are the key degradation mechanisms of a blue ...
+2025-12-10 09:42:50,509 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-10 09:42:50,536 - INFO - ✅ Query completed in 34.73s | Mode: RAG | Relevance: 0.783
+2025-12-10 09:42:50,539 - INFO - 🔍 Processing query: How does exciton diffusion length affect charge se...
+2025-12-10 09:43:17,388 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-10 09:43:17,397 - INFO - ✅ Query completed in 26.85s | Mode: RAG | Relevance: 0.768
+2025-12-10 09:43:17,399 - INFO - 🔍 Processing query: What are the major challenges in mass transfer pro...
+2025-12-10 09:43:43,582 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-10 09:43:43,596 - INFO - ✅ Query completed in 26.19s | Mode: RAG | Relevance: 0.587
+2025-12-10 09:43:43,600 - INFO - 🔍 Processing query: How does doping concentration affect the electron ...
+2025-12-10 09:43:58,469 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-10 09:43:58,475 - INFO - ✅ Query completed in 14.87s | Mode: NO_ANSWER_IN_DOCS | Relevance: 0.701
+2025-12-10 09:43:58,478 - INFO - 🔍 Processing query: Describe the physical principles used to reduce ae...
+2025-12-10 09:43:58,616 - INFO - 🚫 Low relevance rejection: 0.440
+2025-12-10 09:43:58,620 - INFO - ✅ Query completed in 0.14s | Mode: OFF_TOPIC | Relevance: 0.440
+2025-12-10 09:43:58,622 - INFO - 🔍 Processing query: Recommend a good hiking trail near Santa Clara for...
+2025-12-10 09:43:58,994 - INFO - 🚫 Low relevance rejection: 0.293
+2025-12-10 09:43:58,995 - INFO - ✅ Query completed in 0.37s | Mode: OFF_TOPIC | Relevance: 0.293
+2025-12-10 09:43:59,006 - INFO - 🔍 Processing query: What are the key degradation mechanisms of a blue ...
+2025-12-10 09:44:18,614 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-10 09:44:18,616 - INFO - ✅ Query completed in 19.61s | Mode: RAG | Relevance: 0.783
+2025-12-10 09:44:21,256 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-10 09:44:21,261 - INFO - 🔍 Processing query: How does exciton diffusion length affect charge se...
+2025-12-10 09:44:47,938 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-10 09:44:47,946 - INFO - ✅ Query completed in 26.69s | Mode: RAG | Relevance: 0.768
+2025-12-10 09:44:51,101 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-10 09:44:51,103 - INFO - 🔍 Processing query: What are the major challenges in mass transfer pro...
+2025-12-10 09:45:18,007 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-10 09:45:18,009 - INFO - ✅ Query completed in 26.91s | Mode: RAG | Relevance: 0.587
+2025-12-10 09:45:21,314 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-10 09:45:21,316 - INFO - 🔍 Processing query: How does doping concentration affect the electron ...
+2025-12-10 09:45:35,747 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-10 09:45:35,751 - INFO - ✅ Query completed in 14.44s | Mode: NO_ANSWER_IN_DOCS | Relevance: 0.701
+2025-12-10 09:45:35,752 - INFO - 🔍 Processing query: Describe the physical principles used to reduce ae...
+2025-12-10 09:45:35,877 - INFO - 🚫 Low relevance rejection: 0.440
+2025-12-10 09:45:35,878 - INFO - ✅ Query completed in 0.13s | Mode: OFF_TOPIC | Relevance: 0.440
+2025-12-10 09:45:35,879 - INFO - 🔍 Processing query: Recommend a good hiking trail near Santa Clara for...
+2025-12-10 09:45:35,914 - INFO - 🚫 Low relevance rejection: 0.293
+2025-12-10 09:45:35,914 - INFO - ✅ Query completed in 0.04s | Mode: OFF_TOPIC | Relevance: 0.293
+2025-12-10 09:45:36,020 - INFO - 💾 Experiment saved to hyperparameter_experiments.csv
+2025-12-10 09:45:36,020 - INFO - 📊 Summary: Avg time=17.19s, Cost=$0.0000
+2025-12-10 10:10:40,051 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"

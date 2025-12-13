@@ -1,0 +1,7 @@
+timestamp,chunk_size,chunk_overlap,top_k,temperature,relevance_threshold,sigmoid_midpoint,sigmoid_steepness,avg_response_time_sec,total_tokens,estimated_cost_usd,mode_rag_count,mode_no_answer_count,mode_off_topic_count,mode_error_count,avg_relevance_score,avg_rag_score,avg_rag_specificity,avg_rag_relevance,avg_rag_factuality,notes
+2025-12-10 04:07:52,800,120,4,0.0,0.55,0.5,12,8.07,678,$0.0000,3,1,2,0,0.595,8.67,8.67,9.67,7.67,Strict RAG Evaluation: 3/6 answered.
+2025-12-10 04:37:05,2000,300,4,0.0,0.55,0.5,12,11.44,513,$0.0000,2,2,2,0,0.596,8.50,8.50,9.50,7.50,Strict RAG Evaluation: 2/6 answered.
+2025-12-10 05:36:30,3000,500,4,0.0,0.55,0.5,12,19.67,886,$0.0000,3,1,2,0,0.597,9.00,9.00,10.00,8.00,Strict RAG Evaluation: 3/6 answered.
+2025-12-10 06:32:23,4500,600,4,0.0,0.55,0.5,12,17.10,808,$0.0000,3,1,2,0,0.595,7.78,8.00,8.33,7.00,Strict RAG Evaluation: 3/6 answered.
+2025-12-10 07:44:04,6000,800,4,0.0,0.55,0.5,12,19.88,842,$0.0000,3,1,2,0,0.595,7.78,8.00,8.33,7.00,Strict RAG Evaluation: 3/6 answered.
+2025-12-10 09:42:15,8000,1000,4,0.0,0.55,0.5,12,17.19,909,$0.0000,3,1,2,0,0.595,8.67,8.67,9.67,7.67,Strict RAG Evaluation: 3/6 answered.

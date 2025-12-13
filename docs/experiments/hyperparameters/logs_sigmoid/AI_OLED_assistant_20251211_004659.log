@@ -1,0 +1,43 @@
+2025-12-11 00:46:59,237 - INFO - 📝 Logging initialized: logs/AI_OLED_assistant_20251211_004659.log
+2025-12-11 00:46:59,247 - INFO - Skip loading/chunking because DB already exists at ../chroma_db
+2025-12-11 00:46:59,256 - INFO - Load pretrained SentenceTransformer: BAAI/bge-m3
+2025-12-11 00:47:02,382 - INFO - 🧪 Starting experiment with config: {'chunk_size': 3000, 'chunk_overlap': 500, 'top_k': 4, 'temperature': 0.2, 'relevance_threshold': 0.55, 'sigmoid_midpoint': 0.6, 'sigmoid_steepness': 16}
+2025-12-11 00:47:02,383 - INFO - 🔍 Processing query: What are the key degradation mechanisms of a blue ...
+2025-12-11 00:47:26,029 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-11 00:47:26,033 - INFO - ✅ Query completed in 23.65s | Mode: RAG | Relevance: 0.553
+2025-12-11 00:47:26,036 - INFO - 🔍 Processing query: How does exciton diffusion length affect charge se...
+2025-12-11 00:47:26,137 - INFO - 🚫 Low relevance rejection: 0.487
+2025-12-11 00:47:26,138 - INFO - ✅ Query completed in 0.10s | Mode: OFF_TOPIC | Relevance: 0.487
+2025-12-11 00:47:26,139 - INFO - 🔍 Processing query: What are the major challenges in mass transfer pro...
+2025-12-11 00:47:26,168 - INFO - 🚫 Low relevance rejection: 0.232
+2025-12-11 00:47:26,168 - INFO - ✅ Query completed in 0.03s | Mode: OFF_TOPIC | Relevance: 0.232
+2025-12-11 00:47:26,169 - INFO - 🔍 Processing query: How does doping concentration affect the electron ...
+2025-12-11 00:47:26,195 - INFO - 🚫 Low relevance rejection: 0.386
+2025-12-11 00:47:26,196 - INFO - ✅ Query completed in 0.03s | Mode: OFF_TOPIC | Relevance: 0.386
+2025-12-11 00:47:26,197 - INFO - 🔍 Processing query: Describe the physical principles used to reduce ae...
+2025-12-11 00:47:26,223 - INFO - 🚫 Low relevance rejection: 0.126
+2025-12-11 00:47:26,223 - INFO - ✅ Query completed in 0.03s | Mode: OFF_TOPIC | Relevance: 0.126
+2025-12-11 00:47:26,224 - INFO - 🔍 Processing query: Recommend a good hiking trail near Santa Clara for...
+2025-12-11 00:47:26,249 - INFO - 🚫 Low relevance rejection: 0.062
+2025-12-11 00:47:26,249 - INFO - ✅ Query completed in 0.02s | Mode: OFF_TOPIC | Relevance: 0.062
+2025-12-11 00:47:26,257 - INFO - 🔍 Processing query: What are the key degradation mechanisms of a blue ...
+2025-12-11 00:47:38,225 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-11 00:47:38,228 - INFO - ✅ Query completed in 11.97s | Mode: RAG | Relevance: 0.553
+2025-12-11 00:47:41,099 - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-12-11 00:47:41,103 - INFO - 🔍 Processing query: How does exciton diffusion length affect charge se...
+2025-12-11 00:47:41,218 - INFO - 🚫 Low relevance rejection: 0.487
+2025-12-11 00:47:41,219 - INFO - ✅ Query completed in 0.12s | Mode: OFF_TOPIC | Relevance: 0.487
+2025-12-11 00:47:41,219 - INFO - 🔍 Processing query: What are the major challenges in mass transfer pro...
+2025-12-11 00:47:41,246 - INFO - 🚫 Low relevance rejection: 0.232
+2025-12-11 00:47:41,246 - INFO - ✅ Query completed in 0.03s | Mode: OFF_TOPIC | Relevance: 0.232
+2025-12-11 00:47:41,246 - INFO - 🔍 Processing query: How does doping concentration affect the electron ...
+2025-12-11 00:47:41,271 - INFO - 🚫 Low relevance rejection: 0.386
+2025-12-11 00:47:41,272 - INFO - ✅ Query completed in 0.03s | Mode: OFF_TOPIC | Relevance: 0.386
+2025-12-11 00:47:41,272 - INFO - 🔍 Processing query: Describe the physical principles used to reduce ae...
+2025-12-11 00:47:41,314 - INFO - 🚫 Low relevance rejection: 0.126
+2025-12-11 00:47:41,314 - INFO - ✅ Query completed in 0.04s | Mode: OFF_TOPIC | Relevance: 0.126
+2025-12-11 00:47:41,315 - INFO - 🔍 Processing query: Recommend a good hiking trail near Santa Clara for...
+2025-12-11 00:47:41,343 - INFO - 🚫 Low relevance rejection: 0.062
+2025-12-11 00:47:41,344 - INFO - ✅ Query completed in 0.03s | Mode: OFF_TOPIC | Relevance: 0.062
+2025-12-11 00:47:41,357 - INFO - 💾 Experiment saved to hyperparameter_experiments.csv
+2025-12-11 00:47:41,358 - INFO - 📊 Summary: Avg time=3.98s, Cost=$0.0000

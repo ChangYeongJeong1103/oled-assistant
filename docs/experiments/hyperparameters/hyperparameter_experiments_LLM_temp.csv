@@ -1,0 +1,5 @@
+timestamp,chunk_size,chunk_overlap,top_k,temperature,relevance_threshold,sigmoid_midpoint,sigmoid_steepness,avg_response_time_sec,total_tokens,estimated_cost_usd,mode_rag_count,mode_no_answer_count,mode_off_topic_count,mode_error_count,avg_relevance_score,avg_rag_score,avg_rag_specificity,avg_rag_relevance,avg_rag_factuality,notes
+2025-12-10 13:03:37,3000,500,4,0.0,0.55,0.5,12,20.91,1051,$0.0000,3,1,2,0,0.598,7.67,8.00,8.33,6.67,Strict RAG Evaluation: 3/6 answered.
+2025-12-10 13:15:10,3000,500,4,0.2,0.55,0.5,12,14.28,802,$0.0000,3,1,2,0,0.598,8.33,8.00,9.00,8.00,Strict RAG Evaluation: 2/6 answered.
+2025-12-10 13:22:47,3000,500,4,0.6,0.55,0.5,12,10.51,721,$0.0000,2,2,2,0,0.598,9.17,9.00,10.00,8.50,Strict RAG Evaluation: 2/6 answered.
+2025-12-10 13:43:56,3000,500,4,0.4,0.55,0.5,12,13.33,667,$0.0000,2,2,2,0,0.598,8.67,8.50,9.50,8.00,Strict RAG Evaluation: 2/6 answered.
