@@ -4,6 +4,7 @@
 ![RAG](https://img.shields.io/badge/RAG-Strict_Document--Only-green.svg)
 ![Deployment](https://img.shields.io/badge/Deployment-On--Prem_Local-orange.svg)
 ![Status](https://img.shields.io/badge/Status-Production_Ready-success.svg)
+![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)
 
 An intelligent, secure, and domain-specific RAG (Retrieval-Augmented Generation) assistant for OLED display engineers.
 
