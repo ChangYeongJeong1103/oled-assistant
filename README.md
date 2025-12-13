@@ -1,10 +1,10 @@
 # AI-Driven OLED Assistant
 
-![Mistral](https://img.shields.io/badge/Model-Mistral_Nemo_12B-purple.svg?style=for-the-badge)
+![Mistral](https://img.shields.io/badge/Model-Mistral_Nemo_12B-purple.svg)
 ![RAG](https://img.shields.io/badge/RAG-Strict_Document--Only-green.svg)
 ![Deployment](https://img.shields.io/badge/Deployment-On--Prem_Local-orange.svg)
 ![Status](https://img.shields.io/badge/Status-Production_Ready-success.svg)
-![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
 
 An intelligent, secure, and domain-specific RAG (Retrieval-Augmented Generation) assistant for OLED display engineers.
 
@@ -78,12 +78,12 @@ The result: PhD-level experts validated that the optimized Mistral responses are
 
 ## 🛠️ Tech Stack
 
-![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?style=for-the-badge&logo=python&logoColor=white)
-![Streamlit](https://img.shields.io/badge/Streamlit-1.31%2B-FF4B4B.svg?style=for-the-badge&logo=streamlit&logoColor=white)
-![LangChain](https://img.shields.io/badge/LangChain-0.1%2B-1C3C3C.svg?style=for-the-badge&logo=langchain&logoColor=white)
-![Ollama](https://img.shields.io/badge/Ollama-Local_LLM-black.svg?style=for-the-badge&logo=ollama&logoColor=white)
-![ChromaDB](https://img.shields.io/badge/Vector_DB-ChromaDB-orange.svg?style=for-the-badge)
-![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)
+![Streamlit](https://img.shields.io/badge/Streamlit-1.31%2B-FF4B4B.svg)
+![LangChain](https://img.shields.io/badge/LangChain-0.1%2B-1C3C3C.svg)
+![Ollama](https://img.shields.io/badge/Ollama-Local_LLM-black.svg)
+![ChromaDB](https://img.shields.io/badge/Vector_DB-ChromaDB-orange.svg)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
 
 ### Architecture Choices
 - **App Interface**: `Streamlit` was chosen for rapid prototyping and its native support for chat interfaces (`st.chat_message`).
