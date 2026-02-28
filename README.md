@@ -9,7 +9,7 @@
 
 An intelligent, secure, and domain-specific RAG (Retrieval-Augmented Generation) assistant for OLED display engineers.
 
-## 🌟 Overview
+## Overview
 This tool allows engineers to ask technical questions about OLED physics, fabrication, and materials. It uses a **Strict RAG** engine to ensure that all answers are derived *exclusively* from internal technical documents, eliminating hallucinations.
 
 ### Key Features
@@ -20,7 +20,7 @@ This tool allows engineers to ask technical questions about OLED physics, fabric
 
 ---
 
-## 📸 Screenshots
+## Screenshots
 
 | RAG Mode - Document-based Answer | Multi-turn Conversation |
 |:---:|:---:|
@@ -30,7 +30,7 @@ This tool allows engineers to ask technical questions about OLED physics, fabric
 
 ---
 
-## 💡 Key Motivation
+## Key Motivation
 
 ### Why Strict RAG? (No LLM Fallback)
 
@@ -77,7 +77,7 @@ The result: PhD-level experts validated that the optimized Mistral responses are
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.31%2B-FF4B4B.svg)
@@ -129,13 +129,13 @@ graph TD
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Option 1: Try Live Demo (Cloud Deployment)
 
 **No installation required!** Access the deployed application directly:
 
-🔗 **[https://oled-assistant-961016411722.us-west2.run.app](https://oled-assistant-961016411722.us-west2.run.app)**
+**[https://oled-assistant-961016411722.us-west2.run.app](https://oled-assistant-961016411722.us-west2.run.app)**
 
 > Deployed on Google Cloud Run for instant access.
 
@@ -185,7 +185,7 @@ Visit `http://localhost:8502` in your browser.
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 oled-assistant/
@@ -217,13 +217,13 @@ oled-assistant/
 └── README.md             # This file
 ```
 
-## 🧠 Documentation
+## Documentation
 - [System Architecture](docs/architecture.md)
 - [RAG Engine Logic](docs/rag_engine.md)
 - [Hyperparameter Tuning](docs/hyperparameter.md)
 - [LLM Comparison](docs/llm_comparison.md)
 
-## 🔮 Future Work
+## Future Work
 
 ### LLM Fine-Tuning (Next Phase)
 
