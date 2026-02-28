@@ -1,0 +1,33 @@
+.git
+.gitignore
+.DS_Store
+
+# Local secrets
+.env
+.env.*
+
+# Python cache/artifacts
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+.pytest_cache/
+
+# Virtual environments
+venv/
+.venv/
+env/
+oled/
+agent/
+
+# Local/editor artifacts
+.vscode/
+.idea/
+cursor/
+.ipynb_checkpoints/
+
+# Heavy/non-runtime folders
+notebooks/
+logs/
+screenshot/
+data/

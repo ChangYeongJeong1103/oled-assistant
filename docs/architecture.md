@@ -2,7 +2,7 @@
 
 ## Overview
 
-The **AI-Driven OLED Assistant** is a specialized Retrieveal-Augmented Generation (RAG) system designed to support OLED display engineers. Unlike general-purpose chatbots, it enforces a **Strict RAG** policy, ensuring that answers are derived *only* from verified internal technical documents
+The **AI-Driven OLED Assistant** is a specialized Retrieval-Augmented Generation (RAG) system designed to support OLED display engineers. Unlike general-purpose chatbots, it enforces a **Strict RAG** policy, ensuring that answers are derived *only* from verified technical documents.
 
 ## System Flowchart
 
@@ -39,7 +39,7 @@ graph TD
 ### 2. Knowledge Base (ChromaDB)
 - **Role**: Stores vector embeddings of technical PDFs (OLED physics, materials, fabrication)
 - **Model**: `BAAI/bge-m3`
-- **Persistence**: Pre-computed and stored locally to ensure zero startup latency
+- **Persistence Strategy**: Cloud images include a prebuilt `chroma_db` for fast startup. At runtime, the app reuses this DB and rebuilds from `data/` only when the DB is missing or incompatible.
 
 ### 3. Strict RAG Engine (Core Logic)
 - **Role**: The brain of the application. It decides *whether* to answer
@@ -49,7 +49,8 @@ graph TD
   - If Score < `0.60` (configurable), the query is rejected immediately
   - If accepted, it prompts the LLM to use *only* the provided context
 
-### 4. Local LLM (Mistral-Nemo)
+### 4. LLM Serving Strategy (Cloud + Local)
 - **Role**: Generates natural language answers
-- **Deployment**: Hosted locally via **Ollama** for data security (no data leaves the local machine).
-- **Configuration**: Temperature = 0.2 (Balanced: factual enough for engineering specs, but natural enough for smooth explanation without dry robotic tone)
+- **Cloud track (public deployment)**: GPT-4o-mini via OpenAI API (`OPENAI_API_KEY`) for GCP deployment and low-latency serving.
+- **Internal track (private deployment)**: Mistral-Nemo via local/internal serving stack (privacy-first operation).
+- **Configuration**: Temperature = 0.2 (balanced for factual responses while preserving readability).

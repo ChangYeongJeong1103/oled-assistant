@@ -1,6 +1,7 @@
 # AI-Driven OLED Assistant
 
 ![Mistral](https://img.shields.io/badge/Model-Mistral_Nemo_12B-purple.svg)
+![GPT-4o-mini](https://img.shields.io/badge/Model-GPT--4o--mini-10a37f.svg)
 ![RAG](https://img.shields.io/badge/RAG-Strict_Document--Only-green.svg)
 ![Deployment](https://img.shields.io/badge/Deployment-On--Prem_Local-orange.svg)
 ![Status](https://img.shields.io/badge/Status-Production_Ready-success.svg)
@@ -14,7 +15,7 @@ This tool allows engineers to ask technical questions about OLED physics, fabric
 ### Key Features
 - **Strict RAG for Experts**: Designed for PhD-level engineers. It answers **ONLY** using verified internal technical documents, strictly avoiding generic internet-based knowledge (blogs, Wikipedia) to ensure high-precision insights that Google cannot provide.
 - **Secure & Local**: Runs entirely on your machine using **Mistral-Nemo** via Ollama. No data leaves the laptop.
-- **Zero-Latency Startup**: Uses a pre-computed ChromaDB vector store.
+- **Production-Style Vector DB Lifecycle**: In cloud deployment, the image ships with a prebuilt `chroma_db` for fast startup. The app only rebuilds from `data/` when the DB is missing or incompatible.
 - **Commercial-Grade Accuracy on Local Hardware**: Through rigorous prompt optimization and hyperparameter tuning, we achieved answer quality comparable to cloud-based commercial models (GPT-4o-mini), validated by PhD-level experts.
 
 ---
@@ -23,7 +24,7 @@ This tool allows engineers to ask technical questions about OLED physics, fabric
 
 | RAG Mode - Document-based Answer | Multi-turn Conversation |
 |:---:|:---:|
-| ![Example 1](screenshot/example_1.png) | ![Example 2](screenshot/example_2.png) |
+| ![Example RAG](screenshot/Example_RAG.png) | ![Example NoAnswer OffTopic](screenshot/Example_NoAnswer_OffTopic.png) |
 
 *The assistant provides detailed, document-grounded answers with relevance scores and response times.*
 
@@ -89,7 +90,8 @@ The result: PhD-level experts validated that the optimized Mistral responses are
 - **App Interface**: `Streamlit` was chosen for rapid prototyping and its native support for chat interfaces (`st.chat_message`).
 - **LLM Serving**: `Ollama` enables **Mistral-Nemo 12B** to run locally, ensuring **100% data privacy** for sensitive OLED technical documents.
 - **RAG Orchestration**: `LangChain` provides the RAG chain (`RetrievalQA`) for document retrieval and answer generation, while custom sigmoid-based relevance scoring handles strict filtering.
-- **Vector Database**: `ChromaDB` (Persistent) enables fast startup by storing pre-computed embeddings locally, eliminating the need to re-index documents on every launch.
+- **Modular Data Pipeline**: `src/document_pipeline.py` isolates document loading, chunking, embedding, and ChromaDB lifecycle management from `src/rag_engine.py`.
+- **Vector Database**: `ChromaDB` is prebuilt into the cloud image for low cold-start latency, then reused at runtime ("rebuild only if missing/incompatible").
 
 ---
 
@@ -129,28 +131,57 @@ graph TD
 
 ## 🚀 Quick Start
 
-### Option 1: Engineering Standard (Run Locally)
-Use this if you want to install and run the app on your own machine.
+### Option 1: Try Live Demo (Cloud Deployment)
 
-1. **Clone & Setup**
+**No installation required!** Access the deployed application directly:
+
+🔗 **[https://oled-assistant-961016411722.us-west2.run.app](https://oled-assistant-961016411722.us-west2.run.app)**
+
+> Deployed on Google Cloud Run for instant access.
+
+### Option 2: Run with Docker
+
+The easiest way to run the application with minimal local setup.
+
+```bash
+# 1) Build image
+docker build -t oled-assistant .
+
+# 2) Run container
+docker run -p 8502:8501 -e OPENAI_API_KEY="your-api-key-here" oled-assistant
+```
+
+Visit `http://localhost:8502` in your browser.
+
+### Option 3: Run Locally (Code-Only Clone)
+
+1. **Clone the repository**
    ```bash
-   ./setup.sh
+   git clone https://github.com/ChangYeongJeong1103/oled-assistant.git
+   cd oled-assistant
    ```
-   *This will check Python, create a virtual environment, install dependencies, and pull the Mistral model.*
 
-2. **Run the App**
+2. **Install dependencies**
    ```bash
-   ./run_app.sh
+   pip install -r requirements.txt
    ```
 
-### Option 2: Live Demo (Tunneling)
-Use this to share a live link with colleagues without them installing anything.
+3. **Set up environment**
+   Create a `.env` file in the root:
+   ```env
+   OPENAI_API_KEY=sk-...
+   ```
 
-1. **Start Demo**
+4. **Prepare runtime data (required)**
+   This GitHub repository is code-only by default (both `data/` and `chroma_db/` are excluded).
+   To run locally, provide one of the following:
+   - a prebuilt `chroma_db/` folder, or
+   - source files (`.pdf` / `.docx`) under `data/` and then build `chroma_db/`.
+
+5. **Run the app**
    ```bash
-   ./start_demo.sh
+   streamlit run src/app.py
    ```
-   *This will generate a public HTTPS link (ngrok) that you can share.*
 
 ---
 
@@ -162,13 +193,18 @@ oled-assistant/
 │   ├── __init__.py       # Package marker
 │   ├── app.py            # Main Streamlit Application
 │   ├── rag_engine.py     # Strict RAG Logic Class
+│   ├── document_pipeline.py # Document loading/chunking/vector DB lifecycle
 │   ├── config.py         # Configuration & Hyperparameters
 │   └── utils.py          # Logging & Helper Functions
+├── data/                 # Optional local-only source docs for rebuilding vector DB
 ├── notebooks/            # Development Notebooks
 │   ├── OLED_assistant_v1_HP_tuning.ipynb  # Hyperparameter tuning
 │   ├── OLED_assistant_v2_Mistral.ipynb    # Mistral integration
-│   └── OLED_assistant_v3_final.ipynb      # Strict RAG (Final)
-├── chroma_db/            # Pre-computed Vector Database
+│   ├── OLED_assistant_v3_final.ipynb      # Strict RAG baseline
+│   ├── OLED_assistant_v4_sim.ipynb        # Simulation and validation notebook
+│   ├── OLED_assistant_v5_updated.ipynb    # Updated modular validation notebook
+│   └── OLED_Assistant_v6_GCP.ipynb        # Cloud deployment validation notebook
+├── chroma_db/            # Prebuilt persistent vector DB (cloud image includes this folder)
 ├── docs/                 # Documentation & Experiments
 │   ├── architecture.md   # System Flowchart
 │   ├── rag_engine.md     # Logic Explanation
@@ -177,9 +213,6 @@ oled-assistant/
 │   └── experiments/      # Research Data (logs, CSVs)
 ├── logs/                 # Usage Logs
 ├── screenshot/           # Demo Screenshots
-├── setup.sh              # Installation Script
-├── run_app.sh            # Run Script
-├── start_demo.sh         # Ngrok Tunneling Script
 ├── requirements.txt      # Python Dependencies
 └── README.md             # This file
 ```

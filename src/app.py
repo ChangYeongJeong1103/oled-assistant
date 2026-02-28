@@ -4,6 +4,7 @@ Aligned with OLED_assistant_v3_final.ipynb
 """
 import streamlit as st
 import time
+import os
 from rag_engine import StrictRAGAssistant, create_embeddings, get_vectorstore
 import config
 from utils import logger, format_time
@@ -31,6 +32,11 @@ def get_assistant():
     )
 
 try:
+    if not os.environ.get("OPENAI_API_KEY"):
+        st.error(
+            "❌ OPENAI_API_KEY not found. Set it in your environment or `.env` file before running the app."
+        )
+        st.stop()
     assistant = get_assistant()
 except Exception as e:
     st.error(f"Failed to initialize RAG Engine: {str(e)}")

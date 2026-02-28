@@ -23,11 +23,13 @@ cursor/
 *.swo
 
 # Logs
-logs/*.log
+logs/
+*.log
 
 # Environment variables
 .env
 .env.local
+.env.*
 
 # OS
 .DS_Store
@@ -35,6 +37,13 @@ Thumbs.db
 
 # Jupyter
 .ipynb_checkpoints/
+*/.ipynb_checkpoints/*
 
 # Vector Database (too large for GitHub)
 chroma_db/
+data/
+
+# Testing / coverage
+.pytest_cache/
+.coverage
+htmlcov/

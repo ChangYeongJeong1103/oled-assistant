@@ -3,61 +3,37 @@ Strict RAG Engine for OLED Assistant
 Aligned with notebooks/OLED_assistant_v3_final.ipynb
 """
 import math
-import os
 
 from langchain_openai import ChatOpenAI
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
-from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_community.vectorstores import Chroma
 
 import config
+from document_pipeline import create_embeddings_model, get_or_create_vectorstore
 from utils import logger
 
 
 def create_llm(model_name: str, temperature: float):
     """
-    Create Mistral LLM via Ollama local server.
+    Create OpenAI-compatible chat model for cloud deployment.
     
     Args:
-        model_name: Ollama model name (e.g., "mistral-nemo")
+        model_name: OpenAI model name (e.g., "gpt-4o-mini")
         temperature: Response diversity (0.0 = deterministic, 1.0 = creative)
     
     Returns:
-        ChatOpenAI: LLM instance connected to Ollama server
+        ChatOpenAI: LLM instance using OPENAI_API_KEY from environment
     """
     return ChatOpenAI(
         model=model_name,
         temperature=temperature,
-        base_url=config.LLM_BASE_URL,
-        api_key="ollama",  # Required parameter for ChatOpenAI (Ollama ignores it)
     )
 
 
 def create_embeddings():
-
     try:
-        import torch
-
-        # Device selection: CUDA -> MPS -> CPU
-        if torch.cuda.is_available():
-            device = "cuda"
-        elif torch.backends.mps.is_available():
-            device = "mps"
-        else:
-            device = "cpu"
-
-        logger.info(f"Using device for embeddings: {device}")
-
-        embeddings = HuggingFaceEmbeddings(
-            model_name=config.EMBEDDING_MODEL,
-            model_kwargs={"device": device},
-            encode_kwargs={
-                "normalize_embeddings": True,   # cosine similarity
-                "batch_size": config.EMBEDDING_BATCH_SIZE,
-            },
-        )
-        return embeddings
+        # Keep this wrapper for backward compatibility with app.py import.
+        return create_embeddings_model()
     except Exception as e:
         logger.error(f"Failed to initialize embeddings: {str(e)}")
         raise
@@ -65,18 +41,12 @@ def create_embeddings():
 
 def get_vectorstore(embeddings):
     """
-    Deploy assumes DB already exists; if missing, fail fast with a clear message.
+    Keep a stable interface while delegating lifecycle logic to document_pipeline.
     """
-    if os.path.exists(config.DB_PATH) and os.listdir(config.DB_PATH):
-        vectorstore = Chroma(
-            persist_directory=config.DB_PATH,
-            embedding_function=embeddings,
-        )
-        return vectorstore
-
-    raise FileNotFoundError(
-        f"ChromaDB not found or empty at: {config.DB_PATH}. "
-        f"Please copy the persisted DB folder to this path before running the app."
+    return get_or_create_vectorstore(
+        embeddings=embeddings,
+        docs_folder=config.DOCS_FOLDER,
+        persist_directory=config.DB_PATH,
     )
 
 
@@ -105,7 +75,7 @@ class StrictRAGAssistant:
         self.sigmoid_midpoint = sigmoid_midpoint
         self.sigmoid_steepness = sigmoid_steepness
 
-        # Create Mistral LLM (using Ollama local server)
+        # Create cloud LLM (OpenAI API)
         self.llm = create_llm(model_name=llm_model, temperature=temperature)
 
         # Strict RAG prompt
@@ -143,8 +113,13 @@ Answer:"""
         if not docs_with_scores:
             return 0.0
         
-        # Chroma returns distance (lower is better). Convert to similarity.
-        scores = [1.0 / (1.0 + score) for _, score in docs_with_scores]
+        # Chroma returns L2 distance (lower is better). Convert to similarity.
+        # For normalized embeddings, L2 distance relates to cosine similarity:
+        #   sim = 1 - (d^2)/2  (then clamp to [0, 1])
+        scores = []
+        for _, d in docs_with_scores:
+            sim = 1.0 - (float(d) * float(d)) / 2.0
+            scores.append(max(0.0, min(1.0, sim)))
         avg_score = sum(scores) / len(scores)
         
         # Sigmoid transformation

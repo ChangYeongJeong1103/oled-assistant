@@ -1,0 +1,35 @@
+.git
+.gitignore
+.gcloudignore
+
+# Local secrets
+.env
+.env.*
+
+# Python/cache artifacts
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+.pytest_cache/
+
+# Virtual environments
+venv/
+.venv/
+env/
+oled/
+agent/
+
+# Local/editor artifacts
+.vscode/
+.idea/
+cursor/
+*.swp
+*.swo
+
+# Large non-runtime folders
+notebooks/
+logs/
+screenshot/
+data/
+.ipynb_checkpoints/

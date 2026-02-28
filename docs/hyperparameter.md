@@ -4,11 +4,11 @@
 We optimized the RAG pipeline using a grid-search approach, evaluating performance on a set of 6 representative technical queries (ranging from core OLED physics to off-topic)
 
 ## Key Parameters Tuned
-All parameters were finalized in `OLED_assistant_v6_Mistral.ipynb` as this configuration provided the best separation between relevant/irrelevant queries and the highest quality answers
+All parameters were finalized and validated in `OLED_Assistant_v6_GCP.ipynb`, where we confirmed strong relevance separation and stable Strict RAG behavior.
 - **Embedding**: `BAAI/bge-m3`
 - **Chunking**: `CHUNK_SIZE = 3000`, `CHUNK_OVERLAP = 500`
 - **Retrieval**: `TOP_K_DOCUMENTS = 4`
-- **Relevance gate**: `RELEVANCE_THRESHOLD = 0.6`, `SIGMOID_MIDPOINT = 0.5`, `SIGMOID_STEEPNESS = 18`
+- **Relevance gate**: `RELEVANCE_THRESHOLD = 0.6`, `SIGMOID_MIDPOINT = 0.68`, `SIGMOID_STEEPNESS = 10`
 
 ### 1. Chunking Strategy
 We experimented with various chunk sizes to balance context window vs. retrieval precision
@@ -19,7 +19,7 @@ We experimented with various chunk sizes to balance context window vs. retrieval
 ### 2. Sigmoid Function
 We tuned the steepness of the relevance curve to reduce false positives
 - **Parameter**: `SIGMOID_STEEPNESS`
-- **Result**: Set to **18**
+- **Result**: Set to **10**
 - **Effect**: This steepness provided better spreading, creating a sharper boundary between relevant and irrelevant queries
 
 ### 3. Relevance Threshold

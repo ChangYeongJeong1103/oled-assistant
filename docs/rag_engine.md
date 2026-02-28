@@ -37,5 +37,5 @@ We apply a **Sigmoid Transformation** to spread these scores out. This amplifies
 $$ Score = \frac{1}{1 + e^{-k(x - x_0)}} $$
 
 - **$x$**: Average similarity of top-k documents.
-- **$x_0$ (Midpoint)**: 0.50. The center of the decision boundary.
-- **$k$ (Steepness)**: 18. Controls how aggressively we separate "relevant" from "irrelevant". A high steepness means a small drop in similarity results in a massive drop in score.
+- **$x_0$ (Midpoint)**: 0.68. The center of the current decision boundary.
+- **$k$ (Steepness)**: 10. Controls how aggressively we separate "relevant" from "irrelevant".
