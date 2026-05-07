@@ -100,11 +100,16 @@ Answer:"""
             input_variables=["context", "question"]
         )
         
+        # NOTE: return_source_documents=True lets the chain return BOTH the
+        # generated answer and the retrieved Document objects in a single call.
+        # This avoids a redundant second similarity_search just to display
+        # provenance in the UI.
         self.rag_chain = RetrievalQA.from_chain_type(
             llm=self.llm,
             chain_type="stuff",
             retriever=vectorstore.as_retriever(search_kwargs={"k": top_k}),
-            chain_type_kwargs={"prompt": self.rag_prompt}
+            chain_type_kwargs={"prompt": self.rag_prompt},
+            return_source_documents=True,
         )
 
     def get_relevance_score(self, query):
@@ -141,22 +146,22 @@ Answer:"""
         if relevance_score >= self.relevance_threshold:
             logger.info(f"✅ High relevance ({relevance_score:.3f}). Executing RAG.")
             result["mode"] = "RAG"
-            
-            # Get documents for display
-            docs = self.vectorstore.similarity_search(question, k=self.top_k)
-            result["retrieved_docs"] = docs
-            
-            # Execute Chain
+
+            # Execute Chain ONCE: it returns the answer AND the source docs the
+            # LLM actually saw. We use those same docs to render provenance in
+            # the UI, so users see exactly what the model was grounded on.
             try:
-                rag_response = self.rag_chain.invoke({"query": question})["result"]
+                chain_response = self.rag_chain.invoke({"query": question})
+                rag_response = chain_response["result"]
                 result["answer"] = rag_response
-                
+                result["retrieved_docs"] = chain_response.get("source_documents", [])
+
                 # Check for "Information not found" response from LLM
                 if "Information not found" in rag_response or ("provided context" in rag_response and "does not contain" in rag_response):
                     result["mode"] = "NO_ANSWER_IN_DOCS"
                     result["answer"] = "No Answer: The relevant content is not found in RAG documents."
                     logger.info("❌ Documents found but LLM could not find answer in context.")
-                    
+
             except Exception as e:
                 logger.error(f"RAG Chain execution failed: {str(e)}")
                 result["answer"] = "Error processing request."
