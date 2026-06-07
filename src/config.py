@@ -10,8 +10,11 @@ LOGS_DIR = os.path.join(BASE_DIR, "logs")
 DOCS_FOLDER = os.path.join(BASE_DIR, "data")
 
 # LLM Settings: Cloud demo mode (OpenAI API)
-# Default is aligned with trading-advisor deployment strategy.
-LLM_MODEL = os.getenv("LLM_MODEL", "gpt-4o-mini")
+# Default model is GPT-5-mini (OpenAI API).
+LLM_MODEL = os.getenv("LLM_MODEL", "gpt-5-mini")
+# NOTE: GPT-5 family models (e.g., gpt-5-mini) only support the default
+# temperature (1.0). The value below is still used for older models such as
+# gpt-4o-mini; rag_engine.create_llm() decides whether to actually send it.
 LLM_TEMPERATURE = float(os.getenv("LLM_TEMPERATURE", "0.2"))
 # Embedding Settings
 # IMPORTANT: Must match the embedding model used to build the persisted ChromaDB.

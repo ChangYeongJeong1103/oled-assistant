@@ -16,14 +16,41 @@ from utils import logger
 def create_llm(model_name: str, temperature: float):
     """
     Create OpenAI-compatible chat model for cloud deployment.
-    
+
     Args:
-        model_name: OpenAI model name (e.g., "gpt-4o-mini")
+        model_name: OpenAI model name (e.g., "gpt-5-mini", "gpt-4o-mini")
         temperature: Response diversity (0.0 = deterministic, 1.0 = creative)
-    
+
     Returns:
         ChatOpenAI: LLM instance using OPENAI_API_KEY from environment
+
+    Note:
+        GPT-5 family models (gpt-5, gpt-5-mini, gpt-5-nano, ...) only accept the
+        default temperature (1.0). They are also "reasoning" models that think
+        before answering, which makes them slow by default. For a document
+        grounded RAG task we don't need deep reasoning, so we lower the
+        reasoning effort to "minimal" to get near gpt-4o-mini latency while
+        keeping the newer model's stronger instruction-following.
     """
+    # Detect GPT-5 family models, which behave differently from older models.
+    is_gpt5_family = model_name.lower().startswith("gpt-5")
+
+    if is_gpt5_family:
+        # 1) Pin temperature to the ONLY value GPT-5 models allow (1.0).
+        #    We set it explicitly (instead of omitting it) because some
+        #    langchain-openai versions auto-send their own default temperature
+        #    (e.g., 0.7) when it is not provided, which GPT-5 would reject.
+        # 2) reasoning_effort="minimal" tells GPT-5 to skip most of its hidden
+        #    "thinking" step. This is the single biggest latency win for RAG.
+        #    Passed via model_kwargs so it works on the pinned langchain-openai
+        #    version, which has no dedicated reasoning_effort argument.
+        return ChatOpenAI(
+            model=model_name,
+            temperature=1.0,
+            model_kwargs={"reasoning_effort": "minimal"},
+        )
+
+    # Older models (e.g., gpt-4o-mini) still support a custom temperature.
     return ChatOpenAI(
         model=model_name,
         temperature=temperature,

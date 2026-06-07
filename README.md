@@ -1,7 +1,7 @@
 # AI-Driven OLED Assistant
 
 ![Mistral](https://img.shields.io/badge/Model-Mistral_Nemo_12B-purple.svg)
-![GPT-4o-mini](https://img.shields.io/badge/Model-GPT--4o--mini-10a37f.svg)
+![GPT-5-mini](https://img.shields.io/badge/Model-GPT--5--mini-10a37f.svg)
 ![RAG](https://img.shields.io/badge/RAG-Strict_Document--Only-green.svg)
 ![Deployment](https://img.shields.io/badge/Deployment-On--Prem_Local-orange.svg)
 ![Status](https://img.shields.io/badge/Status-Production_Ready-success.svg)

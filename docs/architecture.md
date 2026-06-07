@@ -51,6 +51,6 @@ graph TD
 
 ### 4. LLM Serving Strategy (Cloud + Local)
 - **Role**: Generates natural language answers
-- **Cloud track (public deployment)**: GPT-4o-mini via OpenAI API (`OPENAI_API_KEY`) for GCP deployment and low-latency serving.
+- **Cloud track (public deployment)**: GPT-5-mini via OpenAI API (`OPENAI_API_KEY`) for GCP deployment and low-latency serving.
 - **Internal track (private deployment)**: Mistral-Nemo via local/internal serving stack (privacy-first operation).
 - **Configuration**: Temperature = 0.2 (balanced for factual responses while preserving readability).
