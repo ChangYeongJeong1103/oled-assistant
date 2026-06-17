@@ -16,15 +16,16 @@ This tool allows engineers to ask technical questions about OLED physics, fabric
 - **Strict RAG for Experts**: Designed for PhD-level engineers. It answers **ONLY** using verified internal technical documents, strictly avoiding generic internet-based knowledge (blogs, Wikipedia) to ensure high-precision insights that Google cannot provide.
 - **Secure & Local**: Runs entirely on your machine using **Mistral-Nemo** via Ollama. No data leaves the laptop.
 - **Production-Style Vector DB Lifecycle**: In cloud deployment, the image ships with a prebuilt `chroma_db` for fast startup. The app only rebuilds from `data/` when the DB is missing or incompatible.
+- **Wide Retrieval + BGE Reranking**: Retrieves a wider candidate pool, filters by similarity threshold, then uses a `BAAI/bge-reranker-base` cross-encoder to select the strongest final documents for the LLM.
 - **Commercial-Grade Accuracy on Local Hardware**: Through rigorous prompt optimization and hyperparameter tuning, we achieved answer quality comparable to cloud-based commercial models (GPT-4o-mini), validated by PhD-level experts.
 
 ---
 
 ## Screenshots
 
-| RAG Mode - Document-based Answer | Multi-turn Conversation |
-|:---:|:---:|
-| ![Example RAG](screenshot/Example_RAG.png) | ![Example NoAnswer OffTopic](screenshot/Example_NoAnswer_OffTopic.png) |
+| RAG Mode - Document-based Answer |
+|:---:|
+| ![Example RAG](screenshot/Example_RAG.png) |
 
 *The assistant provides detailed, document-grounded answers with relevance scores and response times.*
 
@@ -89,7 +90,7 @@ The result: PhD-level experts validated that the optimized Mistral responses are
 ### Architecture Choices
 - **App Interface**: `Streamlit` was chosen for rapid prototyping and its native support for chat interfaces (`st.chat_message`).
 - **LLM Serving**: `Ollama` enables **Mistral-Nemo 12B** to run locally, ensuring **100% data privacy** for sensitive OLED technical documents.
-- **RAG Orchestration**: `LangChain` provides the RAG chain (`RetrievalQA`) for document retrieval and answer generation, while custom sigmoid-based relevance scoring handles strict filtering.
+- **RAG Orchestration**: Custom retrieval logic performs wide vector search, similarity-threshold filtering, optional BGE cross-encoder reranking, and sigmoid-based relevance gating before answer generation.
 - **Modular Data Pipeline**: `src/document_pipeline.py` isolates document loading, chunking, embedding, and ChromaDB lifecycle management from `src/rag_engine.py`.
 - **Vector Database**: `ChromaDB` is prebuilt into the cloud image for low cold-start latency, then reused at runtime ("rebuild only if missing/incompatible").
 
@@ -97,17 +98,24 @@ The result: PhD-level experts validated that the optimized Mistral responses are
 
 ## System Architecture
 
-The system follows **Strict RAG** logic: queries are first scored for relevance, then answered only from documents.
+The system follows **Strict RAG** logic with a modern retrieval pipeline: it first retrieves a wider candidate pool, filters weak matches, reranks the survivors, and answers only from the strongest final documents.
 
 ```mermaid
 graph TD
     User[User Query] --> UI[Streamlit Interface]
-    UI --> Scorer{Relevance Score}
+    UI --> VectorSearch[Vector Search<br/>Candidate Top-K = 20]
+    VectorSearch --> Filter[Similarity Threshold Filter]
+    Filter --> Scorer{Relevance Score}
     
     Scorer -->|"≥ 0.60"| RAG[🟢 RAG Mode]
     Scorer -->|"< 0.60"| Reject[🔴 OFF_TOPIC Rejection]
     
-    RAG --> Check{Answer Found<br/>in Documents?}
+    RAG --> Rerank{More than Final Top-N?}
+    Rerank -->|Yes| CrossEncoder[BGE Cross-Encoder Reranker]
+    Rerank -->|No| FinalDocs[Final Documents]
+    CrossEncoder --> FinalDocs
+    
+    FinalDocs --> Check{Answer Found<br/>in Documents?}
     
     Check -->|Yes| Answer[🟢 Document-Based Answer]
     Check -->|No| NoAnswer[🟠 NO_ANSWER_IN_DOCS]
@@ -124,6 +132,9 @@ graph TD
 ```
 
 **Key Decision Points:**
+- **Candidate Top-K (20)**: Retrieves a wider pool first to reduce missed relevant chunks
+- **Similarity Threshold (0.50)**: Keeps all candidate documents that are similar enough to the query
+- **Final Top-N (4)**: Sends only the strongest reranked documents to the LLM
 - **Relevance Threshold (0.60)**: Queries below this are automatically rejected as off-topic
 - **Document Check**: Even high-relevance queries may return "No Answer" if documents lack the specific information
 

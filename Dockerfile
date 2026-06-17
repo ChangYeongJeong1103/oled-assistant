@@ -5,7 +5,8 @@ FROM python:3.11-slim
 # ================================
 ENV PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
-    TOKENIZERS_PARALLELISM=false
+    TOKENIZERS_PARALLELISM=false \
+    HF_HOME=/app/.cache/huggingface
 
 WORKDIR /app
 
@@ -19,8 +20,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # ================================
 # Copy requirements first for better Docker layer caching.
 COPY requirements.txt ./requirements.txt
+
+# Cloud Run is CPU-based here. Preinstall the CPU-only PyTorch wheel before
+# sentence-transformers so pip does not pull large CUDA/NVIDIA dependencies.
+RUN pip install --upgrade pip && \
+    pip install --index-url https://download.pytorch.org/whl/cpu torch
+
 RUN pip install --upgrade pip && \
     pip install -r requirements.txt
+
+# Pre-download model weights during the image build so Cloud Run does not
+# spend cold-start time downloading them after a user opens the live demo.
+RUN python -c "from sentence_transformers import SentenceTransformer, CrossEncoder; SentenceTransformer('BAAI/bge-m3'); CrossEncoder('BAAI/bge-reranker-base')"
 
 # ================================
 # Application files

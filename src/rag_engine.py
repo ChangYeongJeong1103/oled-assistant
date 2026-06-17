@@ -5,8 +5,8 @@ Aligned with notebooks/OLED_assistant_v3_final.ipynb
 import math
 
 from langchain_openai import ChatOpenAI
-from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
+from sentence_transformers import CrossEncoder
 
 import config
 from document_pipeline import create_embeddings_model, get_or_create_vectorstore
@@ -88,22 +88,43 @@ class StrictRAGAssistant:
         vectorstore,
         llm_model,
         relevance_threshold,
-        top_k,
+        candidate_top_k,
+        min_document_similarity,
+        final_top_n,
+        reranker_enabled,
+        reranker_model,
         temperature,
         sigmoid_midpoint,
         sigmoid_steepness,
     ):
         """
-        Signature aligned with OLED_assistant_v3_final.ipynb.
+        Initialize the retrieval, reranking, and generation components.
         """
         self.vectorstore = vectorstore
         self.relevance_threshold = relevance_threshold
-        self.top_k = top_k
+        self.candidate_top_k = candidate_top_k
+        self.min_document_similarity = min_document_similarity
+        self.final_top_n = final_top_n
         self.sigmoid_midpoint = sigmoid_midpoint
         self.sigmoid_steepness = sigmoid_steepness
 
         # Create cloud LLM (OpenAI API)
         self.llm = create_llm(model_name=llm_model, temperature=temperature)
+
+        # Cross-encoder reranker scores each (query, document) pair more
+        # precisely than embedding similarity. It runs only when enough
+        # documents pass the similarity filter.
+        self.reranker = None
+        if reranker_enabled:
+            try:
+                self.reranker = CrossEncoder(reranker_model)
+                logger.info("Loaded reranker model: %s", reranker_model)
+            except Exception as exc:  # noqa: BLE001
+                logger.warning(
+                    "Failed to load reranker model '%s'. Falling back to similarity ranking: %s",
+                    reranker_model,
+                    str(exc),
+                )
 
         # Strict RAG prompt
         rag_prompt_template = """You are an OLED Display Technical Assistant.
@@ -126,62 +147,173 @@ Answer:"""
             template=rag_prompt_template,
             input_variables=["context", "question"]
         )
-        
-        # NOTE: return_source_documents=True lets the chain return BOTH the
-        # generated answer and the retrieved Document objects in a single call.
-        # This avoids a redundant second similarity_search just to display
-        # provenance in the UI.
-        self.rag_chain = RetrievalQA.from_chain_type(
-            llm=self.llm,
-            chain_type="stuff",
-            retriever=vectorstore.as_retriever(search_kwargs={"k": top_k}),
-            chain_type_kwargs={"prompt": self.rag_prompt},
-            return_source_documents=True,
-        )
 
-    def get_relevance_score(self, query):
-        """Calculate relevance score using sigmoid transformation."""
-        docs_with_scores = self.vectorstore.similarity_search_with_score(query, k=self.top_k)
+    @staticmethod
+    def _distance_to_similarity(distance) -> float:
+        """
+        Convert Chroma's L2 distance into a similarity score.
+
+        The BGE embeddings are stored with normalize_embeddings=True, so this
+        conversion approximates cosine similarity and keeps scores in [0, 1].
+        """
+        sim = 1.0 - (float(distance) * float(distance)) / 2.0
+        return max(0.0, min(1.0, sim))
+
+    def retrieve_candidates(self, query):
+        """Retrieve a wide candidate pool and attach similarity scores."""
+        docs_with_scores = self.vectorstore.similarity_search_with_score(
+            query,
+            k=self.candidate_top_k,
+        )
         if not docs_with_scores:
+            return []
+
+        candidates = []
+        for doc, distance in docs_with_scores:
+            candidates.append({
+                "doc": doc,
+                "distance": float(distance),
+                "similarity": self._distance_to_similarity(distance),
+            })
+
+        return candidates
+
+    def get_relevance_score(self, candidates):
+        """Calculate query relevance from the strongest retrieved candidates."""
+        if not candidates:
             return 0.0
-        
-        # Chroma returns L2 distance (lower is better). Convert to similarity.
-        # For normalized embeddings, L2 distance relates to cosine similarity:
-        #   sim = 1 - (d^2)/2  (then clamp to [0, 1])
-        scores = []
-        for _, d in docs_with_scores:
-            sim = 1.0 - (float(d) * float(d)) / 2.0
-            scores.append(max(0.0, min(1.0, sim)))
+
+        # Keep the old intuition: the final gate is based on the strongest few
+        # documents, not every low-signal candidate in the wider pool.
+        top_candidates = candidates[:self.final_top_n]
+        scores = [candidate["similarity"] for candidate in top_candidates]
         avg_score = sum(scores) / len(scores)
-        
-        # Sigmoid transformation
+
         sigmoid_score = 1 / (1 + math.exp(-self.sigmoid_steepness * (avg_score - self.sigmoid_midpoint)))
         return sigmoid_score
 
+    def filter_candidates_by_similarity(self, candidates):
+        """Keep only documents that meet the minimum similarity threshold."""
+        return [
+            candidate
+            for candidate in candidates
+            if candidate["similarity"] >= self.min_document_similarity
+        ]
+
+    def rerank_candidates(self, query, candidates):
+        """
+        Rerank candidate documents with a cross-encoder.
+
+        If there are only FINAL_TOP_N or fewer candidates, reranking is skipped
+        because all surviving documents will be sent to the LLM anyway.
+        """
+        if len(candidates) <= self.final_top_n:
+            return candidates, False
+
+        if self.reranker is None:
+            sorted_candidates = sorted(
+                candidates,
+                key=lambda candidate: candidate["similarity"],
+                reverse=True,
+            )
+            return sorted_candidates[:self.final_top_n], False
+
+        try:
+            pairs = [
+                (query, candidate["doc"].page_content)
+                for candidate in candidates
+            ]
+            reranker_scores = self.reranker.predict(pairs)
+
+            for candidate, score in zip(candidates, reranker_scores):
+                candidate["reranker_score"] = float(score)
+
+            reranked_candidates = sorted(
+                candidates,
+                key=lambda candidate: candidate["reranker_score"],
+                reverse=True,
+            )
+            return reranked_candidates[:self.final_top_n], True
+
+        except Exception as exc:  # noqa: BLE001
+            logger.warning(
+                "Reranking failed. Falling back to similarity ranking: %s",
+                str(exc),
+            )
+            sorted_candidates = sorted(
+                candidates,
+                key=lambda candidate: candidate["similarity"],
+                reverse=True,
+            )
+            return sorted_candidates[:self.final_top_n], False
+
+    @staticmethod
+    def build_context(final_candidates):
+        """Build the text context that will be passed to the LLM."""
+        context_parts = []
+        for index, candidate in enumerate(final_candidates, 1):
+            doc = candidate["doc"]
+            source = doc.metadata.get("source", "Unknown source")
+            page = doc.metadata.get("page")
+            source_label = source if page is None else f"{source} (page {page + 1})"
+
+            context_parts.append(
+                f"[Document {index}]\n"
+                f"Source: {source_label}\n"
+                f"Similarity: {candidate['similarity']:.3f}\n"
+                f"Content:\n{doc.page_content}"
+            )
+
+        return "\n\n---\n\n".join(context_parts)
+
+    def generate_answer(self, question, final_candidates):
+        """Generate an answer from the reranked final context."""
+        context = self.build_context(final_candidates)
+        prompt = self.rag_prompt.format(context=context, question=question)
+        response = self.llm.invoke(prompt)
+        return getattr(response, "content", str(response))
+
     def query(self, question):
         """Process query through Strict RAG logic."""
-        relevance_score = self.get_relevance_score(question)
+        candidates = self.retrieve_candidates(question)
+        relevance_score = self.get_relevance_score(candidates)
+        filtered_candidates = self.filter_candidates_by_similarity(candidates)
         
         result = {
             "answer": None,
             "mode": None,
             "relevance_score": relevance_score,
-            "retrieved_docs": []
+            "retrieved_docs": [],
+            "retrieval_metadata": {
+                "candidate_top_k": self.candidate_top_k,
+                "candidate_count": len(candidates),
+                "similarity_threshold": self.min_document_similarity,
+                "filtered_count": len(filtered_candidates),
+                "final_top_n": self.final_top_n,
+                "final_doc_count": 0,
+                "reranker_used": False,
+            },
         }
         
         # Check relevance threshold
-        if relevance_score >= self.relevance_threshold:
+        if relevance_score >= self.relevance_threshold and filtered_candidates:
             logger.info(f"✅ High relevance ({relevance_score:.3f}). Executing RAG.")
             result["mode"] = "RAG"
 
-            # Execute Chain ONCE: it returns the answer AND the source docs the
-            # LLM actually saw. We use those same docs to render provenance in
-            # the UI, so users see exactly what the model was grounded on.
+            final_candidates, reranker_used = self.rerank_candidates(
+                question,
+                filtered_candidates,
+            )
+            result["retrieval_metadata"]["reranker_used"] = reranker_used
+            result["retrieval_metadata"]["final_doc_count"] = len(final_candidates)
+            result["retrieved_docs"] = [
+                candidate["doc"]
+                for candidate in final_candidates
+            ]
+
             try:
-                chain_response = self.rag_chain.invoke({"query": question})
-                rag_response = chain_response["result"]
+                rag_response = self.generate_answer(question, final_candidates)
                 result["answer"] = rag_response
-                result["retrieved_docs"] = chain_response.get("source_documents", [])
 
                 # Check for "Information not found" response from LLM
                 if "Information not found" in rag_response or ("provided context" in rag_response and "does not contain" in rag_response):
@@ -190,7 +322,7 @@ Answer:"""
                     logger.info("❌ Documents found but LLM could not find answer in context.")
 
             except Exception as e:
-                logger.error(f"RAG Chain execution failed: {str(e)}")
+                logger.error(f"RAG generation failed: {str(e)}")
                 result["answer"] = "Error processing request."
                 
         else:

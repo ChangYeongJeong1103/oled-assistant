@@ -9,6 +9,7 @@ Our **Strict RAG** architecture is designed to prevent this. It ensures answers 
 - **Internal Documents as the Absolute Truth**: The model must prioritize the provided context above all else.
 - **No Hallucination**: It must never invent numbers, conditions, or citations not present in the documents.
 - **Zero Tolerance for Generic Fillers**: If the internal documents do not contain the answer, the system must explicitly state "Information not found" rather than guessing based on general training data.
+- **Wide Retrieval, Compact Context**: The system retrieves a wider candidate pool first, then filters and reranks candidates so the LLM only sees the strongest final documents.
 
 ## 3-Tier Decision Logic
 
@@ -36,6 +37,17 @@ We apply a **Sigmoid Transformation** to spread these scores out. This amplifies
 
 $$ Score = \frac{1}{1 + e^{-k(x - x_0)}} $$
 
-- **$x$**: Average similarity of top-k documents.
+- **$x$**: Average similarity of the strongest final retrieval candidates.
 - **$x_0$ (Midpoint)**: 0.68. The center of the current decision boundary.
 - **$k$ (Steepness)**: 10. Controls how aggressively we separate "relevant" from "irrelevant".
+
+## Retrieval and Reranking Pipeline
+
+The current pipeline uses a two-stage retrieval design:
+
+1. **Wide vector search**: ChromaDB retrieves up to `CANDIDATE_TOP_K = 20` candidates using BGE embeddings.
+2. **Similarity filtering**: The engine keeps all candidates with `similarity >= MIN_DOCUMENT_SIMILARITY`.
+3. **BGE reranking**: If more than `FINAL_TOP_N = 4` candidates survive, `BAAI/bge-reranker-base` reranks them with query-document pair scoring.
+4. **Final context**: The strongest final documents are passed to the LLM as the answer context.
+
+This improves recall compared with fixed top-4 retrieval while keeping the final LLM context compact and high precision.

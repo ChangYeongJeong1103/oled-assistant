@@ -75,7 +75,11 @@ def get_assistant():
         vectorstore=vectorstore,
         llm_model=config.LLM_MODEL,
         relevance_threshold=config.RELEVANCE_THRESHOLD,
-        top_k=config.TOP_K_DOCUMENTS,
+        candidate_top_k=config.CANDIDATE_TOP_K,
+        min_document_similarity=config.MIN_DOCUMENT_SIMILARITY,
+        final_top_n=config.FINAL_TOP_N,
+        reranker_enabled=config.RERANKER_ENABLED,
+        reranker_model=config.RERANKER_MODEL,
         temperature=config.LLM_TEMPERATURE,
         sigmoid_midpoint=config.SIGMOID_MIDPOINT,
         sigmoid_steepness=config.SIGMOID_STEEPNESS,
@@ -99,12 +103,13 @@ with st.sidebar:
     st.markdown("**System Status**")
     st.success(f"Model: {config.LLM_MODEL}")
     st.info(f"Strict Threshold = {config.RELEVANCE_THRESHOLD}")
+    st.info(f"Retrieval: candidates={config.CANDIDATE_TOP_K}, final={config.FINAL_TOP_N}")
     st.markdown("---")
     st.markdown("### User Guide")
     st.markdown("""
     1. Ask questions about **OLED physics, materials, or fabrication**.
     2. The system checks **relevance** first.
-    3. If relevant, it uses documents as the **PRIMARY** source and may fill in missing logical steps.
+    3. If relevant, it filters candidates by similarity, reranks them, and uses documents as the **PRIMARY** source.
     """)
 
 # Initialize chat history (must come before any UI that reads it).
@@ -284,6 +289,7 @@ if prompt:
             "mode": mode,
             "relevance_score": score,
             "response_time": f"{elapsed:.2f}s",
+            "retrieval": result.get("retrieval_metadata", {}),
         }
         live_docs = result["retrieved_docs"] if mode == "RAG" else None
 

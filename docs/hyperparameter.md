@@ -7,7 +7,8 @@ We optimized the RAG pipeline using a grid-search approach, evaluating performan
 All parameters were finalized and validated in `OLED_Assistant_v6_GCP.ipynb`, where we confirmed strong relevance separation and stable Strict RAG behavior.
 - **Embedding**: `BAAI/bge-m3`
 - **Chunking**: `CHUNK_SIZE = 3000`, `CHUNK_OVERLAP = 500`
-- **Retrieval**: `TOP_K_DOCUMENTS = 4`
+- **Retrieval**: `CANDIDATE_TOP_K = 20`, `MIN_DOCUMENT_SIMILARITY = 0.50`, `FINAL_TOP_N = 4`
+- **Reranker**: `BAAI/bge-reranker-base`
 - **Relevance gate**: `RELEVANCE_THRESHOLD = 0.6`, `SIGMOID_MIDPOINT = 0.68`, `SIGMOID_STEEPNESS = 10`
 
 ### 1. Chunking Strategy
@@ -29,6 +30,13 @@ We tuned the steepness of the relevance curve to reduce false positives
   - **0.60**: "Sweet spot" for balancing precision and recall
   - **< 0.60**: Starts to accept generic or slightly irrelevant questions.
   - **> 0.60**: Starts to reject legitimate OLED questions just because they were phrased differently
+
+### 4. Retrieval and Reranking
+- **Candidate pool**: `CANDIDATE_TOP_K = 20`
+- **Similarity filter**: `MIN_DOCUMENT_SIMILARITY = 0.50`
+- **Final context size**: `FINAL_TOP_N = 4`
+- **Reranker**: `BAAI/bge-reranker-base`
+- **Reasoning**: Fixed top-4 retrieval can miss useful supporting chunks. The updated pipeline first retrieves a wider candidate pool, keeps all sufficiently similar documents, and then uses a BGE reranker to choose the strongest final context.
   
 ## Experiment Data
 Raw experiment logs and CSV results are available in the `experiments/hyperparameters` directory.

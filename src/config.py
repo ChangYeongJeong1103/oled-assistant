@@ -24,7 +24,22 @@ EMBEDDING_BATCH_SIZE = 16
 # RAG Settings
 CHUNK_SIZE = 3000
 CHUNK_OVERLAP = 500
-TOP_K_DOCUMENTS = 4
+
+# Retrieval Settings
+# Step 1: retrieve a wider candidate pool from ChromaDB.
+# Step 2: keep only documents with enough embedding similarity.
+# Step 3: rerank the surviving documents and send only FINAL_TOP_N to the LLM.
+CANDIDATE_TOP_K = int(os.getenv("CANDIDATE_TOP_K", "20"))
+MIN_DOCUMENT_SIMILARITY = float(os.getenv("MIN_DOCUMENT_SIMILARITY", "0.50"))
+FINAL_TOP_N = int(os.getenv("FINAL_TOP_N", "4"))
+RERANKER_ENABLED = os.getenv("RERANKER_ENABLED", "true").lower() == "true"
+RERANKER_MODEL = os.getenv(
+    "RERANKER_MODEL",
+    "BAAI/bge-reranker-base",
+)
+
+# Legacy alias used by older notebooks/docs. The app now uses FINAL_TOP_N.
+TOP_K_DOCUMENTS = FINAL_TOP_N
 
 # Strict RAG Thresholds
 RELEVANCE_THRESHOLD = 0.60
