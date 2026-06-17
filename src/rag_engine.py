@@ -3,6 +3,7 @@ Strict RAG Engine for OLED Assistant
 Aligned with notebooks/OLED_assistant_v3_final.ipynb
 """
 import math
+import os
 
 from langchain_openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
@@ -255,7 +256,11 @@ Answer:"""
             doc = candidate["doc"]
             source = doc.metadata.get("source", "Unknown source")
             page = doc.metadata.get("page")
-            source_label = source if page is None else f"{source} (page {page + 1})"
+            # Keep prompt provenance useful without sending local/container paths
+            # to the LLM provider.
+            source_label = os.path.basename(source) if source else "Unknown source"
+            if page is not None:
+                source_label = f"{source_label} (page {page + 1})"
 
             context_parts.append(
                 f"[Document {index}]\n"

@@ -61,4 +61,4 @@ graph TD
 - **Role**: Generates natural language answers
 - **Cloud track (public deployment)**: GPT-5-mini via OpenAI API (`OPENAI_API_KEY`) for GCP deployment and low-latency serving.
 - **Internal track (private deployment)**: Mistral-Nemo via local/internal serving stack (privacy-first operation).
-- **Configuration**: Temperature = 0.2 (balanced for factual responses while preserving readability).
+- **Configuration**: GPT-5-mini uses its required default temperature (`1.0`) with `reasoning_effort="minimal"` for lower RAG latency.
