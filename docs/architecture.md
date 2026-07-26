@@ -11,26 +11,34 @@ graph TD
   User["User / Engineer"] -->|Asks Question| UI["Streamlit Interface"]
   UI -->|Query| Engine["StrictRAG Engine"]
 
-  Engine -->|Wide Similarity Search| DB["ChromaDB"]
-  DB -->|Candidate Docs and Scores| Filter["Similarity Threshold Filter"]
+  Engine -->|Wide Vector Search, k=20| DB["ChromaDB"]
+  DB -->|Distances| Relevance["Sigmoid Relevance per Document"]
 
-  Filter -->|Strong Candidates| Score{"Relevance Score"}
-  Score -->|Score < Threshold| OffTopic["Reject: Off Topic"]
-  Score -->|Score >= Threshold| Rerank{"Candidates > Final Top-N?"}
+  Relevance --> Filter{"relevance >= 0.50 ?"}
 
+  Filter -->|"No document survives"| Gate{"max relevance < 0.25 ?"}
+  Gate -->|Yes| OffTopic["Reject: Off Topic (no LLM call)"]
+  Gate -->|No| NoAns["Return: No Answer in Docs"]
+
+  Filter -->|"Survivors"| Rerank{"Survivors > Final Top-N ?"}
   Rerank -->|Yes| CrossEncoder["BGE Cross-Encoder Reranker"]
   Rerank -->|No| FinalDocs["Final Documents"]
   CrossEncoder --> FinalDocs
 
-  FinalDocs -->|Prompt Context| Generation["LLM Generation"]
-  Generation -->|Check for No Info| Check{"Contains Info"}
-  Check -->|No| NoAns["Return: No Answer in Docs"]
-  Check -->|Yes| Final["Return: Technical Answer"]
+  FinalDocs -->|Prompt Context| Generation["LLM Generation (JSON envelope)"]
+  Generation --> Check{"answer_found ?"}
+  Check -->|false| NoAns
+  Check -->|true| Final["Return: Technical Answer"]
 
   OffTopic -->|Display| UI
   NoAns -->|Display| UI
   Final -->|Display| UI
 ```
+
+> **One score, one scale.** Every threshold above is compared against
+> `relevance = sigmoid(cosine similarity)`. Raw cosine similarity is never
+> compared against a threshold, because scientific text clusters too tightly in
+> raw space to make a reliable decision axis.
 
 ## Component Breakdown
 
@@ -50,12 +58,25 @@ graph TD
 - **Role**: The brain of the application. It decides *whether* to answer
 - **Algorithm**:
   - Retrieves a wider candidate pool (`CANDIDATE_TOP_K = 20`)
-  - Converts ChromaDB distances into similarity scores
-  - Keeps candidates above `MIN_DOCUMENT_SIMILARITY = 0.50`
-  - Applies a `BAAI/bge-reranker-base` cross-encoder reranker when more than `FINAL_TOP_N = 4` candidates survive
-  - Calculates a **Relevance Score** using a Sigmoid function
-  - If Score < `0.60` (configurable), the query is rejected immediately
-  - If accepted, it prompts the LLM to use *only* the provided context
+  - Converts every ChromaDB distance straight into a **relevance** score
+    (cosine similarity followed by a sigmoid). The intermediate raw similarity
+    never escapes the conversion helper
+  - Keeps the documents above `MIN_DOC_RELEVANCE = 0.50`. This is the only knob
+    that controls which documents reach the LLM
+  - Applies a `BAAI/bge-reranker-base` cross-encoder reranker when more than
+    `FINAL_TOP_N = 4` documents survive
+  - When *nothing* survives, `OFF_TOPIC_THRESHOLD = 0.25` picks the rejection
+    message: below it the question is out of domain, above it the question is
+    in domain but uncovered by our corpus
+  - If accepted, it prompts the LLM to use *only* the provided context and to
+    report grounding through an explicit `answer_found` flag
+
+> **Why the gate is loose while the filter is strict.** The two thresholds
+> answer different questions. The filter asks "is this document worth showing
+> the LLM?", so it guards answer quality. The gate only asks "was this question
+> ever about OLED?", so it just labels the rejection. Measured on the current
+> corpus, off-topic queries peak at `0.044` relevance while on-topic queries
+> start at `0.635`, which leaves a wide margin for a loose gate.
 
 ### 4. LLM Serving Strategy (Cloud + Local)
 - **Role**: Generates natural language answers

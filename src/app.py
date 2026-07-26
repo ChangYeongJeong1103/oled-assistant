@@ -74,9 +74,9 @@ def get_assistant():
     return StrictRAGAssistant(
         vectorstore=vectorstore,
         llm_model=config.LLM_MODEL,
-        relevance_threshold=config.RELEVANCE_THRESHOLD,
+        off_topic_threshold=config.OFF_TOPIC_THRESHOLD,
         candidate_top_k=config.CANDIDATE_TOP_K,
-        min_document_similarity=config.MIN_DOCUMENT_SIMILARITY,
+        min_doc_relevance=config.MIN_DOC_RELEVANCE,
         final_top_n=config.FINAL_TOP_N,
         reranker_enabled=config.RERANKER_ENABLED,
         reranker_model=config.RERANKER_MODEL,
@@ -102,14 +102,17 @@ with st.sidebar:
     st.markdown("---")
     st.markdown("**System Status**")
     st.success(f"Model: {config.LLM_MODEL}")
-    st.info(f"Strict Threshold = {config.RELEVANCE_THRESHOLD}")
     st.info(f"Retrieval: candidates={config.CANDIDATE_TOP_K}, final={config.FINAL_TOP_N}")
+    st.info(f"Doc relevance filter ≥ {config.MIN_DOC_RELEVANCE}")
+    st.info(f"Off-topic gate < {config.OFF_TOPIC_THRESHOLD}")
     st.markdown("---")
     st.markdown("### User Guide")
     st.markdown("""
     1. Ask questions about **OLED physics, materials, or fabrication**.
-    2. The system checks **relevance** first.
-    3. If relevant, it filters candidates by similarity, reranks them, and uses documents as the **PRIMARY** source.
+    2. Every retrieved document gets a **relevance** score (sigmoid-transformed).
+    3. Documents above the filter are **reranked**, and the strongest ones become
+       the **PRIMARY** source for the answer.
+    4. If no document clears the filter, the system says so instead of guessing.
     """)
 
 # Initialize chat history (must come before any UI that reads it).
@@ -269,13 +272,18 @@ if prompt:
         elif mode == "OFF_TOPIC":
             status_color = "red"
             icon = "🔴"
-            mode_text = "Off-Topic Rejection (Low Relevance, Auto-Rejected)"
+            mode_text = "Off-Topic Rejection (Auto-Rejected, No LLM Call)"
+        elif mode == "ERROR":
+            status_color = "gray"
+            icon = "⚠️"
+            mode_text = "Generation Error"
         else:
             status_color = "gray"
             icon = "⚪"
             mode_text = f"Unknown mode: {mode}"
 
-        status_text = f"{icon} **{mode_text}** | Relevance Score: {score:.3f}"
+        # `score` is the relevance of the single strongest retrieved document.
+        status_text = f"{icon} **{mode_text}** | Top Relevance: {score:.3f}"
             
         # Display Answer
         message_placeholder.markdown(
@@ -287,7 +295,6 @@ if prompt:
         # saved-history entry stay in perfect sync.
         live_metadata = {
             "mode": mode,
-            "relevance_score": score,
             "response_time": f"{elapsed:.2f}s",
             "retrieval": result.get("retrieval_metadata", {}),
         }

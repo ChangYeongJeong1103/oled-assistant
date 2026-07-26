@@ -2,6 +2,7 @@
 Strict RAG Engine for OLED Assistant
 Aligned with notebooks/OLED_assistant_v3_final.ipynb
 """
+import json
 import math
 import os
 
@@ -88,9 +89,9 @@ class StrictRAGAssistant:
         self,
         vectorstore,
         llm_model,
-        relevance_threshold,
+        off_topic_threshold,
         candidate_top_k,
-        min_document_similarity,
+        min_doc_relevance,
         final_top_n,
         reranker_enabled,
         reranker_model,
@@ -102,9 +103,9 @@ class StrictRAGAssistant:
         Initialize the retrieval, reranking, and generation components.
         """
         self.vectorstore = vectorstore
-        self.relevance_threshold = relevance_threshold
+        self.off_topic_threshold = off_topic_threshold
         self.candidate_top_k = candidate_top_k
-        self.min_document_similarity = min_document_similarity
+        self.min_doc_relevance = min_doc_relevance
         self.final_top_n = final_top_n
         self.sigmoid_midpoint = sigmoid_midpoint
         self.sigmoid_steepness = sigmoid_steepness
@@ -127,78 +128,92 @@ class StrictRAGAssistant:
                     str(exc),
                 )
 
-        # Strict RAG prompt
+        # Strict RAG prompt.
+        #
+        # The model reports whether the context actually supported an answer
+        # through an explicit `answer_found` flag instead of a magic phrase.
+        # Detecting refusals by string matching used to break whenever the
+        # model reworded itself ("I couldn't find...", "The documents omit...").
+        # The flag costs no extra LLM call, so latency is unchanged.
         rag_prompt_template = """You are an OLED Display Technical Assistant.
 Answer the question using the provided context documents as your PRIMARY source.
 
 RULES:
 1. Always read the Context carefully and base your answer as much as possible on the Context.
 2. If the Context contains partial but relevant information, you MAY use your own OLED/physics knowledge to fill in missing logical steps.
-3. ONLY when the Context is clearly irrelevant or provides almost no signal, say: "Information not found in the provided OLED documents."
-4. Never contradict the facts given in the Context.
-5. Do NOT hallucinate specific numbers, experimental conditions, or paper titles that are not supported by the Context.
+3. Never contradict the facts given in the Context.
+4. Do NOT hallucinate specific numbers, experimental conditions, or paper titles that are not supported by the Context.
+5. Set "answer_found" to false ONLY when the Context is clearly irrelevant or
+   gives almost no signal about the Question. In that case return an empty
+   string for "answer".
+
+Respond with ONLY a JSON object in exactly this format, and no other text:
+{{"answer_found": true, "answer": "your technical answer here"}}
 
 Context: {context}
 
 Question: {question}
 
-Answer:"""
+JSON:"""
         
         self.rag_prompt = PromptTemplate(
             template=rag_prompt_template,
             input_variables=["context", "question"]
         )
 
-    @staticmethod
-    def _distance_to_similarity(distance) -> float:
+    def distance_to_relevance(self, distance) -> float:
         """
-        Convert Chroma's L2 distance into a similarity score.
+        Convert Chroma's L2 distance into a RELEVANCE score.
 
-        The BGE embeddings are stored with normalize_embeddings=True, so this
-        conversion approximates cosine similarity and keeps scores in [0, 1].
+        Two steps happen here, and the intermediate value never leaves this
+        method on purpose:
+
+        1. distance -> cosine similarity. The BGE embeddings are stored with
+           normalize_embeddings=True, so for unit vectors d^2 = 2 - 2*cos,
+           which rearranges to cos = 1 - d^2 / 2.
+        2. cosine similarity -> relevance, via the sigmoid. Raw similarities in
+           a scientific corpus sit in a narrow band and are useless as a
+           decision axis; the sigmoid spreads that band out.
+
+        Every threshold in this engine compares against the value returned
+        here, never against the raw similarity.
         """
-        sim = 1.0 - (float(distance) * float(distance)) / 2.0
-        return max(0.0, min(1.0, sim))
+        similarity = 1.0 - (float(distance) * float(distance)) / 2.0
+        similarity = max(0.0, min(1.0, similarity))
+
+        exponent = -self.sigmoid_steepness * (similarity - self.sigmoid_midpoint)
+        return 1.0 / (1.0 + math.exp(exponent))
 
     def retrieve_candidates(self, query):
-        """Retrieve a wide candidate pool and attach similarity scores."""
+        """
+        Retrieve a wide candidate pool and attach relevance scores.
+
+        Chroma searches its index on L2 distance, which we cannot change. That
+        is fine: the sigmoid is monotonic in similarity and similarity is
+        monotonic in distance, so the top-k by distance is exactly the top-k by
+        relevance.
+        """
         docs_with_scores = self.vectorstore.similarity_search_with_score(
             query,
             k=self.candidate_top_k,
         )
-        if not docs_with_scores:
-            return []
 
-        candidates = []
-        for doc, distance in docs_with_scores:
-            candidates.append({
-                "doc": doc,
-                "distance": float(distance),
-                "similarity": self._distance_to_similarity(distance),
-            })
+        return [
+            {"doc": doc, "relevance": self.distance_to_relevance(distance)}
+            for doc, distance in docs_with_scores
+        ]
 
-        return candidates
+    def filter_candidates_by_relevance(self, candidates):
+        """
+        Keep only documents good enough to be worth reranking.
 
-    def get_relevance_score(self, candidates):
-        """Calculate query relevance from the strongest retrieved candidates."""
-        if not candidates:
-            return 0.0
-
-        # Keep the old intuition: the final gate is based on the strongest few
-        # documents, not every low-signal candidate in the wider pool.
-        top_candidates = candidates[:self.final_top_n]
-        scores = [candidate["similarity"] for candidate in top_candidates]
-        avg_score = sum(scores) / len(scores)
-
-        sigmoid_score = 1 / (1 + math.exp(-self.sigmoid_steepness * (avg_score - self.sigmoid_midpoint)))
-        return sigmoid_score
-
-    def filter_candidates_by_similarity(self, candidates):
-        """Keep only documents that meet the minimum similarity threshold."""
+        This is the single knob that controls context quality. Documents below
+        the bar never reach the cross-encoder or the LLM.
+        """
         return [
             candidate
             for candidate in candidates
-            if candidate["similarity"] >= self.min_document_similarity
+            if candidate["relevance"] >= self.min_doc_relevance
         ]
 
     def rerank_candidates(self, query, candidates):
@@ -214,7 +229,7 @@ Answer:"""
         if self.reranker is None:
             sorted_candidates = sorted(
                 candidates,
-                key=lambda candidate: candidate["similarity"],
+                key=lambda candidate: candidate["relevance"],
                 reverse=True,
             )
             return sorted_candidates[:self.final_top_n], False
@@ -238,12 +253,12 @@ Answer:"""
 
         except Exception as exc:  # noqa: BLE001
             logger.warning(
-                "Reranking failed. Falling back to similarity ranking: %s",
+                "Reranking failed. Falling back to relevance ranking: %s",
                 str(exc),
             )
             sorted_candidates = sorted(
                 candidates,
-                key=lambda candidate: candidate["similarity"],
+                key=lambda candidate: candidate["relevance"],
                 reverse=True,
             )
             return sorted_candidates[:self.final_top_n], False
@@ -265,7 +280,7 @@ Answer:"""
             context_parts.append(
                 f"[Document {index}]\n"
                 f"Source: {source_label}\n"
-                f"Similarity: {candidate['similarity']:.3f}\n"
+                f"Relevance: {candidate['relevance']:.3f}\n"
                 f"Content:\n{doc.page_content}"
             )
 
@@ -278,61 +293,122 @@ Answer:"""
         response = self.llm.invoke(prompt)
         return getattr(response, "content", str(response))
 
+    @staticmethod
+    def parse_answer_payload(raw_response):
+        """
+        Read the JSON envelope the model was asked to produce.
+
+        Returns a (answer_found, answer_text) tuple.
+
+        The model sometimes wraps its JSON in prose or a markdown fence, so we
+        slice from the first '{' to the last '}' before parsing. When parsing
+        fails we treat the whole response as a normal answer: a formatting slip
+        should degrade to "answered" rather than throw away a good answer.
+        """
+        start = raw_response.find("{")
+        end = raw_response.rfind("}") + 1
+
+        if start != -1 and end > start:
+            try:
+                payload = json.loads(raw_response[start:end])
+                answer_found = bool(payload.get("answer_found", True))
+                answer_text = str(payload.get("answer", "")).strip()
+
+                if not answer_found:
+                    return False, ""
+                if answer_text:
+                    return True, answer_text
+            except (json.JSONDecodeError, AttributeError, TypeError):
+                logger.warning("Could not parse the JSON answer envelope; using raw text.")
+
+        return True, raw_response.strip()
+
     def query(self, question):
-        """Process query through Strict RAG logic."""
+        """
+        Process a query through Strict RAG logic.
+
+        Decision order:
+          1. Retrieve a wide pool and score every candidate as relevance.
+          2. Keep the documents that clear MIN_DOC_RELEVANCE.
+          3. If none survive, nothing can be grounded. OFF_TOPIC_THRESHOLD then
+             only picks which rejection message fits.
+          4. Otherwise rerank the survivors and let the LLM answer, which may
+             still report that the context did not cover the question.
+        """
         candidates = self.retrieve_candidates(question)
-        relevance_score = self.get_relevance_score(candidates)
-        filtered_candidates = self.filter_candidates_by_similarity(candidates)
-        
+        survivors = self.filter_candidates_by_relevance(candidates)
+
+        # Relevance of the single best document. Used for the OFF_TOPIC vs
+        # NO_ANSWER_IN_DOCS distinction and surfaced in the UI.
+        max_relevance = max(
+            (candidate["relevance"] for candidate in candidates),
+            default=0.0,
+        )
+
         result = {
             "answer": None,
             "mode": None,
-            "relevance_score": relevance_score,
+            "relevance_score": max_relevance,
             "retrieved_docs": [],
             "retrieval_metadata": {
                 "candidate_top_k": self.candidate_top_k,
                 "candidate_count": len(candidates),
-                "similarity_threshold": self.min_document_similarity,
-                "filtered_count": len(filtered_candidates),
+                "max_relevance": round(max_relevance, 3),
+                "min_doc_relevance": self.min_doc_relevance,
+                "survivor_count": len(survivors),
                 "final_top_n": self.final_top_n,
                 "final_doc_count": 0,
                 "reranker_used": False,
             },
         }
-        
-        # Check relevance threshold
-        if relevance_score >= self.relevance_threshold and filtered_candidates:
-            logger.info(f"✅ High relevance ({relevance_score:.3f}). Executing RAG.")
-            result["mode"] = "RAG"
 
-            final_candidates, reranker_used = self.rerank_candidates(
-                question,
-                filtered_candidates,
-            )
-            result["retrieval_metadata"]["reranker_used"] = reranker_used
-            result["retrieval_metadata"]["final_doc_count"] = len(final_candidates)
-            result["retrieved_docs"] = [
-                candidate["doc"]
-                for candidate in final_candidates
-            ]
+        if not survivors:
+            # No document is good enough to ground an answer, so the only
+            # question left is which rejection the user deserves to see.
+            if max_relevance < self.off_topic_threshold:
+                result["mode"] = "OFF_TOPIC"
+                result["answer"] = (
+                    "No Answer: The question is not related to OLED display technology."
+                )
+                logger.info("🚫 Off-topic (max relevance %.3f). Rejecting.", max_relevance)
+            else:
+                result["mode"] = "NO_ANSWER_IN_DOCS"
+                result["answer"] = (
+                    "No Answer: The relevant content is not found in RAG documents."
+                )
+                logger.info(
+                    "🟠 On-topic (max relevance %.3f) but no document cleared the filter.",
+                    max_relevance,
+                )
+            return result
 
-            try:
-                rag_response = self.generate_answer(question, final_candidates)
-                result["answer"] = rag_response
+        final_candidates, reranker_used = self.rerank_candidates(question, survivors)
+        result["retrieval_metadata"]["reranker_used"] = reranker_used
+        result["retrieval_metadata"]["final_doc_count"] = len(final_candidates)
+        result["retrieved_docs"] = [candidate["doc"] for candidate in final_candidates]
 
-                # Check for "Information not found" response from LLM
-                if "Information not found" in rag_response or ("provided context" in rag_response and "does not contain" in rag_response):
-                    result["mode"] = "NO_ANSWER_IN_DOCS"
-                    result["answer"] = "No Answer: The relevant content is not found in RAG documents."
-                    logger.info("❌ Documents found but LLM could not find answer in context.")
+        try:
+            raw_response = self.generate_answer(question, final_candidates)
+            answer_found, answer_text = self.parse_answer_payload(raw_response)
 
-            except Exception as e:
-                logger.error(f"RAG generation failed: {str(e)}")
-                result["answer"] = "Error processing request."
-                
-        else:
-            logger.info(f"🚫 Low relevance ({relevance_score:.3f}). Rejecting.")
-            result["mode"] = "OFF_TOPIC"
-            result["answer"] = "No Answer: The question is not related to OLED display or relevant documents are not available."
-            
+            if answer_found:
+                result["mode"] = "RAG"
+                result["answer"] = answer_text
+                logger.info(
+                    "✅ Answered from %d documents (max relevance %.3f).",
+                    len(final_candidates),
+                    max_relevance,
+                )
+            else:
+                result["mode"] = "NO_ANSWER_IN_DOCS"
+                result["answer"] = (
+                    "No Answer: The relevant content is not found in RAG documents."
+                )
+                logger.info("❌ Documents retrieved but the LLM found no answer in them.")
+
+        except Exception as exc:  # noqa: BLE001
+            logger.error("RAG generation failed: %s", str(exc))
+            result["mode"] = "ERROR"
+            result["answer"] = "Error processing request."
+
         return result

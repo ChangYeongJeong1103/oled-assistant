@@ -16,7 +16,8 @@ This tool allows engineers to ask technical questions about OLED physics, fabric
 - **Strict RAG for Experts**: Designed for PhD-level engineers. It answers **ONLY** using verified internal technical documents, strictly avoiding generic internet-based knowledge (blogs, Wikipedia) to ensure high-precision insights that Google cannot provide.
 - **Secure & Local**: Runs entirely on your machine using **Mistral-Nemo** via Ollama. No data leaves the laptop.
 - **Production-Style Vector DB Lifecycle**: In cloud deployment, the image ships with a prebuilt `chroma_db` for fast startup. The app only rebuilds from `data/` when the DB is missing or incompatible.
-- **Wide Retrieval + BGE Reranking**: Retrieves a wider candidate pool, filters by similarity threshold, then uses a `BAAI/bge-reranker-base` cross-encoder to select the strongest final documents for the LLM.
+- **Wide Retrieval + BGE Reranking**: Retrieves a wider candidate pool, filters it by a per-document relevance threshold, then uses a `BAAI/bge-reranker-base` cross-encoder to select the strongest final documents for the LLM.
+- **Measured, Not Guessed, Thresholds**: `scripts/measure_relevance_distribution.py` dumps the relevance distribution of every retrieved candidate across representative queries, so decision thresholds come from observed separation between on-topic and off-topic questions.
 - **Commercial-Grade Accuracy on Local Hardware**: Through rigorous prompt optimization and hyperparameter tuning, we achieved answer quality comparable to cloud-based commercial models (GPT-4o-mini), validated by PhD-level experts.
 
 ---
@@ -90,7 +91,7 @@ The result: PhD-level experts validated that the optimized Mistral responses are
 ### Architecture Choices
 - **App Interface**: `Streamlit` was chosen for rapid prototyping and its native support for chat interfaces (`st.chat_message`).
 - **LLM Serving**: `Ollama` enables **Mistral-Nemo 12B** to run locally, ensuring **100% data privacy** for sensitive OLED technical documents.
-- **RAG Orchestration**: Custom retrieval logic performs wide vector search, similarity-threshold filtering, optional BGE cross-encoder reranking, and sigmoid-based relevance gating before answer generation.
+- **RAG Orchestration**: Custom retrieval logic performs wide vector search, sigmoid relevance scoring, per-document filtering, and BGE cross-encoder reranking before answer generation.
 - **Modular Data Pipeline**: `src/document_pipeline.py` isolates document loading, chunking, embedding, and ChromaDB lifecycle management from `src/rag_engine.py`.
 - **Vector Database**: `ChromaDB` is prebuilt into the cloud image for low cold-start latency, then reused at runtime ("rebuild only if missing/incompatible").
 
@@ -104,39 +105,39 @@ The system follows **Strict RAG** logic with a modern retrieval pipeline: it fir
 graph TD
     User[User Query] --> UI[Streamlit Interface]
     UI --> VectorSearch[Vector Search<br/>Candidate Top-K = 20]
-    VectorSearch --> Filter[Similarity Threshold Filter]
-    Filter --> Scorer{Relevance Score}
-    
-    Scorer -->|"≥ 0.60"| RAG[🟢 RAG Mode]
-    Scorer -->|"< 0.60"| Reject[🔴 OFF_TOPIC Rejection]
-    
-    RAG --> Rerank{More than Final Top-N?}
+    VectorSearch --> Score[Sigmoid Relevance<br/>per Document]
+    Score --> Filter{relevance ≥ 0.50 ?}
+
+    Filter -->|No document survives| Gate{max relevance < 0.25 ?}
+    Gate -->|Yes| Reject[🔴 OFF_TOPIC Rejection<br/>no LLM call]
+    Gate -->|No| NoAnswer[🟠 NO_ANSWER_IN_DOCS]
+
+    Filter -->|Survivors| Rerank{More than Final Top-N?}
     Rerank -->|Yes| CrossEncoder[BGE Cross-Encoder Reranker]
     Rerank -->|No| FinalDocs[Final Documents]
     CrossEncoder --> FinalDocs
-    
-    FinalDocs --> Check{Answer Found<br/>in Documents?}
-    
-    Check -->|Yes| Answer[🟢 Document-Based Answer]
-    Check -->|No| NoAnswer[🟠 NO_ANSWER_IN_DOCS]
-    
+
+    FinalDocs --> LLM[LLM Generation<br/>returns answer_found flag]
+    LLM -->|true| Answer[🟢 Document-Based Answer]
+    LLM -->|false| NoAnswer
+
     Reject --> Final[Final Response]
     Answer --> Final
     NoAnswer --> Final
     Final --> UI
-    
-    style RAG fill:#d4edda,stroke:#28a745
+
     style Answer fill:#d4edda,stroke:#28a745
     style NoAnswer fill:#fff3cd,stroke:#856404
     style Reject fill:#f8d7da,stroke:#721c24
 ```
 
 **Key Decision Points:**
+- **One score, one scale**: every threshold is compared against `relevance = sigmoid(cosine similarity)`. Raw similarity is only ever the sigmoid's input, because scientific text clusters too tightly in raw space to threshold reliably
 - **Candidate Top-K (20)**: Retrieves a wider pool first to reduce missed relevant chunks
-- **Similarity Threshold (0.50)**: Keeps all candidate documents that are similar enough to the query
+- **Document Filter (0.50)**: The one knob controlling answer quality. Documents below it never reach the reranker or the LLM
 - **Final Top-N (4)**: Sends only the strongest reranked documents to the LLM
-- **Relevance Threshold (0.60)**: Queries below this are automatically rejected as off-topic
-- **Document Check**: Even high-relevance queries may return "No Answer" if documents lack the specific information
+- **Off-Topic Gate (0.25)**: Deliberately loose. It runs only when *no* document survives the filter, and merely picks which rejection the user sees. Measured on this corpus, off-topic queries peak at 0.044 while on-topic queries start at 0.635
+- **Grounding Check**: The LLM reports whether the context supported an answer through an explicit `answer_found` flag in its JSON response, so no second scoring call is needed
 
 ---
 
@@ -207,6 +208,8 @@ oled-assistant/
 │   ├── document_pipeline.py # Document loading/chunking/vector DB lifecycle
 │   ├── config.py         # Configuration & Hyperparameters
 │   └── utils.py          # Logging & Helper Functions
+├── scripts/              # Tuning & Validation Utilities
+│   └── measure_relevance_distribution.py  # Relevance distribution measurement
 ├── data/                 # Optional local-only source docs for rebuilding vector DB
 ├── notebooks/            # Development Notebooks
 │   ├── OLED_assistant_v1_HP_tuning.ipynb  # Hyperparameter tuning
