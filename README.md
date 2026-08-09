@@ -1,24 +1,26 @@
 # AI-Driven OLED Assistant
 
-![Mistral](https://img.shields.io/badge/Model-Mistral_Nemo_12B-purple.svg)
 ![GPT-5-mini](https://img.shields.io/badge/Model-GPT--5--mini-10a37f.svg)
-![RAG](https://img.shields.io/badge/RAG-Strict_Document--Only-green.svg)
-![Deployment](https://img.shields.io/badge/Deployment-On--Prem_Local-orange.svg)
+![RAG](https://img.shields.io/badge/RAG-Strict_Document--Grounded-green.svg)
+![Deployment](https://img.shields.io/badge/Deployment-Google_Cloud_Run-blue.svg)
 ![Status](https://img.shields.io/badge/Status-Production_Ready-success.svg)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 
 An intelligent, secure, and domain-specific RAG (Retrieval-Augmented Generation) assistant for OLED display engineers.
 
 ## Overview
-This tool allows engineers to ask technical questions about OLED physics, fabrication, and materials. It uses a **Strict RAG** engine to ensure that all answers are derived *exclusively* from internal technical documents, eliminating hallucinations.
+This tool allows engineers to ask technical questions about OLED physics, fabrication, and materials. Its **Strict RAG** engine requires relevant document evidence before generation and returns "No Answer" when the corpus cannot support a response.
+
+Retrieved documents are the **primary source**. When they contain partial but relevant evidence, the model may connect missing logical steps using OLED/physics knowledge, but it may not invent unsupported numbers, experimental conditions, or citations.
 
 ### Key Features
-- **Strict RAG for Experts**: Designed for PhD-level engineers. It answers **ONLY** using verified internal technical documents, strictly avoiding generic internet-based knowledge (blogs, Wikipedia) to ensure high-precision insights that Google cannot provide.
-- **Secure & Local**: Runs entirely on your machine using **Mistral-Nemo** via Ollama. No data leaves the laptop.
+- **Strict Document-Grounded RAG**: The system has no unrestricted LLM fallback. It rejects off-topic questions before generation and returns `NO_ANSWER_IN_DOCS` when retrieved evidence is insufficient.
+- **Public Cloud Demo**: The current application runs on Google Cloud Run and uses **GPT-5-mini** through the OpenAI API. `reasoning_effort="minimal"` keeps document-grounded generation responsive.
+- **Privacy-First Internal Track**: The original internal deployment used **Mistral-Nemo via Ollama** on local hardware so sensitive OLED documents did not leave the machine. This remains a separate deployment track, not the runtime used by the public demo in this repository.
 - **Production-Style Vector DB Lifecycle**: In cloud deployment, the image ships with a prebuilt `chroma_db` for fast startup. The app only rebuilds from `data/` when the DB is missing or incompatible.
 - **Wide Retrieval + BGE Reranking**: Retrieves a wider candidate pool, filters it by a per-document relevance threshold, then uses a `BAAI/bge-reranker-base` cross-encoder to select the strongest final documents for the LLM.
 - **Measured, Not Guessed, Thresholds**: `scripts/measure_relevance_distribution.py` dumps the relevance distribution of every retrieved candidate across representative queries, so decision thresholds come from observed separation between on-topic and off-topic questions.
-- **Commercial-Grade Accuracy on Local Hardware**: Through rigorous prompt optimization and hyperparameter tuning, we achieved answer quality comparable to cloud-based commercial models (GPT-4o-mini), validated by PhD-level experts.
+- **Validated Local-Model Track**: Historical experiments found that the optimized Mistral-Nemo internal track produced domain-answer quality comparable to GPT-4o-mini for the evaluated OLED question set.
 
 ---
 
@@ -34,46 +36,69 @@ This tool allows engineers to ask technical questions about OLED physics, fabric
 
 ## Key Motivation
 
-### Why Strict RAG? (No LLM Fallback)
+### Why Strict RAG?
 
 This tool is designed for **PhD-level domain experts** who need precise, actionable answers—not generic information they could find on Google.
 
 | Standard RAG | Strict RAG (This Tool) |
 |--------------|------------------------|
-| Falls back to LLM knowledge if documents lack info | Returns "No Answer" if documents lack info |
-| May include news/Wikipedia-level knowledge | Answers **only** from verified internal documents |
-| Risk of plausible but non-professional answers | Guarantees every answer is traceable to source |
+| May answer even when retrieval evidence is weak | Requires at least one document to pass the relevance filter |
+| May use broad model knowledge as the answer source | Uses retrieved documents as the primary source and permits only limited logical completion |
+| Can produce a plausible answer despite a corpus gap | Returns `NO_ANSWER_IN_DOCS` when the context does not support an answer |
 
 **Why "No Answer" is better than LLM Fallback:**
-- If information isn't in our documents, it means **the work hasn't been done yet**.
+- If information is not supported by the corpus, the system should expose that coverage gap.
 - Returning a "plausible guess" from LLM knowledge would be **dangerous in production** settings.
 - Engineers need to know when something is missing so they can **identify it as a next step** in their actual work.
 - Generic answers from news/blog or Wikipedia are **not what experts need**—they can Google that themselves.
 
-> **Design Philosophy**: This is a tool for practitioners who need answers grounded in real internal data, not speculation.
+> **Design Philosophy**: Retrieved technical evidence must exist before the model is allowed to answer. Limited domain reasoning may connect that evidence, but it cannot replace missing evidence.
 
 ---
 
 ### On-Premise LLM vs Commercial API
 
-A key finding from this project:
+This project was originally built and operated as an **Apple-internal, on-premise
+OLED assistant**. Sensitive technical documents and inference stayed on local
+hardware, with Mistral-Nemo served through Ollama. The internal production data,
+vector database, and deployment code cannot be published, so they are not
+included in this public repository.
 
-> **With proper optimization, on-premise LLMs can achieve commercial-tool-level performance.**
+The public repository provides a separate, deployable demonstration of the same
+RAG design:
 
-| Aspect | Commercial (GPT-4o) | On-Premise (Mistral-Nemo) |
-|--------|---------------------|---------------------------|
-| Native capability | Higher | Medium |
-| Latency | Network-dependent | Faster (local) |
-| Data privacy | Cloud-based | 100% local |
-| Cost | Pay-per-token | Free |
-| **Optimized performance** | Best with optimization | **Comparable** with optimization |
+| Track | Current public demo | Internal privacy-first deployment |
+|-------|---------------------|-----------------------------------|
+| LLM | GPT-5-mini via OpenAI API | Mistral-Nemo via Ollama |
+| Runtime | Google Cloud Run | Local/on-premise hardware |
+| Data | Publicly deployable OLED corpus and prebuilt ChromaDB | Sensitive internal OLED documents |
+| Goal | Reproducible public demonstration | Keep Apple-internal documents and inference fully local |
 
-**How we achieved this:**
+The current code in `src/rag_engine.py` implements the **public cloud track**
+with `ChatOpenAI`. Non-confidential notebooks and evaluation artifacts document
+the Mistral-Nemo experiments, but the Apple-internal implementation and data are
+intentionally excluded.
+
+An earlier project version directly compared the on-premise Mistral-Nemo system
+with the commercial GPT-4o-mini API on the same OLED evaluation set:
+
+| Aspect | Commercial baseline (GPT-4o-mini) | On-premise system (Mistral-Nemo) |
+|--------|------------------------------------|----------------------------------|
+| Serving | Cloud API | Local Ollama inference |
+| Data privacy | Documents leave the local environment when sent as context | Documents and inference remain local |
+| Usage cost | Pay per token | No per-token API charge |
+| Evaluated answer quality | Strong commercial baseline | Comparable after domain-specific optimization |
+
+This comparison produced an important engineering finding:
+
+> **With proper optimization, on-premise LLMs can achieve commercial-tool-level performance for a constrained domain task.**
+
+**How the local track was optimized:**
 1. **Prompt Optimization**: Carefully engineered prompts for domain-specific responses
 2. **High-Quality RAG Data**: Curated internal technical documents
 3. **Hyperparameter Tuning**: Systematic experiments to find optimal settings (chunk size, relevance threshold, etc.)
 
-The result: PhD-level experts validated that the optimized Mistral responses are **indistinguishable in quality** from GPT-4o-mini for our domain-specific use case.
+In the evaluated OLED question set, PhD-level experts found the optimized Mistral responses comparable in quality to GPT-4o-mini.
 
 > **Note**: This doesn't mean Mistral is "better" than GPT—it means that with the right optimization, you can achieve production-grade results with local, private infrastructure.
 
@@ -84,13 +109,15 @@ The result: PhD-level experts validated that the optimized Mistral responses are
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.31%2B-FF4B4B.svg)
 ![LangChain](https://img.shields.io/badge/LangChain-0.1%2B-1C3C3C.svg)
-![Ollama](https://img.shields.io/badge/Ollama-Local_LLM-black.svg)
+![OpenAI](https://img.shields.io/badge/OpenAI-GPT--5--mini-10a37f.svg)
+![Cloud Run](https://img.shields.io/badge/Google_Cloud-Cloud_Run-4285F4.svg)
 ![ChromaDB](https://img.shields.io/badge/Vector_DB-ChromaDB-orange.svg)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 
 ### Architecture Choices
 - **App Interface**: `Streamlit` was chosen for rapid prototyping and its native support for chat interfaces (`st.chat_message`).
-- **LLM Serving**: `Ollama` enables **Mistral-Nemo 12B** to run locally, ensuring **100% data privacy** for sensitive OLED technical documents.
+- **LLM Serving (Current Public App)**: `ChatOpenAI` serves **GPT-5-mini** through the OpenAI API on Google Cloud Run. GPT-5 uses its required temperature (`1.0`) with `reasoning_effort="minimal"`.
+- **LLM Serving (Internal Track)**: The privacy-first internal deployment uses **Mistral-Nemo 12B via Ollama** on local hardware; it is documented as a separate deployment path.
 - **RAG Orchestration**: Custom retrieval logic performs wide vector search, sigmoid relevance scoring, per-document filtering, and BGE cross-encoder reranking before answer generation.
 - **Modular Data Pipeline**: `src/document_pipeline.py` isolates document loading, chunking, embedding, and ChromaDB lifecycle management from `src/rag_engine.py`.
 - **Vector Database**: `ChromaDB` is prebuilt into the cloud image for low cold-start latency, then reused at runtime ("rebuild only if missing/incompatible").
