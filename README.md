@@ -226,39 +226,62 @@ Visit `http://localhost:8502` in your browser.
 
 ### Option 4: Run on Kubernetes (Local Cluster)
 
-Runs the same Docker image on a local Kubernetes cluster (tested with Docker Desktop's built-in kubeadm cluster). `k8s/oled-assistant.yaml` defines a Deployment (resource requests/limits, readiness and liveness probes) and a LoadBalancer Service.
+Runs the same Docker image on a local Kubernetes cluster (tested with Docker Desktop's built-in kubeadm cluster). `k8s/oled-assistant.yaml` defines a Deployment (versioned image tag, `Recreate` update strategy, resource requests/limits, readiness and liveness probes) and a LoadBalancer Service.
 
 **Prerequisites**: Docker Desktop with Kubernetes enabled (Settings → Kubernetes), about 8 GB of memory allocated to Docker, and a prebuilt `chroma_db/` folder (see Option 3, step 4).
 
-```bash
-# 1) Build image (the tag must match the image name in the manifest)
-docker build -t oled-assistant:local .
+1. **Create a key-only env file** named `.env.k8s` in the root (git-ignored). Keep only the key the app needs, because every line becomes part of the Secret:
+   ```env
+   OPENAI_API_KEY=sk-...
+   ```
 
-# 2) Store the API key as a Kubernetes Secret (never written into the manifest)
-kubectl create secret generic openai-secret --from-literal=OPENAI_API_KEY="your-api-key-here"
+2. **Build, store the key, and deploy**
+   ```bash
+   # 1) Build image (the tag must match the image name in the manifest)
+   docker build -t oled-assistant:v1 .
 
-# 3) Deploy and wait until the pod is ready
-kubectl apply -f k8s/oled-assistant.yaml
-kubectl rollout status deploy/oled-assistant
-```
+   # 2) Store the API key as a Kubernetes Secret (never written into the manifest)
+   kubectl create secret generic openai-secret --from-env-file=.env.k8s
 
-Visit `http://localhost:8080` in your browser.
+   # 3) Deploy and wait until the pod is ready
+   kubectl apply -f k8s/oled-assistant.yaml
+   kubectl rollout status deploy/oled-assistant
+   ```
 
+3. **Open** `http://localhost:8080` in your browser.
+
+**Operations**
 ```bash
 # Stop / start the app without deleting its configuration
 kubectl scale deploy/oled-assistant --replicas=0
 kubectl scale deploy/oled-assistant --replicas=1
 
-# After code changes: rebuild the image and replace the pod
-docker build -t oled-assistant:local .
-kubectl rollout restart deploy/oled-assistant
+# Release a new version: build a new tag, update "image:" in the manifest, then apply
+docker build -t oled-assistant:v2 .
+kubectl apply -f k8s/oled-assistant.yaml
+
+# Roll back to the previous version (the old image tag must still exist)
+kubectl rollout undo deploy/oled-assistant
+kubectl rollout history deploy/oled-assistant
 
 # Remove everything
 kubectl delete -f k8s/oled-assistant.yaml
 kubectl delete secret openai-secret
 ```
 
-> With `kind` or `minikube`, load the local image into the cluster first (e.g. `kind load docker-image oled-assistant:local`).
+**Known limitations of this local setup**
+- **Readiness**: The probe checks that the Streamlit server responds, not that the embedding model, reranker, and ChromaDB are loaded.
+- **First question**: Models load on first use, so the first response is slower than later ones.
+- **Session**: Chat history lives in the pod's memory and is lost when the pod is replaced.
+- **Downtime on update**: `Recreate` stops the old pod before starting the new one (about 20 s of downtime), because two 4Gi pods do not fit on an ~8 GB single node.
+
+**Verified on Docker Desktop (single node, ~8 GB)**
+- All three modes are unchanged: OLED questions return `RAG`, a cooking question returns `OFF_TOPIC` without an LLM call, and questions about patents or supply-chain cost return `NO_ANSWER_IN_DOCS`.
+- Self-healing: after deleting the pod, the Deployment created a replacement within 1 s and the app was healthy again in 22 s.
+- Update and rollback: `v1 → v2` through the manifest and `v2 → v1` through `kubectl rollout undo` each finished in about 23 s, confirmed by the running image ID.
+- Latency: model and vector DB loading took about 10 s; the first question took about 12.5 s and later questions about 3.5–9 s.
+
+> With `kind` or `minikube`, load the local image into the cluster first (e.g. `kind load docker-image oled-assistant:v1`).
 
 ---
 

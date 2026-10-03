@@ -5,7 +5,8 @@
 # Remove:  kubectl delete -f k8s/oled-assistant.yaml
 #
 # Prerequisite: the "openai-secret" Secret must exist in the cluster.
-# It is created from .env with kubectl so the API key never lives in this file.
+# Create it from a key-only env file so the API key never lives in this file:
+#   kubectl create secret generic openai-secret --from-env-file=.env.k8s
 
 # ================================
 # Deployment: which image to run, how many copies, and with what resources
@@ -20,6 +21,11 @@ spec:
   # One replica: Streamlit keeps session_state in the pod's memory,
   # so a second pod would not share a user's chat history.
   replicas: 1
+  # Recreate: stop the old pod before starting the new one. The default
+  # RollingUpdate would briefly need two 4Gi pods, which does not fit on an
+  # ~8 GB single-node cluster, so the new pod would stay Pending.
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: oled-assistant          # Must match the pod template labels below
@@ -30,7 +36,9 @@ spec:
     spec:
       containers:
         - name: app
-          image: oled-assistant:local
+          # Versioned tag: each build gets a new tag (v1, v2, ...) so older
+          # images stay available and "kubectl rollout undo" really rolls back.
+          image: oled-assistant:v1
           # Docker Desktop's kubeadm cluster shares Docker's image store,
           # so the locally built image is used without pushing to a registry.
           imagePullPolicy: IfNotPresent
