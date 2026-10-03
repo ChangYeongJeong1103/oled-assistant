@@ -111,6 +111,7 @@ In the evaluated OLED question set, PhD-level experts found the optimized Mistra
 ![LangChain](https://img.shields.io/badge/LangChain-0.1%2B-1C3C3C.svg)
 ![OpenAI](https://img.shields.io/badge/OpenAI-GPT--5--mini-10a37f.svg)
 ![Cloud Run](https://img.shields.io/badge/Google_Cloud-Cloud_Run-4285F4.svg)
+![Kubernetes](https://img.shields.io/badge/Kubernetes-Deployment-326CE5.svg)
 ![ChromaDB](https://img.shields.io/badge/Vector_DB-ChromaDB-orange.svg)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 
@@ -121,6 +122,7 @@ In the evaluated OLED question set, PhD-level experts found the optimized Mistra
 - **RAG Orchestration**: Custom retrieval logic performs wide vector search, sigmoid relevance scoring, per-document filtering, and BGE cross-encoder reranking before answer generation.
 - **Modular Data Pipeline**: `src/document_pipeline.py` isolates document loading, chunking, embedding, and ChromaDB lifecycle management from `src/rag_engine.py`.
 - **Vector Database**: `ChromaDB` is prebuilt into the cloud image for low cold-start latency, then reused at runtime ("rebuild only if missing/incompatible").
+- **Container Orchestration**: The same Docker image also runs on Kubernetes (`k8s/oled-assistant.yaml`): a Deployment with resource requests/limits and readiness/liveness probes, a Service for access, and the API key injected from a Kubernetes Secret.
 
 ---
 
@@ -222,6 +224,42 @@ Visit `http://localhost:8502` in your browser.
    streamlit run src/app.py
    ```
 
+### Option 4: Run on Kubernetes (Local Cluster)
+
+Runs the same Docker image on a local Kubernetes cluster (tested with Docker Desktop's built-in kubeadm cluster). `k8s/oled-assistant.yaml` defines a Deployment (resource requests/limits, readiness and liveness probes) and a LoadBalancer Service.
+
+**Prerequisites**: Docker Desktop with Kubernetes enabled (Settings → Kubernetes), about 8 GB of memory allocated to Docker, and a prebuilt `chroma_db/` folder (see Option 3, step 4).
+
+```bash
+# 1) Build image (the tag must match the image name in the manifest)
+docker build -t oled-assistant:local .
+
+# 2) Store the API key as a Kubernetes Secret (never written into the manifest)
+kubectl create secret generic openai-secret --from-literal=OPENAI_API_KEY="your-api-key-here"
+
+# 3) Deploy and wait until the pod is ready
+kubectl apply -f k8s/oled-assistant.yaml
+kubectl rollout status deploy/oled-assistant
+```
+
+Visit `http://localhost:8080` in your browser.
+
+```bash
+# Stop / start the app without deleting its configuration
+kubectl scale deploy/oled-assistant --replicas=0
+kubectl scale deploy/oled-assistant --replicas=1
+
+# After code changes: rebuild the image and replace the pod
+docker build -t oled-assistant:local .
+kubectl rollout restart deploy/oled-assistant
+
+# Remove everything
+kubectl delete -f k8s/oled-assistant.yaml
+kubectl delete secret openai-secret
+```
+
+> With `kind` or `minikube`, load the local image into the cluster first (e.g. `kind load docker-image oled-assistant:local`).
+
 ---
 
 ## Project Structure
@@ -252,6 +290,8 @@ oled-assistant/
 │   ├── hyperparameter.md # Hyperparameter Tuning Guide
 │   ├── llm_comparison.md # LLM Comparison Results
 │   └── experiments/      # Research Data (logs, CSVs)
+├── k8s/                  # Kubernetes Manifests
+│   └── oled-assistant.yaml  # Deployment + Service
 ├── logs/                 # Usage Logs
 ├── screenshot/           # Demo Screenshots
 ├── requirements.txt      # Python Dependencies

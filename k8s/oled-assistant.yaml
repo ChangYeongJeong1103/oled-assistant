@@ -1,0 +1,83 @@
+# ================================
+# OLED Assistant - Kubernetes manifest (local Docker Desktop cluster)
+# ================================
+# Apply:   kubectl apply -f k8s/oled-assistant.yaml
+# Remove:  kubectl delete -f k8s/oled-assistant.yaml
+#
+# Prerequisite: the "openai-secret" Secret must exist in the cluster.
+# It is created from .env with kubectl so the API key never lives in this file.
+
+# ================================
+# Deployment: which image to run, how many copies, and with what resources
+# ================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oled-assistant
+  labels:
+    app: oled-assistant
+spec:
+  # One replica: Streamlit keeps session_state in the pod's memory,
+  # so a second pod would not share a user's chat history.
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oled-assistant          # Must match the pod template labels below
+  template:
+    metadata:
+      labels:
+        app: oled-assistant
+    spec:
+      containers:
+        - name: app
+          image: oled-assistant:local
+          # Docker Desktop's kubeadm cluster shares Docker's image store,
+          # so the locally built image is used without pushing to a registry.
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8501    # Same port as EXPOSE 8501 in the Dockerfile
+          env:
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:        # Read the key from the Secret at runtime
+                  name: openai-secret
+                  key: OPENAI_API_KEY
+          resources:
+            requests:                # Minimum the scheduler reserves for this pod
+              cpu: "1"
+              memory: "4Gi"          # bge-m3 + bge-reranker-base + torch
+            limits:
+              memory: "6Gi"          # Exceeding this gets the pod OOMKilled
+          # Readiness: send traffic only after Streamlit answers its health check.
+          readinessProbe:
+            httpGet:
+              path: /_stcore/health
+              port: 8501
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          # Liveness: restart the container if Streamlit stops responding.
+          livenessProbe:
+            httpGet:
+              path: /_stcore/health
+              port: 8501
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            failureThreshold: 3
+---
+# ================================
+# Service: a stable network address in front of the pod(s)
+# ================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: oled-assistant
+spec:
+  # On Docker Desktop, LoadBalancer is exposed on localhost.
+  type: LoadBalancer
+  selector:
+    app: oled-assistant            # Route traffic to pods with this label
+  ports:
+    - port: 8080                   # Open http://localhost:8080
+      targetPort: 8501             # Streamlit port inside the container
+  # Keep each user on the same pod (matters once replicas > 1).
+  sessionAffinity: ClientIP
