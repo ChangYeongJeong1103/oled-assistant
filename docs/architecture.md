@@ -106,7 +106,7 @@ The planner is not a plan supplied by the user. `AgentAssistant.query()` sends t
 
 Details are in [Agent Engine](agent_engine.md).
 
-### 5. LLM Serving Strategy (Cloud + Local)
+### 5. LLM Serving: Public Reproduction and Apple-Internal Version
 
-- **Cloud track (this repository)**: GPT-6-Luna (light) and GPT-6.1-Sol (heavy) through the OpenAI Responses API (`OPENAI_API_KEY`), both with reasoning effort `low`. With routing on (default), Luna plans, answers simple questions, and runs the workers; Sol answers complex questions and acts as orchestrator and reviewer. With routing off, every role uses `AGENT_MODEL` (Luna).
-- **Internal track (private deployment)**: Mistral-Nemo via a local serving stack (privacy-first operation). It is not part of this repository.
+- **Public reproduction (this repository)**: GPT-6-Luna (light) and GPT-6.1-Sol (heavy) through the OpenAI Responses API (`OPENAI_API_KEY`), both with reasoning effort `low`. With routing on (default), Luna plans, answers simple questions, and runs the workers; Sol answers complex questions and acts as orchestrator and reviewer. With routing off, every role uses `AGENT_MODEL` (Luna).
+- **Apple-internal version (confidential)**: Started with **Mistral-Nemo 12B via Ollama** on on-premise hardware and grew into a larger agent system on Apple's internal cloud service, with more tools, more dynamic routing, and more iterative agent loops than this repository. Its code and data are confidential and not part of this repository. See [README: Apple-Internal Version and This Public Reproduction](../README.md#apple-internal-version-and-this-public-reproduction).

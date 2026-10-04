@@ -1,5 +1,7 @@
 # LLM Comparison: Mistral-Nemo vs GPT-4o-mini
 
+> **Note**: This is an early-stage record from the on-premise phase of the project, kept for reference. It does not describe the current system. The current public reproduction uses a GPT-6-Luna / GPT-6.1-Sol agent, and the Apple-internal version grew into a larger agent system on Apple's internal cloud service. See [README](../README.md#apple-internal-version-and-this-public-reproduction).
+
 ## Decision: GPT-4o-mini (Cloud Deployment) & Mistral-Nemo (Local)
 
 For the cloud deployment track of this repository, we selected **GPT-4o-mini** as the default serving model.
@@ -35,10 +37,6 @@ Notes:
 - We intentionally preserve the local deployment goal: validating that an internal, privacy-first Mistral stack can still deliver production-grade Strict RAG quality.
 
 **Conclusion:** Both models are viable for Strict RAG. For this public cloud deployment repository, GPT-4o-mini is the default due to deployment speed and latency benefits, while the internal repository can keep local Mistral-based serving for privacy-first environments.
-
-### Future Work
-- **Internal track**: Fine-tune Mistral-Nemo on internal OLED reports to improve domain and program specificity for privacy-first deployment.
-- **General track**: Fine-tune on organic semiconductors and optoelectronic devices to optimize AI Agent for organic semiconductor based domains.
 
 ## Detailed Logs
 Detailed comparison notebooks and logs can be found in `experiments/llm_comparison` directory.

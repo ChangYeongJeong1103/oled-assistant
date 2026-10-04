@@ -25,7 +25,7 @@ The answers follow a **Strict RAG** policy: there is no fallback to the model's 
 - **Evaluation Pipeline**: `scripts/evaluate_agent.py` runs any agent configuration on 50 questions and reports false rejections, false acceptances, unsupported claims (graded by an independent judge model), latency, tokens per model, and cost.
 - **Kubernetes Deployment**: The same Docker image runs on Kubernetes with resource requests/limits, readiness and liveness probes, rolling back through `kubectl rollout undo`, and the API key stored in a Kubernetes Secret.
 - **Public Cloud Demo**: The application is deployed on Google Cloud Run and calls GPT-6-Luna and GPT-6.1-Sol through the OpenAI Responses API.
-- **Privacy-First Internal Track**: The original internal deployment used **Mistral-Nemo via Ollama** on local hardware so sensitive OLED documents did not leave the machine. This remains a separate deployment track, not the runtime used by the public demo in this repository.
+- **Public Reproduction of an Apple-Internal System**: This project began as an Apple-internal OLED assistant, which grew larger than this repository: more tools, more dynamic routing, more iterative agent loops, and deployment on Apple's internal cloud service. Because its code and data are confidential, this repository reproduces the core design on a public corpus. See [Apple-Internal Version and This Public Reproduction](#apple-internal-version-and-this-public-reproduction).
 - **Production-Style Vector DB Lifecycle**: In cloud deployment, the image ships with a prebuilt `chroma_db` for fast startup. The app only rebuilds from `data/` when the DB is missing or incompatible.
 - **Wide Retrieval + BGE Reranking**: Every search retrieves a wider candidate pool, filters it by a per-document relevance threshold, then uses a `BAAI/bge-reranker-base` cross-encoder to select the strongest chunks for the agent.
 - **Measured, Not Guessed, Thresholds**: `scripts/measure_relevance_distribution.py` dumps the relevance distribution of every retrieved candidate across representative queries, so the document filter comes from observed separation between on-topic and off-topic questions.
@@ -65,22 +65,30 @@ This tool is designed for **PhD-level domain experts** who need precise, actiona
 
 ---
 
-### On-Premise LLM vs Commercial API
+### Apple-Internal Version and This Public Reproduction
 
-This project was originally built and operated as an **Apple-internal, on-premise OLED assistant**. Sensitive technical documents and inference stayed on local hardware, with Mistral-Nemo served through Ollama. The internal production data, vector database, and deployment code cannot be published, so they are not included in this public repository.
+This project was originally built at Apple as an **internal OLED assistant** for display engineers. It started as a privacy-first, on-premise RAG system with Mistral-Nemo served through Ollama, and it grew into a larger agent system than the one in this repository:
 
-The public repository provides a separate, deployable demonstration of the same RAG design:
+- **More tools** available to the agent
+- **More dynamic routing**
+- **More iterative agent loops**
+- **Deployment on Apple's internal cloud service**
 
-| Track | Current public demo | Internal privacy-first deployment |
+Everything in the internal version (code, documents, vector database, evaluation data, and deployment configuration) is Apple-confidential, so none of it is in this repository. This repository is a **public reproduction** of the core design, rebuilt on a public OLED corpus with public models and infrastructure. It is intentionally smaller in scope than the internal system.
+
+| | Apple-internal version | This public reproduction |
 | --- | --- | --- |
-| LLM | GPT-6-Luna / GPT-6.1-Sol agent via OpenAI Responses API | Mistral-Nemo via Ollama |
-| Runtime | Google Cloud Run, Kubernetes | Local/on-premise hardware |
-| Data | Publicly deployable OLED corpus and prebuilt ChromaDB | Sensitive internal OLED documents |
-| Goal | Reproducible public demonstration | Keep Apple-internal documents and inference fully local |
+| Scope | Full internal system: more tools, more dynamic routing, more agent loops | Core design: planner, model routing, orchestrator-worker, reviewer |
+| LLM | Mistral-Nemo via Ollama in the on-premise stage | GPT-6-Luna / GPT-6.1-Sol via OpenAI Responses API |
+| Runtime | On-premise hardware and Apple's internal cloud service | Google Cloud Run, Kubernetes |
+| Data | Confidential internal OLED documents | Publicly deployable OLED corpus and prebuilt ChromaDB |
+| Availability | Not public | This repository and the live demo |
 
-The code in this repository implements the **public cloud track**: the agent calls GPT-6-Luna and GPT-6.1-Sol through the OpenAI Responses API. Non-confidential notebooks and evaluation artifacts document the Mistral-Nemo experiments, but the Apple-internal implementation and data are intentionally excluded.
+Non-confidential notebooks and evaluation artifacts in this repository document the early Mistral-Nemo experiments.
 
-An earlier project version directly compared the on-premise Mistral-Nemo system with the commercial GPT-4o-mini API on the same OLED evaluation set:
+#### Early stage: on-premise LLM vs commercial API
+
+In the on-premise stage, we directly compared the Mistral-Nemo system with the commercial GPT-4o-mini API on the same OLED evaluation set:
 
 | Aspect | Commercial baseline (GPT-4o-mini) | On-premise system (Mistral-Nemo) |
 | --- | --- | --- |
@@ -113,7 +121,7 @@ In the evaluated OLED question set, PhD-level experts found the optimized Mistra
 
 - **App Interface**: `Streamlit` was chosen for rapid prototyping and its native support for chat interfaces (`st.chat_message`).
 - **Agent Runtime**: Plain Python on the OpenAI **Responses API** (function tools with reasoning), without an agent framework, so every limit, check, and route is visible in our own code. **GPT-6-Luna** is the light model (planner, workers, simple questions) and **GPT-6.1-Sol** the heavy model (complex questions, orchestrator, reviewer).
-- **LLM Serving (Internal Track)**: The privacy-first internal deployment uses **Mistral-Nemo 12B via Ollama** on local hardware; it is documented as a separate deployment path.
+- **Apple-Internal Version**: Started with **Mistral-Nemo 12B via Ollama** on on-premise hardware and grew into a larger agent system on Apple's internal cloud service. It is confidential and not part of this repository.
 - **Retrieval**: Custom retrieval logic performs wide vector search, sigmoid relevance scoring, per-document filtering, and BGE cross-encoder reranking. The agent can only reach it through its `search_documents` tool.
 - **Modular Data Pipeline**: `src/document_pipeline.py` isolates document loading, chunking, embedding, and ChromaDB lifecycle management from `src/retrieval.py`.
 - **Vector Database**: `ChromaDB` is prebuilt into the cloud image for low cold-start latency, then reused at runtime ("rebuild only if missing/incompatible").
