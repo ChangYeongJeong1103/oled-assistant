@@ -1,0 +1,2403 @@
+{
+  "engine": "agent",
+  "label": "reasoning_low",
+  "created_at": "2026-10-03T18:44:42",
+  "config": {
+    "llm_model": "gpt-5-mini",
+    "judge_model": "gpt-5",
+    "judge_policy": "strict_absence_v1",
+    "candidate_top_k": 20,
+    "final_top_n": 4,
+    "min_doc_relevance": 0.5,
+    "off_topic_threshold": 0.25,
+    "agent_max_llm_calls": 6,
+    "agent_max_searches": 3,
+    "agent_reasoning_effort": "low"
+  },
+  "summary": {
+    "runs": 15,
+    "mode_accuracy": 1.0,
+    "false_rejection_rate": 0.0,
+    "false_acceptance_rate": null,
+    "error_count": 0,
+    "unsupported_claim_rate": 0.0759,
+    "partial_claim_rate": 0.1456,
+    "answers_with_unsupported": 6,
+    "answered_count": 15,
+    "key_point_coverage": 0.6889,
+    "source_hit_rate": 0.8,
+    "avg_searches": 1.0667,
+    "avg_llm_calls": 3.3333,
+    "latency_mean_s": 17.5067,
+    "latency_p50_s": 14.88,
+    "latency_p90_s": 29.07,
+    "avg_prompt_tokens": 6566.2,
+    "avg_completion_tokens": 1276.6667,
+    "total_cost_usd": 0.0592,
+    "avg_cost_usd": 0.0039,
+    "variant_only_rejections": 0,
+    "stop_reasons": {
+      "answered": 15
+    }
+  },
+  "by_category": {
+    "ambiguous": {
+      "runs": 3,
+      "mode_accuracy": 1.0,
+      "false_rejection_rate": 0.0,
+      "false_acceptance_rate": null,
+      "error_count": 0,
+      "unsupported_claim_rate": 0.0571,
+      "partial_claim_rate": 0.1429,
+      "answers_with_unsupported": 2,
+      "answered_count": 3,
+      "key_point_coverage": 0.8333,
+      "source_hit_rate": 0.3333,
+      "avg_searches": 1,
+      "avg_llm_calls": 3.6667,
+      "latency_mean_s": 19.97,
+      "latency_p50_s": 15.67,
+      "latency_p90_s": 29.55,
+      "avg_prompt_tokens": 7741.6667,
+      "avg_completion_tokens": 1794.3333,
+      "total_cost_usd": 0.0151,
+      "avg_cost_usd": 0.005,
+      "variant_only_rejections": 0,
+      "stop_reasons": {
+        "answered": 3
+      }
+    },
+    "multi_hop": {
+      "runs": 9,
+      "mode_accuracy": 1.0,
+      "false_rejection_rate": 0.0,
+      "false_acceptance_rate": null,
+      "error_count": 0,
+      "unsupported_claim_rate": 0.1099,
+      "partial_claim_rate": 0.1648,
+      "answers_with_unsupported": 4,
+      "answered_count": 9,
+      "key_point_coverage": 0.537,
+      "source_hit_rate": 0.8889,
+      "avg_searches": 1.1111,
+      "avg_llm_calls": 3.3333,
+      "latency_mean_s": 17.4356,
+      "latency_p50_s": 14.88,
+      "latency_p90_s": 24.28,
+      "avg_prompt_tokens": 6933.4444,
+      "avg_completion_tokens": 1212.8889,
+      "total_cost_usd": 0.0352,
+      "avg_cost_usd": 0.0039,
+      "variant_only_rejections": 0,
+      "stop_reasons": {
+        "answered": 9
+      }
+    },
+    "typo": {
+      "runs": 3,
+      "mode_accuracy": 1.0,
+      "false_rejection_rate": 0.0,
+      "false_acceptance_rate": null,
+      "error_count": 0,
+      "unsupported_claim_rate": 0.0,
+      "partial_claim_rate": 0.0938,
+      "answers_with_unsupported": 0,
+      "answered_count": 3,
+      "key_point_coverage": 1.0,
+      "source_hit_rate": 1.0,
+      "avg_searches": 1,
+      "avg_llm_calls": 3,
+      "latency_mean_s": 15.2567,
+      "latency_p50_s": 14.74,
+      "latency_p90_s": 16.85,
+      "avg_prompt_tokens": 4289,
+      "avg_completion_tokens": 950.3333,
+      "total_cost_usd": 0.0089,
+      "avg_cost_usd": 0.003,
+      "variant_only_rejections": 0,
+      "stop_reasons": {
+        "answered": 3
+      }
+    }
+  },
+  "pairs": {
+    "blue_lifetime": {
+      "normal_answered": false,
+      "variant_modes": {
+        "amb1": "RAG"
+      },
+      "variant_only_rejections": 0
+    },
+    "mh_lowindex_etl": {
+      "normal_answered": false,
+      "variant_modes": {
+        "mh2": "RAG"
+      },
+      "variant_only_rejections": 0
+    },
+    "mh_mobility_lifetime": {
+      "normal_answered": false,
+      "variant_modes": {
+        "mh1": "RAG"
+      },
+      "variant_only_rejections": 0
+    },
+    "mh_tta": {
+      "normal_answered": false,
+      "variant_modes": {
+        "mh3": "RAG"
+      },
+      "variant_only_rejections": 0
+    },
+    "tadf": {
+      "normal_answered": false,
+      "variant_modes": {
+        "t01": "RAG"
+      },
+      "variant_only_rejections": 0
+    }
+  },
+  "judge_cost_usd": 0.395,
+  "records": [
+    {
+      "id": "t01",
+      "category": "typo",
+      "pair_id": "tadf",
+      "question": "how does thermaly activted delayed florescence work",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "Thermally activated delayed fluorescence (TADF) converts non-emissive triplet excitons into emissive singlet excitons by thermally driven reverse intersystem crossing (RISC).\n\n- Key requirement: the energy gap between the lowest excited singlet (S1) and triplet (T1), ΔEST, must be comparable to or smaller than thermal energy so upconversion from T1 to S1 is thermally accessible [1].\n\n- Mechanism steps: electrical excitation creates singlet and triplet excitons (≈1:3). After internal conversion, population accumulates in S1 and T1. Triplet excitons at T1 are thermally promoted back to S1 via RISC; these S1 states then decay radiatively (prompt or delayed fluorescence) [2].\n\n- Kinetics and design implications: the endothermic RISC rate scales with ΔEST (smaller ΔEST increases RISC efficiency), and RISC must compete successfully with non-radiative triplet decay for efficient delayed fluorescence [1].\n\n- Molecular design: TADF emitters typically use donor–acceptor architectures that spatially separate HOMO and LUMO to reduce exchange interaction and thus ΔEST; however this can reduce oscillator strength, so emitter design must balance a small ΔEST with sufficient radiative rate (kF) to maintain high fluorescence efficiency [3][2].\n\n- Outcome: when ΔEST is small and RISC is fast relative to nonradiative losses, triplet excitons are converted to singlets and contribute to fluorescence, allowing internal quantum efficiencies approaching 100% in OLEDs (25% from prompt singlets + up to 75% recovered from triplets) [3].\n\nIf you want, I can provide an energy-level sketch, equations for rates (kRISC ∝ 1/ΔEST2 as discussed in perturbation context), or examples of common molecular structures used for TADF.",
+      "latency_s": 16.85,
+      "cost_usd": 0.00256825,
+      "used_files": [
+        "!!! 중요 !!! Blue-emitting organic electrofluorescence materials - progress and prospective.pdf",
+        "Chapter 6 Organic Light Emitters.pdf",
+        "[Review - Nat] All-organic thermally activated delayed fluorescence materials for organic light-emitting diodes.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "cce3c5245",
+          "title": "Chapter 6 Organic Light Emitters",
+          "url": null,
+          "file_name": "Chapter 6 Organic Light Emitters.pdf",
+          "page": 124
+        },
+        {
+          "chunk_id": "cdb478c94",
+          "title": "All-organic thermally activated delayed fluorescence materials for organic light-emitting diodes",
+          "url": null,
+          "file_name": "[Review - Nat] All-organic thermally activated delayed fluorescence materials for organic light-emitting diodes.pdf",
+          "page": 2
+        },
+        {
+          "chunk_id": "c57c2c3f7",
+          "title": "Blue-emitting organic electrofluorescence materials: progress and prospective",
+          "url": "https://doi.org/10.1039/c5tc02420j",
+          "file_name": "!!! 중요 !!! Blue-emitting organic electrofluorescence materials - progress and prospective.pdf",
+          "page": 3
+        }
+      ],
+      "searches": 1,
+      "llm_calls": 3,
+      "prompt_tokens": 4497,
+      "completion_tokens": 722,
+      "cached_tokens": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "plan",
+          "t": 2.09,
+          "domain": "in_domain",
+          "reason": "The question asks about thermally activated delayed fluorescence (TADF), a core topic in OLED/emitter materials and exciton processes.",
+          "subquestions": [
+            "How does thermally activated delayed fluorescence (TADF) work?"
+          ]
+        },
+        {
+          "step": 2,
+          "type": "search",
+          "t": 10.61,
+          "query": "thermally activated delayed fluorescence mechanism TADF reverse intersystem crossing small singlet-triplet energy gap",
+          "status": "ok",
+          "max_relevance": 0.948,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 3,
+          "type": "stop",
+          "t": 16.85,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "run": 0,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": true,
+      "claims": [
+        {
+          "claim": "TADF converts non-emissive triplet excitons into emissive singlet excitons by thermally driven reverse intersystem crossing (RISC).",
+          "verdict": "supported",
+          "reason": "E1 describes endothermic S1←T1 intersystem transfer (reverse intersystem crossing) leading to delayed fluorescence; E2 also depicts triplets transferred back to S1 via RISC."
+        },
+        {
+          "claim": "A key requirement is that the singlet–triplet energy gap ΔEST is comparable to or smaller than thermal energy, making upconversion from T1 to S1 thermally accessible.",
+          "verdict": "supported",
+          "reason": "E1 states ΔEST should be comparable to or less than kBT for efficient TADF."
+        },
+        {
+          "claim": "Electrical excitation creates singlet and triplet excitons in an approximately 1:3 ratio.",
+          "verdict": "supported",
+          "reason": "E2 explicitly states singlet and triplet excitons are formed in a 1:3 ratio after recombination."
+        },
+        {
+          "claim": "After internal conversion, population accumulates in S1 and T1.",
+          "verdict": "partially_supported",
+          "reason": "E2 says high exciton states are transferred to S1 or T1 via internal conversion and notes accumulation of triplets at T1; it does not explicitly say accumulation in both S1 and T1."
+        },
+        {
+          "claim": "Triplet excitons at T1 are thermally promoted back to S1 via RISC, and these S1 states then decay radiatively as prompt or delayed fluorescence.",
+          "verdict": "supported",
+          "reason": "E2 shows T1→S1 via thermally activated RISC and that S1 decays radiatively via prompt fluorescence and delayed fluorescence."
+        },
+        {
+          "claim": "The endothermic RISC rate scales with ΔEST such that smaller ΔEST increases RISC efficiency.",
+          "verdict": "supported",
+          "reason": "E1 states the S1←T1 intersystem crossing rate is inversely proportional to ΔEST^2, implying higher rates for smaller ΔEST."
+        },
+        {
+          "claim": "RISC must compete successfully with non-radiative triplet decay for efficient delayed fluorescence.",
+          "verdict": "supported",
+          "reason": "E1 notes S1←T1 can be nearly 100% efficient provided competing non-radiative rates are less than kISC,T, indicating competition with non-radiative processes."
+        },
+        {
+          "claim": "TADF emitters typically use donor–acceptor architectures to spatially separate HOMO and LUMO, reducing exchange interaction and ΔEST, but this can reduce oscillator strength; emitter design must balance small ΔEST with sufficient radiative rate (kF).",
+          "verdict": "supported",
+          "reason": "E3 states D–A with separated HOMO/LUMO narrows ΔEST but can lower fluorescence; improving kr is crucial. E2 discusses reduced overlap of HOMO/LUMO to enable TADF and trade-offs affecting kR/oscillator strength, requiring balance."
+        },
+        {
+          "claim": "When ΔEST is small and RISC is fast relative to nonradiative losses, triplet excitons are converted to singlets and contribute to fluorescence, allowing internal quantum efficiencies approaching 100% in OLEDs (25% from prompt singlets plus up to 75% recovered from triplets).",
+          "verdict": "supported",
+          "reason": "E3 states TADF-based OLEDs can reach 100% IQE theoretically with 25% from original singlets and 75% from RISC-converted triplets."
+        },
+        {
+          "claim": "In perturbation terms, kRISC is proportional to 1/ΔEST^2.",
+          "verdict": "supported",
+          "reason": "E1 gives the intersystem crossing rate for S1←T1 as inversely proportional to ΔEST^2, consistent with kRISC ∝ 1/ΔEST^2 for the reverse process."
+        }
+      ],
+      "claim_count": 10,
+      "unsupported_claims": 0,
+      "partial_claims": 1,
+      "key_points_covered": 1.0,
+      "judge_cost_usd": 0.02601625
+    },
+    {
+      "id": "t01",
+      "category": "typo",
+      "pair_id": "tadf",
+      "question": "how does thermaly activted delayed florescence work",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "Thermally activated delayed fluorescence (TADF) converts triplet excitons to emissive singlets by thermally driven reverse intersystem crossing (RISC):\n\n- Basic principle: OLED exciton formation yields mostly triplets (75%) and some singlets (25%); TADF aims to harvest the triplets by upconverting T1 population into S1 so they can decay radiatively as fluorescence [1].\n\n- Small singlet–triplet gap required: TADF emitters are designed so the S1–T1 energy splitting ΔEST is comparable to or less than thermal energy kBT. A small ΔEST makes the endothermic T1→S1 transfer (RISC) achievable at room temperature [2, 3].\n\n- Kinetics / mechanism: The thermally activated intersystem crossing rate from T1 to S1 follows an Arrhenius form kISC,T = kISC,T,∞ exp(−ΔEST/kBT) (i.e. RISC is exponentially sensitive to ΔEST) [3]. Perturbation-theory expressions show ISC/RISC rates scale inversely with ΔEST (smaller gap → faster RISC) [2].\n\n- Competition of rates: Efficient TADF requires that RISC competes successfully with non-radiative decay of T1 and that the fluorescence rate kF of S1 is large compared with other decay paths, so that once population is upconverted it emits as fluorescence [2, 3]. This produces both a prompt fluorescence component (from initially formed S1) and a delayed fluorescence component (from upconverted S1) with similar spectra when ΔEST is very small [1].\n\n- Molecular design: To achieve small ΔEST, emitters commonly use donor–acceptor (D–A) structures that separate HOMO and LUMO spatially (reducing exchange energy). Such intramolecular charge-transfer character lowers ΔEST but can reduce oscillator strength, so designs must balance small ΔEST with sufficiently large radiative rate [1].\n\n- Practical outcome: When RISC outcompetes losses, TADF can in principle enable nearly 100% internal quantum efficiency by recovering the 75% of excitons initially formed as triplets [1].\n\nIf you want, I can extract or summarize the key equations (Arrhenius RISC, perturbation scaling) and typical ΔEST targets for room-temperature TADF from these sources.",
+      "latency_s": 14.18,
+      "cost_usd": 0.003139,
+      "used_files": [
+        "!!! 중요 !!! Blue-emitting organic electrofluorescence materials - progress and prospective.pdf",
+        "Chapter 3 Optics.pdf",
+        "Chapter 6 Organic Light Emitters.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "c57c2c3f7",
+          "title": "Blue-emitting organic electrofluorescence materials: progress and prospective",
+          "url": "https://doi.org/10.1039/c5tc02420j",
+          "file_name": "!!! 중요 !!! Blue-emitting organic electrofluorescence materials - progress and prospective.pdf",
+          "page": 3
+        },
+        {
+          "chunk_id": "cce3c5245",
+          "title": "Chapter 6 Organic Light Emitters",
+          "url": null,
+          "file_name": "Chapter 6 Organic Light Emitters.pdf",
+          "page": 124
+        },
+        {
+          "chunk_id": "c8b2e766c",
+          "title": "Chapter 3 Optics",
+          "url": null,
+          "file_name": "Chapter 3 Optics.pdf",
+          "page": 143
+        }
+      ],
+      "searches": 1,
+      "llm_calls": 3,
+      "prompt_tokens": 4212,
+      "completion_tokens": 1043,
+      "cached_tokens": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "plan",
+          "t": 1.59,
+          "domain": "in_domain",
+          "reason": "The question asks about thermally activated delayed fluorescence (TADF), a core concept in OLED and organic semiconductor emitter materials.",
+          "subquestions": [
+            "How does thermally activated delayed fluorescence (TADF) work?"
+          ]
+        },
+        {
+          "step": 2,
+          "type": "search",
+          "t": 8.33,
+          "query": "How does thermally activated delayed fluorescence TADF mechanism singlet-triplet upconversion reverse intersystem crossing energy gap ΔEST",
+          "status": "ok",
+          "max_relevance": 0.946,
+          "survivor_count": 18,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 3,
+          "type": "stop",
+          "t": 14.18,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "run": 1,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": true,
+      "claims": [
+        {
+          "claim": "TADF converts triplet excitons to emissive singlets by thermally driven reverse intersystem crossing (RISC).",
+          "verdict": "supported",
+          "reason": "Evidence states RISC from T1 to S1 is achieved via thermal activation in TADF."
+        },
+        {
+          "claim": "OLED exciton formation yields mostly triplets (75%) and some singlets (25%).",
+          "verdict": "supported",
+          "reason": "Evidence notes theoretical 100% IQE with 25% from original singlets and 75% from triplets converted via RISC, implying the 25/75 initial formation ratio."
+        },
+        {
+          "claim": "TADF harvests triplets by upconverting T1 to S1 so they emit as fluorescence.",
+          "verdict": "supported",
+          "reason": "Evidence describes RISC converting triplets to singlets leading to delayed fluorescence."
+        },
+        {
+          "claim": "TADF requires the S1–T1 energy splitting ΔEST to be comparable to or less than kBT.",
+          "verdict": "supported",
+          "reason": "Evidence explicitly states ΔEST should be comparable to or less than thermal energy kBT."
+        },
+        {
+          "claim": "A small ΔEST makes the endothermic T1→S1 RISC achievable at room temperature.",
+          "verdict": "supported",
+          "reason": "Evidence links small ΔEST with thermally activated RISC; tying to kBT implies room-temperature feasibility."
+        },
+        {
+          "claim": "The T1→S1 intersystem crossing rate follows an Arrhenius form kISC,T = kISC,T,∞ exp(−ΔEST/kBT).",
+          "verdict": "supported",
+          "reason": "Evidence provides this Arrhenius expression for kISC,T."
+        },
+        {
+          "claim": "Perturbation theory shows ISC/RISC rates are inversely proportional to ΔEST (smaller gap → faster RISC).",
+          "verdict": "supported",
+          "reason": "Evidence states the intersystem crossing rate S1←T1 is inversely proportional to ΔEST."
+        },
+        {
+          "claim": "Efficient TADF requires RISC to compete with non-radiative T1 decay and a large fluorescence rate kF compared to other rates.",
+          "verdict": "supported",
+          "reason": "Evidence notes S1←T1 transfer is efficient if non-radiative rates are less than kISC,T and that kF must exceed other rates."
+        },
+        {
+          "claim": "TADF produces prompt and delayed fluorescence components with similar spectra when ΔEST is very small.",
+          "verdict": "supported",
+          "reason": "Evidence states TADF OLEDs have prompt and delayed components with nearly identical spectra due to extremely small ΔEST."
+        },
+        {
+          "claim": "To achieve small ΔEST, emitters commonly use donor–acceptor structures that spatially separate HOMO and LUMO.",
+          "verdict": "supported",
+          "reason": "Evidence says separated HOMO/LUMO is crucial for narrow ΔEST and that D–A architectures are favorable."
+        },
+        {
+          "claim": "Intramolecular charge transfer lowers ΔEST but can reduce oscillator strength, so designs must balance small ΔEST with sufficiently large radiative rate.",
+          "verdict": "partially_supported",
+          "reason": "Evidence links D–A/ICT character with small ΔEST and notes low fluorescence quantum yield and need to improve radiative rate, but does not explicitly mention oscillator strength reduction."
+        },
+        {
+          "claim": "TADF can in principle enable nearly 100% internal quantum efficiency by recovering the 75% of excitons initially formed as triplets.",
+          "verdict": "supported",
+          "reason": "Evidence states TADF-based OLEDs can theoretically reach 100% IQE with 25% from original singlets and 75% from RISC-converted triplets."
+        }
+      ],
+      "claim_count": 12,
+      "unsupported_claims": 0,
+      "partial_claims": 1,
+      "key_points_covered": 1.0,
+      "judge_cost_usd": 0.0316525
+    },
+    {
+      "id": "t01",
+      "category": "typo",
+      "pair_id": "tadf",
+      "question": "how does thermaly activted delayed florescence work",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "Thermally activated delayed fluorescence (TADF) is an upconversion process that converts non-emissive triplet excitons into emissive singlet excitons so they can decay radiatively, increasing fluorescent device efficiency.\n\nKey elements of the mechanism\n- Formation and population: Electrical excitation (or photoexcitation) produces singlet and triplet excitons in a 1:3 ratio; these relax to the lowest excited singlet (S1) and triplet (T1) states by internal conversion [1].\n- Small singlet–triplet gap (ΔEST): TADF requires that the singlet–triplet exchange energy ΔEST be comparable to or smaller than thermal energy kBT so that thermally driven upconversion is possible [2][3].\n- Reverse intersystem crossing (RISC): Triplet excitons at T1 are thermally promoted back to S1 via an endothermic reverse intersystem crossing (often called RISC). The thermally activated rate depends exponentially on −ΔEST/kBT, so a smaller ΔEST gives a much larger RISC rate [3][2].\n- Emission timing: Singlets formed either directly or via RISC decay radiatively as prompt fluorescence (fast) and as delayed fluorescence (slower component arising from the RISC pathway). Triplets can also decay non-radiatively or via phosphorescence if present [1].\n\nDesign and kinetics considerations\n- To make RISC competitive, the radiative rate from S1 (kF) and the RISC rate (kRISC) must be large enough to outcompete non-radiative loss channels; efficient TADF can approach near-100% triplet-to-singlet conversion when competing non-radiative rates are lower than the thermally activated ISC/RISC rates [2].\n- Molecular design: Common TADF emitters use donor–acceptor architectures with spatially separated HOMO and LUMO (for example by a twisted phenyl linker) to reduce orbital overlap and thus reduce ΔEST. However, reducing overlap also tends to lower oscillator strength and can suppress kF, so designs seek a balance (delocalized HOMO helps increase kR) [1].\n- Role of spin–orbit coupling: TADF molecules do not require heavy atoms because near-resonant S1 and T1 reduces reliance on strong spin–orbit coupling; nonetheless some state mixing by spin–orbit coupling is involved in S–T transitions [3].\n\nKinetic expression (qualitative)\n- The thermally activated ISC/RISC rate follows an Arrhenius-like dependence kRISC ∝ exp(−ΔEST/kBT), so smaller ΔEST and higher temperature increase upconversion efficiency [3].\n\nLimits and trade-offs\n- Emitters with very small ΔEST often have low oscillator strength (broader spectra, lower color purity), so practical TADF emitter design balances ΔEST, kF, and molecular geometry to optimize efficiency and color [4][1].\n\nIf you want, I can summarize these points in a simple energy-level diagram or list typical numerical targets for ΔEST and kRISC reported in the literature (requires searching for numerical values).",
+      "latency_s": 14.74,
+      "cost_usd": 0.0032115,
+      "used_files": [
+        "Chapter 3 Optics.pdf",
+        "Chapter 6 Organic Light Emitters.pdf",
+        "Triplet–triplet annihilation in highly efficient fluorescent organic light-emitting diodes.pdf",
+        "[Review - Nat] All-organic thermally activated delayed fluorescence materials for organic light-emitting diodes.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "cdb478c94",
+          "title": "All-organic thermally activated delayed fluorescence materials for organic light-emitting diodes",
+          "url": null,
+          "file_name": "[Review - Nat] All-organic thermally activated delayed fluorescence materials for organic light-emitting diodes.pdf",
+          "page": 2
+        },
+        {
+          "chunk_id": "cce3c5245",
+          "title": "Chapter 6 Organic Light Emitters",
+          "url": null,
+          "file_name": "Chapter 6 Organic Light Emitters.pdf",
+          "page": 124
+        },
+        {
+          "chunk_id": "c8b2e766c",
+          "title": "Chapter 3 Optics",
+          "url": null,
+          "file_name": "Chapter 3 Optics.pdf",
+          "page": 143
+        },
+        {
+          "chunk_id": "cfcb9dd71",
+          "title": "Triplet–triplet annihilation in highly efficient fluorescent organic light-emitting diodes: current state and future outlook",
+          "url": "https://doi.org/10.1098/rsta.2014.0321",
+          "file_name": "Triplet–triplet annihilation in highly efficient fluorescent organic light-emitting diodes.pdf",
+          "page": 5
+        }
+      ],
+      "searches": 1,
+      "llm_calls": 3,
+      "prompt_tokens": 4158,
+      "completion_tokens": 1086,
+      "cached_tokens": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "plan",
+          "t": 2.64,
+          "domain": "in_domain",
+          "reason": "The question asks about thermally activated delayed fluorescence (TADF), which is an OLED/organic-semiconductor emission mechanism covered by the knowledge base.",
+          "subquestions": [
+            "How does thermally activated delayed fluorescence (TADF) work?"
+          ]
+        },
+        {
+          "step": 2,
+          "type": "search",
+          "t": 7.91,
+          "query": "how does thermally activated delayed fluorescence work mechanism TADF singlet triplet upconversion reverse intersystem crossing small singlet-triplet gap",
+          "status": "ok",
+          "max_relevance": 0.928,
+          "survivor_count": 14,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 3,
+          "type": "stop",
+          "t": 14.74,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "run": 2,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": true,
+      "claims": [
+        {
+          "claim": "TADF converts non-emissive triplet excitons into emissive singlet excitons via upconversion, enabling radiative decay and increasing fluorescent device efficiency.",
+          "verdict": "partially_supported",
+          "reason": "Evidence describes triplet-to-singlet upconversion via RISC leading to delayed fluorescence (E1–E3). While increased device efficiency is a reasonable implication, it is not explicitly stated in these excerpts."
+        },
+        {
+          "claim": "Electrical or photoexcitation produces singlet and triplet excitons in a 1:3 ratio that relax to S1 and T1 by internal conversion.",
+          "verdict": "supported",
+          "reason": "E1 states a 1:3 singlet:triplet formation ratio and internal conversion to S1/T1."
+        },
+        {
+          "claim": "TADF requires the singlet–triplet gap ΔEST to be comparable to or smaller than kBT to allow thermally driven upconversion.",
+          "verdict": "supported",
+          "reason": "E2 explicitly states ΔEST comparable to or less than kBT; E3 discusses thermally activated behavior."
+        },
+        {
+          "claim": "Triplet excitons at T1 are thermally promoted back to S1 via endothermic reverse intersystem crossing (RISC), with a rate that depends exponentially on −ΔEST/kBT so smaller ΔEST increases the rate.",
+          "verdict": "supported",
+          "reason": "E3 gives kISC,T = k∞ exp(−ΔEST/kBT). E1 and E2 describe endothermic RISC from T1→S1."
+        },
+        {
+          "claim": "Singlets formed directly or via RISC emit as prompt (fast) and delayed (slow) fluorescence; triplets can also decay non-radiatively or via phosphorescence.",
+          "verdict": "supported",
+          "reason": "E1 details PF and DF with different lifetimes, as well as NR and phosphorescence from T1."
+        },
+        {
+          "claim": "Efficient TADF can approach near-100% triplet-to-singlet conversion when non-radiative rates are lower than thermally activated ISC/RISC rates, and kF must outcompete other rates.",
+          "verdict": "supported",
+          "reason": "E2 states S1←T1 transfer can be nearly 100% efficient if competing non-radiative rates are less than kISC,T and that efficient fluorescence requires kF exceed other rates."
+        },
+        {
+          "claim": "TADF emitters often use donor–acceptor designs with reduced HOMO–LUMO overlap (e.g., twisted phenyl linkers) to reduce ΔEST; reduced overlap lowers oscillator strength and can suppress kF; a balance is needed; a wide, delocalized HOMO can increase kR.",
+          "verdict": "supported",
+          "reason": "E1 discusses donor–acceptor separation via phenyl linkers, reduced overlap to realize TADF, trade-off with oscillator strength/transition dipole (kR), and benefit of delocalized HOMO for increasing kR."
+        },
+        {
+          "claim": "TADF does not require heavy atoms because near-resonant S1 and T1 reduce reliance on strong spin–orbit coupling, though some spin–orbit mixing is involved.",
+          "verdict": "supported",
+          "reason": "E3 states spin–orbit coupling is required to mix spins but heavy metal atoms are not required due to near-resonance of S1 and T1."
+        },
+        {
+          "claim": "The RISC rate follows Arrhenius-like behavior kRISC ∝ exp(−ΔEST/kBT), so smaller ΔEST and higher temperature increase upconversion efficiency.",
+          "verdict": "supported",
+          "reason": "E3 provides the exponential temperature dependence on ΔEST; it implies higher T and smaller ΔEST increase the rate, improving TADF efficiency."
+        },
+        {
+          "claim": "Very small ΔEST often leads to low oscillator strength and poorer color purity (broader spectra), so designs balance ΔEST, kF, and geometry.",
+          "verdict": "supported",
+          "reason": "E4 notes small-gap emitters have low oscillator strengths; E1 notes TADF emitters usually have relatively poor monochromaticity, implying broader spectra/color purity trade-offs."
+        }
+      ],
+      "claim_count": 10,
+      "unsupported_claims": 0,
+      "partial_claims": 1,
+      "key_points_covered": 1.0,
+      "judge_cost_usd": 0.02082625
+    },
+    {
+      "id": "amb1",
+      "category": "ambiguous",
+      "pair_id": "blue_lifetime",
+      "question": "why do blue ones die so fast and how do you fix it?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "Short answer\n- Blue OLEDs age faster mainly because their emitters have higher excited-state (photon) energy and, in some blue fluorescent devices, long-lived triplet excitons; these factors increase the probability of irreversible chemical damage during operation [1] [2]. Deep-blue devices are also often driven at higher current density for a given luminance, which accelerates aging [3].\n\n1) Why blue emitters degrade faster\n- There is a correlation between emission energy and stability: lower-energy red/green emitters show much longer lifetimes than high-energy blue emitters, so blue typically limits device lifetime [2].\n- High excited-state energy makes molecules and their surroundings more prone to energy-driven chemical degradation; the literature labels this ‘‘energy-driven degradation’’ for blue PHOLEDs [1] [2].\n- In fluorescent blue OLEDs triplet excitons cannot radiatively decay and therefore ‘‘linger’’; the coexistence of long-lived excited states and charges catalyzes degradation chemistry. Phosphorescent dopants that rapidly harvest singlet and triplet excitons reduce exciton lifetime and tend to improve device lifetime [1].\n- Practical constraints: deep-blue color requires wide energy-gap materials that are difficult to make both efficient and stable; also driving at higher current density to reach required luminance shortens lifetime [4] [3].\n\n2) How to improve blue lifetime (materials, device design, fabrication) — strategies supported by the cited literature\n- Rapid exciton harvesting: employ phosphorescent or other triplet-harvesting dopants to remove reactive excitons quickly and reduce degradation [1].\n- Host and emitter triplet-energy engineering: use host materials with higher triplet energy than the blue dopant to prevent back-transfer and energy loss; designing such hosts for deep-blue phosphors is necessary but challenging [4].\n- Molecular design to avoid problematic MLCT states: avoid metal-to-ligand charge-transfer states being lifted into the blue region, since that causes quenching and instability in blue phosphors [4].\n- Accept trade-offs (color vs lifetime): choosing a slightly less deep blue (longer wavelength) can lower required drive current and photon-energy stress, improving lifetime in practice [3].\n- General device optimization: minimize excited-state population time and avoid high current-density operation; controlling intrinsic failure mechanisms is a major research focus to extend blue PHOLED lifetimes [1] [2].\n\nWhat these documents do not give\n- The excerpts summarize mechanisms and broad strategies but do not provide specific chemical structures, fabrication recipes, encapsulation/process parameters, or quantitative lifetime gains for particular modifications. If you want specific emitters, host materials, device stacks, or measured lifetime numbers for a particular approach, I can search for those details.\n\nCitations: [1] [2] [4] [3]",
+      "latency_s": 29.55,
+      "cost_usd": 0.00835675,
+      "used_files": [
+        "!!! 중요 !!! Blue-emitting organic electrofluorescence materials - progress and prospective.pdf",
+        "Chapter 6 Organic Light Emitters.pdf",
+        "[Franky So] Organic Electronics Materials, Processing, Devices and Applications.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "cf467e2ac",
+          "title": "Chapter 6 Organic Light Emitters",
+          "url": null,
+          "file_name": "Chapter 6 Organic Light Emitters.pdf",
+          "page": 324
+        },
+        {
+          "chunk_id": "cccaa306e",
+          "title": "Chapter 6 Organic Light Emitters",
+          "url": null,
+          "file_name": "Chapter 6 Organic Light Emitters.pdf",
+          "page": 322
+        },
+        {
+          "chunk_id": "c7f568e09",
+          "title": "Organic Electronics Materials, Processing, Devices and Applications",
+          "url": null,
+          "file_name": "[Franky So] Organic Electronics Materials, Processing, Devices and Applications.pdf",
+          "page": 446
+        },
+        {
+          "chunk_id": "cf637be39",
+          "title": "Blue-emitting organic electrofluorescence materials: progress and prospective",
+          "url": "https://doi.org/10.1039/c5tc02420j",
+          "file_name": "!!! 중요 !!! Blue-emitting organic electrofluorescence materials - progress and prospective.pdf",
+          "page": 1
+        }
+      ],
+      "searches": 1,
+      "llm_calls": 5,
+      "prompt_tokens": 14147,
+      "completion_tokens": 3130,
+      "cached_tokens": 6400,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "plan",
+          "t": 1.88,
+          "domain": "in_domain",
+          "reason": "The question asks about why blue OLEDs (organic light-emitting diodes) have shorter lifetimes and how to fix that, which falls squarely within OLED device physics, materials, and degradation.",
+          "subquestions": [
+            "Why do blue OLEDs (blue emitters) degrade faster than green/red OLEDs?",
+            "How can the lifetime of blue OLEDs be improved (materials, device design, and fabrication approaches)?"
+          ]
+        },
+        {
+          "step": 2,
+          "type": "search",
+          "t": 8.41,
+          "query": "Why do blue OLEDs degrade faster than green and red, mechanisms and failure modes; and methods to improve blue emitter lifetime materials device design fabrication",
+          "status": "ok",
+          "max_relevance": 0.931,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 3,
+          "type": "answer_rejected",
+          "t": 16.61,
+          "errors": [
+            "Chunk IDs must appear only inside square brackets, e.g. [cf467e2ac]."
+          ],
+          "revision": 1
+        },
+        {
+          "step": 4,
+          "type": "answer_rejected",
+          "t": 22.6,
+          "errors": [
+            "Chunk IDs must appear only inside square brackets, e.g. [cf467e2ac]."
+          ],
+          "revision": 2
+        },
+        {
+          "step": 5,
+          "type": "stop",
+          "t": 29.55,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "run": 0,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": false,
+      "claims": [
+        {
+          "claim": "Blue OLEDs age faster mainly because their emitters have higher excited-state (photon) energy and, in some blue fluorescent devices, long-lived triplet excitons; these factors increase the probability of irreversible chemical damage during operation.",
+          "verdict": "supported",
+          "reason": "E2 notes a correlation between higher emission energy and shorter lifetime; E1 links degradation to presence of excited states and charges and explains long-lived triplets in fluorescent OLEDs linger and negatively impact lifetime."
+        },
+        {
+          "claim": "Deep-blue devices are often driven at higher current density for a given luminance, which accelerates aging.",
+          "verdict": "supported",
+          "reason": "E3 states deep-blue dopants must be driven at higher current densities to achieve the same luminance, leading to shorter lifetimes."
+        },
+        {
+          "claim": "There is a correlation between emission energy and stability: lower-energy red/green emitters show much longer lifetimes than high-energy blue emitters, so blue typically limits device lifetime.",
+          "verdict": "supported",
+          "reason": "E2 explicitly states a rough correlation between emission energy and device stability and that blue is the major limiting factor in lifetime."
+        },
+        {
+          "claim": "High excited-state energy makes molecules and their surroundings more prone to energy-driven chemical degradation; this is labeled energy-driven degradation for blue PHOLEDs.",
+          "verdict": "supported",
+          "reason": "E2 section is titled 'Lifetime of blue PHOLEDs: Energy-driven degradation' and discusses correlation of higher photon energy with reduced stability."
+        },
+        {
+          "claim": "In fluorescent blue OLEDs triplet excitons cannot radiatively decay and therefore linger; the coexistence of long-lived excited states and charges catalyzes degradation; phosphorescent dopants that rapidly harvest singlet and triplet excitons reduce exciton lifetime and tend to improve device lifetime.",
+          "verdict": "supported",
+          "reason": "E1 states triplets in fluorescent OLEDs linger due to no allowed transitions, degradation is catalyzed by excited state and charge, and phosphor dopants rapidly harvest excitons and rapid elimination should increase lifetime."
+        },
+        {
+          "claim": "Deep-blue color requires wide energy-gap materials that are difficult to make both efficient and stable; also driving at higher current density to reach required luminance shortens lifetime.",
+          "verdict": "supported",
+          "reason": "E4 notes blue emitters have intrinsically wider energy gaps and deep-blue phosphors are difficult to design and can be unstable; E3 links higher current density for deep blue to shorter lifetimes."
+        },
+        {
+          "claim": "Rapid exciton harvesting (e.g., phosphorescent or other triplet-harvesting dopants) removes reactive excitons quickly and reduces degradation.",
+          "verdict": "supported",
+          "reason": "E1 indicates phosphor dopants rapidly harvest excitons and rapid elimination of the exciton should increase device lifetime."
+        },
+        {
+          "claim": "Host and emitter triplet-energy engineering: use host materials with higher triplet energy than the blue dopant to prevent back-transfer and energy loss; designing such hosts for deep-blue phosphors is necessary but challenging.",
+          "verdict": "partially_supported",
+          "reason": "E4 states it is difficult to design a host with higher triplet energy to match the blue phosphorescent dopant; prevention of back-transfer is not explicitly mentioned in the provided evidence."
+        },
+        {
+          "claim": "Avoid metal-to-ligand charge-transfer (MLCT) states being lifted into the blue region, since that causes quenching and instability in blue phosphors.",
+          "verdict": "supported",
+          "reason": "E4 explicitly notes radiation quenching arises if an MLCT orbital is lifted to generate high-energy blue emission and blue phosphors often exhibit instability."
+        },
+        {
+          "claim": "Choosing a slightly less deep blue (longer wavelength) can lower required drive current and photon-energy stress, improving lifetime in practice.",
+          "verdict": "partially_supported",
+          "reason": "E3 supports that less deep blue requires lower current density, which improves lifetime; the explicit mention of 'photon-energy stress' is not in the evidence."
+        },
+        {
+          "claim": "General device optimization: minimize excited-state population time and avoid high current-density operation; controlling intrinsic failure mechanisms is a major research focus to extend blue PHOLED lifetimes.",
+          "verdict": "supported",
+          "reason": "E1 mentions rapid elimination of excitons and that controlling intrinsic failure mechanisms is a key research focus; E3 links high current density to shorter lifetimes."
+        },
+        {
+          "claim": "The cited documents do not provide specific chemical structures, fabrication recipes, encapsulation/process parameters, or quantitative lifetime gains for particular modifications.",
+          "verdict": "unsupported",
+          "reason": "The provided excerpts do not make claims about the absence of such details; E2 even includes a lifetime table. This meta-claim is not supported by the evidence."
+        }
+      ],
+      "claim_count": 12,
+      "unsupported_claims": 1,
+      "partial_claims": 2,
+      "key_points_covered": 0.5,
+      "judge_cost_usd": 0.02548875
+    },
+    {
+      "id": "amb1",
+      "category": "ambiguous",
+      "pair_id": "blue_lifetime",
+      "question": "why do blue ones die so fast and how do you fix it?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "Summary — why blue OLEDs degrade faster and how to mitigate it:\n\n1) Why blue emitters/devices degrade faster\n- Degradation correlates with excited-state energy: higher-energy (blue) excitons more readily cause energy-driven molecular dissociation and intrinsic aging, so blue devices have far shorter lifetimes than green/red devices [1][2][3].\n- In fluorescent blue devices, long-lived triplet excitons (which cannot radiatively decay) linger and catalyze degradation because the triplets persist and interact with charges or molecules; phosphorescent dopants that rapidly harvest excitons reduce this effect and so red/green PHOLEDs live longer than fluorescent blues [2].\n- Device chemistry and layer materials can create quenchers and chemical degradation products under electrical stress (for example NPB derivatives correlate with efficacy loss), and certain transport/blocking layers can form dimers or ligate metal emitters to create nonradiative centers that shorten lifetime [4].\n\n2) Mechanisms cited in the literature\n- Energy-driven molecular dissociation from hot/high-energy excited states is a dominant intrinsic failure mode in blue devices [3][1].\n- Accumulation of electrically generated chemical degradation products (quenchers) and poor charge balance (surplus carriers) accelerate aging [4].\n\n3) How degradation can be mitigated (methods shown in studies)\n- Reduce exciton density in the emission zone: lowering local exciton population reduces the probability of energy-driven bond breaking; this has been shown to mitigate the intrinsic process [3][2].\n- Rapidly siphon off excess energy from hot excited states (for example using managers/dopants that harvest excitons quickly) so excitons do not persist and cause chemistry that leads to defects; phosphorescent dopants that harvest singlet and triplet excitons are an example [2][3].\n- Improve encapsulation to prevent extrinsic degradation (encapsulated devices show orders-of-magnitude longer lifetime than non-encapsulated) and avoid moisture/oxygen-driven failure modes [4].\n- Control materials and layer selection to avoid formation of quenchers, dimers, or ligating interactions (choice of hole/electron blocking and transport layers matters; example: BPhen HBL produced shorter lifetime due to dimer quenchers and Ir-ligating behavior compared to BAlq) [4].\n- Optimize charge balance to avoid surplus carriers that chemically damage organics and create nonradiative recombination centers [4].\n- Outcoupling improvements are recommended to reduce required internal exciton generation for a given external brightness (less internal exciton flux reduces aging), though efficient universal outcoupling remains a technological challenge [3].\n\nLimits of the cited literature\n- The documents attribute blue fragility to energy-driven degradation and give mitigation approaches (reduced exciton density, exciton harvesting, materials/layer engineering, encapsulation) but note that these methods have not yet produced deep-blue lifetimes comparable to red/green in many cases; chemical origins of the specific electronic defects are still an active research topic [3][1].\n\nIf you want, I can: (a) extract specific examples of materials or device architectures that improved blue lifetime from the literature, or (b) summarize practical engineering steps (layer choices, drive schemes, outcoupling tricks) with the available evidence.\n",
+      "latency_s": 15.67,
+      "cost_usd": 0.00325625,
+      "used_files": [
+        "Chapter 6 Organic Light Emitters.pdf",
+        "OLED Display Fundamentals and Applications - 2017 - Tsujimura.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "cccaa306e",
+          "title": "Chapter 6 Organic Light Emitters",
+          "url": null,
+          "file_name": "Chapter 6 Organic Light Emitters.pdf",
+          "page": 322
+        },
+        {
+          "chunk_id": "cf467e2ac",
+          "title": "Chapter 6 Organic Light Emitters",
+          "url": null,
+          "file_name": "Chapter 6 Organic Light Emitters.pdf",
+          "page": 324
+        },
+        {
+          "chunk_id": "c0fc22814",
+          "title": "Chapter 6 Organic Light Emitters",
+          "url": null,
+          "file_name": "Chapter 6 Organic Light Emitters.pdf",
+          "page": 385
+        },
+        {
+          "chunk_id": "cc8d0f86d",
+          "title": "OLED Display Fundamentals and Applications - 2017 - Tsujimura",
+          "url": null,
+          "file_name": "OLED Display Fundamentals and Applications - 2017 - Tsujimura.pdf",
+          "page": 51
+        }
+      ],
+      "searches": 1,
+      "llm_calls": 3,
+      "prompt_tokens": 3881,
+      "completion_tokens": 1143,
+      "cached_tokens": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "plan",
+          "t": 1.63,
+          "domain": "in_domain",
+          "reason": "The question asks about why blue OLEDs degrade faster and how to fix it, which is directly within OLED device physics and materials.",
+          "subquestions": [
+            "Why do blue OLED emitters and devices degrade faster than green and red ones, and how can degradation be mitigated?"
+          ]
+        },
+        {
+          "step": 2,
+          "type": "search",
+          "t": 7.78,
+          "query": "why blue OLED emitters and devices degrade faster than green and red mitigation strategies causes mechanisms materials lifetime",
+          "status": "ok",
+          "max_relevance": 0.863,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 3,
+          "type": "stop",
+          "t": 15.67,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "run": 1,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": false,
+      "claims": [
+        {
+          "claim": "Blue OLEDs have far shorter lifetimes than red/green, and degradation correlates with higher excited-state energy leading to energy-driven molecular dissociation and intrinsic aging.",
+          "verdict": "supported",
+          "reason": "E1 notes blue devices have far shorter lifetimes and a correlation between emission energy and stability; E3 states lifetime is intrinsically limited by energy-driven molecular dissociation."
+        },
+        {
+          "claim": "In fluorescent OLEDs, long-lived triplet excitons linger and catalyze degradation; phosphorescent dopants rapidly harvest excitons, so red/green PHOLEDs have longer lifetimes than fluorescent blues.",
+          "verdict": "supported",
+          "reason": "E2 says phosphor dopants rapidly harvest singlet and triplet excitons; degradation is catalyzed by excited state plus charge; in fluorescent OLEDs triplets linger many seconds and negatively impact lifetime; red/green PHOLEDs have longer lifetimes than fluorescent counterparts."
+        },
+        {
+          "claim": "Device chemistry can create quenchers and degradation products under electrical stress; certain blocking/transport layers can form dimers or ligate emitters to create nonradiative centers that shorten lifetime; NPB derivatives correlate with efficacy loss.",
+          "verdict": "supported",
+          "reason": "E4 reports NPB degradation products act as quenchers correlating with efficacy loss and BPhen HBL causes shorter lifetime due to dimer quenchers and Ir-ligating behavior creating nonradiative centers."
+        },
+        {
+          "claim": "Energy-driven molecular dissociation from hot/high-energy excited states is a dominant intrinsic failure mode in blue devices.",
+          "verdict": "supported",
+          "reason": "E3 explicitly states lifetime is intrinsically limited by energy-driven molecular dissociation."
+        },
+        {
+          "claim": "Accumulation of electrically generated chemical degradation products (quenchers) and poor charge balance (surplus carriers) accelerate aging.",
+          "verdict": "supported",
+          "reason": "E4 shows degradation products act as quenchers and that charge balance is important; surplus carriers damage the organic materials."
+        },
+        {
+          "claim": "Lowering exciton density in the emission zone mitigates intrinsic degradation by reducing the probability of energy-driven bond breaking.",
+          "verdict": "supported",
+          "reason": "E3 states decreasing exciton density mitigates the energy-driven dissociation process."
+        },
+        {
+          "claim": "Rapidly siphoning energy from hot excited states using managers/dopants that quickly harvest excitons mitigates degradation; phosphorescent dopants that harvest singlet and triplet excitons are an example.",
+          "verdict": "supported",
+          "reason": "E3 mentions siphoning off excess energy using managers; E2 notes phosphor dopants rapidly harvest singlet and triplet excitons."
+        },
+        {
+          "claim": "Improving encapsulation prevents extrinsic degradation, with encapsulated devices showing orders-of-magnitude longer lifetimes than non-encapsulated ones.",
+          "verdict": "supported",
+          "reason": "E4 reports encapsulated devices have two orders of magnitude longer lifetimes than nonencapsulated devices."
+        },
+        {
+          "claim": "Selecting materials/layers to avoid formation of quenchers, dimers, or ligating interactions improves lifetime; e.g., BPhen HBL yields much shorter lifetime than BAlq due to dimer quenchers and Ir-ligating behavior.",
+          "verdict": "supported",
+          "reason": "E4 directly provides this comparison and mechanisms for BPhen vs BAlq HBL."
+        },
+        {
+          "claim": "Optimizing charge balance to avoid surplus carriers prevents chemical damage and formation of nonradiative recombination centers.",
+          "verdict": "partially_supported",
+          "reason": "E4 states charge balance is important and surplus carriers damage organics; it does not explicitly generalize to forming nonradiative centers beyond the specific BPhen ligand case."
+        },
+        {
+          "claim": "Improving outcoupling reduces required internal exciton generation for a given external brightness, which should reduce aging; however, efficient universal outcoupling remains a challenge.",
+          "verdict": "partially_supported",
+          "reason": "E3 details outcoupling challenges and current limits, but does not explicitly state the link to reduced aging from lower internal exciton generation."
+        },
+        {
+          "claim": "Despite mitigation methods, blue—especially deep blue—lifetimes remain insufficient for displays; identifying the chemical origins of electronic defects is an ongoing research challenge.",
+          "verdict": "supported",
+          "reason": "E3 states current methods have not yielded sufficiently long blue (especially deep blue) lifetimes for displays and calls for connecting chemical origins of defects to degradation."
+        }
+      ],
+      "claim_count": 12,
+      "unsupported_claims": 0,
+      "partial_claims": 2,
+      "key_points_covered": 1.0,
+      "judge_cost_usd": 0.02436375
+    },
+    {
+      "id": "amb1",
+      "category": "ambiguous",
+      "pair_id": "blue_lifetime",
+      "question": "why do blue ones die so fast and how do you fix it?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "Summary — why blue OLEDs die faster, and how to fix it\n\nWhy blue degrades faster\n- Higher excitation energy: blue emitters have larger exciton energies, and the documents link higher guest emission energy to increased defect-formation rates and thus faster operational degradation compared with green/red devices [1].\n- Exciton-induced chemical damage: excitons (in particular singlet excitons in some systems) can cause bond dissociation of organic molecules and create chemical degradation products in blue fluorescent materials; experiments distinguish exciton-driven photochemical and electrical aging mechanisms [2].\n- Exciton–annihilation and exciton–polaron interactions: bimolecular annihilation reactions (exciton–exciton or exciton–polaron) create defects that act as quenchers and charge traps; these processes are more damaging for high-energy (blue) guests and shorten lifetime [1].\n- Shorter exciton lifetimes and required drive conditions: blue emitters are often driven at higher current density for a given luminance (or have shorter natural lifetimes), and the defect-generation rate was shown to be inversely proportional to the guest exciton lifetime — both effects accelerate aging for blue devices [1, 3].\n\nPractical approaches shown in the literature to improve blue operational lifetime\n- Increase radiative (natural) decay rate of the emitter: raising the emitter’s radiative rate reduces the relative contribution of annihilation pathways (lowering defect formation) and can lengthen lifetime [1].\n- Molecular design to reduce annihilation probability: increase intermolecular separation or add steric bulk on host/guest molecules to reduce bimolecular interactions (reduces Kx) — this can lower annihilation-induced defect formation, though it may trade off some efficiency [1].\n- Host/guest and EML engineering: pick wide–energy-gap, robust host materials and engineer the host/guest energetics to reduce high-energy excitations on vulnerable moieties; optimized host/guest systems and careful placement of energy barriers can broaden the recombination zone and reduce localized degradation [4, 1].\n- Device architecture to spread recombination and lower local current density: distributing the recombination zone and inserting energy barriers reduces localized exciton densities and associated degradation [1].\n- Move to more stable blue phosphors/emitter classes and material discovery: the literature emphasizes development of more stable pure-blue phosphorescent emitters and related materials (and industry reports of improved blue phosphors), because intrinsically more stable emitters reduce color shift and lifetime mismatch [4].\n\nNotes and limits of the cited evidence\n- The cited documents establish that higher exciton energy, exciton-driven bond breaking, and annihilation-related defect formation underlie faster blue degradation, and they report the mitigation strategies above [2, 1, 4, 3].\n- The sources discuss mechanisms and engineering directions but do not provide a single universal recipe with guaranteed lifetime numbers for all blue emitter chemistries; specific material choices and device-stack optimizations must be evaluated experimentally for a given emitter/device.\n\nIf you want, I can:\n- Summarize specific molecular design tactics (examples of steric groups, radiative-rate enhancing strategies) if you want to focus on fluorescent vs phosphorescent vs TADF blue emitters; or\n- Search for measured lifetime improvements (T50 or T95) from particular material or device changes.\n\nCitations: [2] [1] [4] [3]",
+      "latency_s": 14.69,
+      "cost_usd": 0.00351925,
+      "used_files": [
+        "Comparison of ultraviolet- and charge-induced degradation phenom.pdf",
+        "[Franky So] Organic Electronics Materials, Processing, Devices and Applications.pdf",
+        "[Giebink] Intrinsic luminance loss in phosphorescent small-molecule organic light emitting.pdf",
+        "[Review] Multifunctional Materials in High-Performance OLEDs - Challenges for Solid-State Lighting.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "cf46e4828",
+          "title": "Intrinsic luminance loss in phosphorescent small-molecule organic light emitting devices due to bimolecular annihilation reactions",
+          "url": "https://doi.org/10.1063/1.2884530",
+          "file_name": "[Giebink] Intrinsic luminance loss in phosphorescent small-molecule organic light emitting.pdf",
+          "page": 9
+        },
+        {
+          "chunk_id": "c0d923321",
+          "title": "Comparison of ultraviolet- and charge-induced degradation phenom",
+          "url": null,
+          "file_name": "Comparison of ultraviolet- and charge-induced degradation phenom.pdf",
+          "page": 2
+        },
+        {
+          "chunk_id": "c7f568e09",
+          "title": "Organic Electronics Materials, Processing, Devices and Applications",
+          "url": null,
+          "file_name": "[Franky So] Organic Electronics Materials, Processing, Devices and Applications.pdf",
+          "page": 446
+        },
+        {
+          "chunk_id": "cc5c30e12",
+          "title": "Multifunctional Materials in High-Performance OLEDs: Challenges for Solid-State Lighting",
+          "url": "https://doi.org/10.1021/cm1024052",
+          "file_name": "[Review] Multifunctional Materials in High-Performance OLEDs - Challenges for Solid-State Lighting.pdf",
+          "page": 2
+        }
+      ],
+      "searches": 1,
+      "llm_calls": 3,
+      "prompt_tokens": 5197,
+      "completion_tokens": 1110,
+      "cached_tokens": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "plan",
+          "t": 1.52,
+          "domain": "in_domain",
+          "reason": "The question asks about why blue OLED emitters and devices have shorter operational lifetime and how to mitigate it, which is within OLED device physics and materials domain.",
+          "subquestions": [
+            "Why do blue OLEDs (blue organic light-emitting diode emitters/devices) degrade faster than green/red ones, and what approaches can be used to improve their operational lifetime?"
+          ]
+        },
+        {
+          "step": 2,
+          "type": "search",
+          "t": 7.32,
+          "query": "reasons blue OLED emitters degrade faster than green red and approaches to improve blue OLED operational lifetime",
+          "status": "ok",
+          "max_relevance": 0.91,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 3,
+          "type": "stop",
+          "t": 14.69,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "run": 2,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": true,
+      "claims": [
+        {
+          "claim": "Blue emitters have larger exciton energies, and higher guest emission energy is linked to increased defect-formation rates and faster degradation vs green/red.",
+          "verdict": "supported",
+          "reason": "E1 states a link between higher guest emission energy and increased defect formation and concludes blue lifetimes are shorter than green/red due to higher energy excitations."
+        },
+        {
+          "claim": "Excitons, particularly singlet excitons in some systems, can cause bond dissociation and chemical degradation in blue fluorescent materials; experiments distinguish exciton-driven photochemical and electrical aging.",
+          "verdict": "supported",
+          "reason": "E2 shows singlet excitons can cause degradation, discusses bond dissociation, and compares UV (photo) and electrical aging."
+        },
+        {
+          "claim": "Bimolecular annihilation reactions (exciton–exciton or exciton–polaron) create defects that act as quenchers and charge traps, which shorten lifetime, and this is more severe for high-energy blue guests.",
+          "verdict": "supported",
+          "reason": "E1 attributes defect generation to exciton–polaron annihilation, with defects acting as quenchers and traps, and ties higher guest energy to higher defect formation; blue lifetimes are shorter."
+        },
+        {
+          "claim": "Blue emitters are often driven at higher current density for a given luminance, which shortens lifetime.",
+          "verdict": "supported",
+          "reason": "E3 states deep blue dopants require higher current densities to reach the same luminance and that higher current densities lead to shorter lifetimes."
+        },
+        {
+          "claim": "The defect-generation rate is inversely proportional to the guest exciton lifetime, accelerating aging when the exciton lifetime is short.",
+          "verdict": "supported",
+          "reason": "E1 explicitly states the defect formation rate is inversely proportional to the guest exciton lifetime."
+        },
+        {
+          "claim": "Increasing the emitter’s radiative (natural) decay rate reduces annihilation and defect formation, lengthening lifetime.",
+          "verdict": "supported",
+          "reason": "E1 notes increasing radiative rate decreases Kx and results in longer-lived devices."
+        },
+        {
+          "claim": "Adding steric bulk or increasing intermolecular separation to reduce bimolecular annihilation probability lowers Kx and can increase lifetime, with possible efficiency trade-offs.",
+          "verdict": "supported",
+          "reason": "E1 recommends steric bulk to increase separation, decrease Kx, increase lifetime, and warns it may reduce efficiency."
+        },
+        {
+          "claim": "Engineering the host/guest system and placing energy barriers to broaden the recombination zone can reduce localized degradation.",
+          "verdict": "supported",
+          "reason": "E1 states that strategic placement of energy barriers and EML engineering can lead to a more uniform, distributed recombination zone."
+        },
+        {
+          "claim": "Selecting wide–energy-gap, robust host materials and engineering energetics to reduce high-energy excitations on vulnerable moieties can help improve blue lifetime.",
+          "verdict": "partially_supported",
+          "reason": "E4 discusses wide-energy-gap host materials for high-performance blue OLEDs, but does not explicitly link them to reducing high-energy excitations on vulnerable moieties; E1 supports engineering but not this specific causal detail."
+        },
+        {
+          "claim": "Developing more stable blue phosphorescent emitters is a key solution; industry has announced blue phosphors with improved lifetimes.",
+          "verdict": "supported",
+          "reason": "E4 states that a key solution is to develop a stable, pure blue phosphorescent emitter and notes UDC and BASF have announced improved-lifetime blue phosphors."
+        },
+        {
+          "claim": "The literature provides mechanisms and strategies but not a universal recipe with guaranteed lifetime numbers for all blue chemistries, requiring experimental optimization for each device.",
+          "verdict": "unsupported",
+          "reason": "This general limitation statement is not made in E1–E4."
+        }
+      ],
+      "claim_count": 11,
+      "unsupported_claims": 1,
+      "partial_claims": 1,
+      "key_points_covered": 1.0,
+      "judge_cost_usd": 0.02516125
+    },
+    {
+      "id": "mh1",
+      "category": "multi_hop",
+      "pair_id": "mh_mobility_lifetime",
+      "question": "How does electron mobility in the electron transport layer influence the operational lifetime of an OLED?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "Summary answer:\n- Electron mobility in the ETL affects OLED operational lifetime primarily via its effect on charge balance, operating voltage/electric field, and where charges or excitons accumulate. High-performance ETLs that give good charge balance and energy alignment with the emissive layer have been reported to significantly enhance device lifetime [1].\n\nEvidence and mechanisms from the documents:\n1) Charge balance and energy alignment: Devices with ETLs that provide better charge balance and good energy alignment with the emissive layer show significantly enhanced lifetimes; the cited review explicitly links high thermal stability, better charge balance and good ETL–emitter energy alignment to a significant lifetime improvement [1].\n\n2) Electron trapping in the ETL can improve stability: Introducing an electron-trapping dopant into the ETL (i.e., modifying electron transport properties of the ETL) produced a >4× improvement in half-life for one device comparison, indicating that changing electron transport (mobility/trapping) inside the ETL can strongly affect operational lifetime [2]. The authors note that this modification changed stability without large changes in injection, pointing to intralayer transport/trapping as the relevant factor rather than electrode deterioration [2].\n\n3) Electric field and operating voltage dependence: The electric field inside a transport layer depends on the layer properties; changes in the transport layer can cause substantial increases in operating voltage (reported as a 0.7 V increase in one example) because of altered transport/trapping, and increased field/voltage is implicated in degradation processes [2]. More generally, ETLs control electron injection from the cathode into the device and thus influence device current–voltage behavior [3].\n\n4) Operational degradation context: The documents separate two main lifetime loss modes: (a) dark-spot formation from environmental ingress and (b) gradual performance decrease during operation due to current-driven degradation. The latter (operation-related degradation) is the relevant mode affected by ETL transport properties because charge transport/trapping and resultant local current/field distributions influence operational decay [4, 1].\n\nWhat the documents do not provide:\n- No quantitative rule or formula is given relating a specific electron mobility value in the ETL to a specific lifetime (e.g., lifetime vs mobility curve). The papers give examples where improving ETL transport/trapping/energy alignment or doping the ETL produced multi‑fold lifetime improvements, but do not provide a general numeric dependence [1, 2].\n\nConcise practical implication (from cited evidence):\n- Optimizing ETL materials and structure to achieve good energy alignment with the emitter, appropriate electron transport (including controlled trapping when beneficial), and high thermal stability reduces operating voltage and improves charge balance, and these changes have been shown to substantially extend OLED operational lifetime in reported devices [1, 2, 3].\n\nCitations: [1], [2], [3], [4]",
+      "latency_s": 29.07,
+      "cost_usd": 0.005379699999999999,
+      "used_files": [
+        "Degradation Mechanisms in Small-Molecule and Polymer Organic Light-Emitting Diodes.pdf",
+        "OLED Display Fundamentals and Applications - 2017 - Tsujimura.pdf",
+        "[Review - IMP!] Approaches for Long Lifetime Organic Light Emitting Diodes.pdf",
+        "[Review] Organic light-emitting-diode lighting overview.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "c0f126a93",
+          "title": "Approaches for Long Lifetime Organic Light Emitting Diodes",
+          "url": "https://doi.org/10.1002/advs.202002254",
+          "file_name": "[Review - IMP!] Approaches for Long Lifetime Organic Light Emitting Diodes.pdf",
+          "page": 17
+        },
+        {
+          "chunk_id": "c43e77e83",
+          "title": "Degradation Mechanisms in Small‐Molecule and Polymer Organic Light‐Emitting Diodes",
+          "url": "https://doi.org/10.1002/adma.200902624",
+          "file_name": "Degradation Mechanisms in Small-Molecule and Polymer Organic Light-Emitting Diodes.pdf",
+          "page": 6
+        },
+        {
+          "chunk_id": "c85f0f4dc",
+          "title": "OLED Display Fundamentals and Applications - 2017 - Tsujimura",
+          "url": null,
+          "file_name": "OLED Display Fundamentals and Applications - 2017 - Tsujimura.pdf",
+          "page": 24
+        },
+        {
+          "chunk_id": "c88f341a1",
+          "title": "Organic light-emitting-diode lighting overview",
+          "url": null,
+          "file_name": "[Review] Organic light-emitting-diode lighting overview.pdf",
+          "page": 11
+        }
+      ],
+      "searches": 1,
+      "llm_calls": 4,
+      "prompt_tokens": 9130,
+      "completion_tokens": 1851,
+      "cached_tokens": 2688,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "plan",
+          "t": 1.63,
+          "domain": "in_domain",
+          "reason": "The question asks about how electron mobility in the electron transport layer (ETL) affects OLED operational lifetime, which is directly within OLED/device physics and degradation topics.",
+          "subquestions": [
+            "How does electron mobility in the electron transport layer (ETL) influence the operational lifetime of an organic light-emitting diode (OLED)?"
+          ]
+        },
+        {
+          "step": 2,
+          "type": "search",
+          "t": 7.96,
+          "query": "electron mobility in electron transport layer influence operational lifetime OLED electron mobility ETL lifetime mechanisms",
+          "status": "ok",
+          "max_relevance": 0.85,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 3,
+          "type": "answer_rejected",
+          "t": 22.85,
+          "errors": [
+            "Chunk IDs must appear only inside square brackets, e.g. [c0f126a93]."
+          ],
+          "revision": 1
+        },
+        {
+          "step": 4,
+          "type": "stop",
+          "t": 29.07,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "run": 0,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": true,
+      "claims": [
+        {
+          "claim": "ETL electron transport properties affect charge balance in OLEDs.",
+          "verdict": "supported",
+          "reason": "E1 links better charge balance of the electron transport layer with improved device lifetime, implying ETL properties influence charge balance."
+        },
+        {
+          "claim": "ETL electron transport properties affect operating voltage and electric field in the device.",
+          "verdict": "supported",
+          "reason": "E2 reports transport-layer changes (electron trapping) causing a 0.7 V increase in operating voltage, i.e., altered field/voltage due to ETL properties."
+        },
+        {
+          "claim": "ETL transport properties determine where charges or excitons accumulate (recombination zone location).",
+          "verdict": "unsupported",
+          "reason": "None of the excerpts explicitly discuss recombination zone shifts or exciton distribution due to ETL properties."
+        },
+        {
+          "claim": "High thermal stability, better charge balance, and good ETL–emitter energy alignment significantly enhance OLED lifetime.",
+          "verdict": "supported",
+          "reason": "E1 explicitly states lifetime enhancement due to high thermal stability, better charge balance, and good energy alignment of the ETL with the emissive layer."
+        },
+        {
+          "claim": "Introducing an electron-trapping dopant into the ETL produced more than a fourfold improvement in device half-life in one comparison.",
+          "verdict": "supported",
+          "reason": "E2 reports >4× half-life improvement when rubrene is introduced as an electron-trapping dopant in the ETL."
+        },
+        {
+          "claim": "The stability improvement from ETL trapping dopant occurred without large changes in injection, suggesting intralayer transport/trapping rather than electrode deterioration as the main factor.",
+          "verdict": "supported",
+          "reason": "E2 notes dopant placement away from interfaces should not affect injection and observes similar voltage rise rates, suggesting electrode deterioration is not the main cause."
+        },
+        {
+          "claim": "A change in the transport layer led to a 0.7 V increase in operating voltage due to electron trapping.",
+          "verdict": "supported",
+          "reason": "E2 directly attributes a 0.7 V operating-voltage increase to electron trapping in the transport layer."
+        },
+        {
+          "claim": "Increased field/voltage is implicated in degradation processes, as indicated by E2.",
+          "verdict": "unsupported",
+          "reason": "E2 discusses voltage rise and methods to evaluate fields but does not explicitly state that increased field/voltage causes degradation."
+        },
+        {
+          "claim": "ETLs control electron injection from the cathode and thus influence device current–voltage behavior.",
+          "verdict": "supported",
+          "reason": "E3 describes electron injection from the cathode into the ETL and relates to current–voltage characteristics."
+        },
+        {
+          "claim": "Two main lifetime loss modes are dark-spot formation from environmental ingress and gradual performance decrease during operation due to current-driven degradation.",
+          "verdict": "supported",
+          "reason": "E4 outlines dark-spot formation and operation-related gradual performance decrease as two degradation mechanisms."
+        },
+        {
+          "claim": "Operation-related degradation is affected by ETL transport properties because intralayer transport/trapping and local fields influence operational decay.",
+          "verdict": "supported",
+          "reason": "E2 shows ETL trapping dopant substantially improves half-life, indicating ETL transport affects operation-related stability."
+        },
+        {
+          "claim": "The documents do not provide a quantitative rule linking specific ETL electron mobility values to lifetime.",
+          "verdict": "unsupported",
+          "reason": "The provided excerpts do not address whether such quantitative rules exist; absence cannot be confirmed from the given text."
+        }
+      ],
+      "claim_count": 12,
+      "unsupported_claims": 3,
+      "partial_claims": 0,
+      "key_points_covered": 0.3333333333333333,
+      "judge_cost_usd": 0.03026
+    },
+    {
+      "id": "mh1",
+      "category": "multi_hop",
+      "pair_id": "mh_mobility_lifetime",
+      "question": "How does electron mobility in the electron transport layer influence the operational lifetime of an OLED?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "Summary: Higher electron mobility (better electron transport) in the ETL improves OLED operational lifetime primarily by improving charge balance, widening/moving the recombination (emission) zone away from vulnerable interfaces, reducing driving voltage/electric field, and decreasing local excitation cycling and chemical degradation near the recombination region.\n\nEvidence-supported points (each statement cites returned documents):\n\n- Charge balance and injection: Improved electron transport/injection from ETL materials leads to better charge-carrier balance in the emission zone, which increases efficiency and is correlated with longer lifetimes (example: devices with ETL materials that give excellent electron transport show lower driving voltages and higher power efficiency) [1, 2].\n\n- Emission-zone widening and reduced emitter cycling: Higher electron mobility (or improved electron hopping via emitters at higher emitter concentration) allows electrons to penetrate deeper into the emission zone, widening it so each emitter experiences fewer excitation/emission cycles; this widening is explicitly linked to lifetime enhancement in the cited study [1, 2].\n\n- Operating voltage and electric field: Poor electron transport or electron trapping in the ETL increases operating voltage and intralayer electric-field strength; increased field/voltage is associated with accelerated degradation (example: trapping in ETL caused a 0.7 V operating-voltage increase and higher fields) [3].\n\n- Trap/dopant effects: Introducing appropriate dopants into the ETL (to modify electron transport/trapping) can substantially improve half-life (an example device showed >4× half-life improvement when an electron-trapping dopant was introduced into the ETL), indicating that tailored electron transport properties in the ETL strongly influence operational stability [3].\n\n- Chemical degradation near recombination zone: The area close to the recombination zone has a strong influence on overall device degradation; moving recombination away from chemically weak interfaces by adjusting ETL transport and energy alignment can improve lifetime (studies attribute differences in lifetime for different blocking/transport layers to chemical stability and interactions near the emission zone) [1, 2].\n\nLimitations: The returned documents establish the mechanistic links above (charge balance, emission-zone distribution, voltage/field, trap/dopant effects, and chemical-stability of nearby layers) but do not provide universal quantitative rules (e.g., a single numerical relation between electron mobility and lifetime). Specific numeric dependence will be device-architecture and material dependent and is not given in the provided chunks.\n\nCitations: [4, 1, 2, 3]",
+      "latency_s": 12.6,
+      "cost_usd": 0.00313275,
+      "used_files": [
+        "! Influence of charge balance and exciton distribution on efficiency and lifetime of phosphorescent.pdf",
+        "Degradation Mechanisms in Small-Molecule and Polymer Organic Light-Emitting Diodes.pdf",
+        "Influence of charge balance and exciton distribution on efficiency and lifetime of phosphorescent organic light-emitting devices.pdf",
+        "[Review - IMP!] Approaches for Long Lifetime Organic Light Emitting Diodes.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "ca96cf1ca",
+          "title": "Influence of charge balance and exciton distribution on efficiency and lifetime of phosphorescent organic light-emitting devices",
+          "url": "https://doi.org/10.1063/1.2951960",
+          "file_name": "Influence of charge balance and exciton distribution on efficiency and lifetime of phosphorescent organic light-emitting devices.pdf",
+          "page": 6
+        },
+        {
+          "chunk_id": "c6042721c",
+          "title": "Influence of charge balance and exciton distribution on efficiency and lifetime of phosphorescent organic light-emitting devices",
+          "url": "https://doi.org/10.1063/1.2951960",
+          "file_name": "! Influence of charge balance and exciton distribution on efficiency and lifetime of phosphorescent.pdf",
+          "page": 6
+        },
+        {
+          "chunk_id": "c43e77e83",
+          "title": "Degradation Mechanisms in Small‐Molecule and Polymer Organic Light‐Emitting Diodes",
+          "url": "https://doi.org/10.1002/adma.200902624",
+          "file_name": "Degradation Mechanisms in Small-Molecule and Polymer Organic Light-Emitting Diodes.pdf",
+          "page": 6
+        },
+        {
+          "chunk_id": "c0f126a93",
+          "title": "Approaches for Long Lifetime Organic Light Emitting Diodes",
+          "url": "https://doi.org/10.1002/advs.202002254",
+          "file_name": "[Review - IMP!] Approaches for Long Lifetime Organic Light Emitting Diodes.pdf",
+          "page": 17
+        }
+      ],
+      "searches": 1,
+      "llm_calls": 3,
+      "prompt_tokens": 5027,
+      "completion_tokens": 938,
+      "cached_tokens": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "plan",
+          "t": 1.3,
+          "domain": "in_domain",
+          "reason": "The question asks about device physics of OLEDs—electron mobility in the electron transport layer and its effect on device lifetime—so it's within the OLED/organic-semiconductor domain.",
+          "subquestions": [
+            "How does electron mobility in the electron transport layer (ETL) influence the operational lifetime of an OLED?"
+          ]
+        },
+        {
+          "step": 2,
+          "type": "search",
+          "t": 7.78,
+          "query": "electron mobility in electron transport layer influence OLED operational lifetime effects of ETL mobility on degradation and device lifetime",
+          "status": "ok",
+          "max_relevance": 0.897,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 3,
+          "type": "stop",
+          "t": 12.6,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "run": 1,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": true,
+      "claims": [
+        {
+          "claim": "Higher electron mobility in the ETL improves OLED lifetime by improving charge balance.",
+          "verdict": "partially_supported",
+          "reason": "Evidence links better electron injection/transport (e.g., BAlq) to better charge balance and shows that devices with certain blockers have longer lifetimes, but it does not explicitly tie higher ETL mobility to lifetime via charge balance in a general causal statement."
+        },
+        {
+          "claim": "Higher electron mobility or improved electron transport allows electrons to penetrate deeper into the emission zone and widens it.",
+          "verdict": "supported",
+          "reason": "E1/E2 state that increased emitter doping improves electron transport via hopping, enabling electrons to penetrate deeper and widening the emission zone."
+        },
+        {
+          "claim": "Widening or moving the recombination zone away from vulnerable interfaces improves lifetime by reducing local excitation cycling and chemical degradation.",
+          "verdict": "partially_supported",
+          "reason": "E1/E2 support that widening the emission zone reduces excitation cycles and enhances lifetime, and that regions near the recombination zone strongly influence degradation. However, the specific claim about moving it away from vulnerable interfaces via ETL mobility is not explicitly shown."
+        },
+        {
+          "claim": "Improved electron transport/injection leads to lower driving voltage and higher power efficiency.",
+          "verdict": "supported",
+          "reason": "E1/E2 report that BAlq, with excellent electron transport and injection, yields the lowest operating voltages and highest power efficiencies."
+        },
+        {
+          "claim": "Lower driving voltage reduces intralayer electric field.",
+          "verdict": "partially_supported",
+          "reason": "E3 links increased operating voltage with increased electric field; while the converse is implied, it is not explicitly stated."
+        },
+        {
+          "claim": "Increased electric field or operating voltage accelerates degradation.",
+          "verdict": "unsupported",
+          "reason": "The provided evidence does not directly state that higher fields/voltages accelerate degradation."
+        },
+        {
+          "claim": "Better charge-carrier balance in the emission zone correlates with longer lifetimes.",
+          "verdict": "partially_supported",
+          "reason": "E1/E2 connect better electron injection (charge balance) with higher efficiency and separately show lifetime variations among blockers, but do not explicitly state a direct correlation between charge balance and longer lifetime."
+        },
+        {
+          "claim": "Introducing an electron-trapping dopant into the ETL can substantially improve half-life (e.g., >4×).",
+          "verdict": "supported",
+          "reason": "E3 reports >4× half-life improvement upon introducing rubrene as an electron-trapping dopant in the ETL."
+        },
+        {
+          "claim": "Electron trapping in the ETL causes an increase (~0.7 V) in operating voltage and higher intralayer electric field strength.",
+          "verdict": "supported",
+          "reason": "E3 states that trapping of electrons increases operating voltage by 0.7 V and discusses higher electric fields."
+        },
+        {
+          "claim": "The area close to the recombination zone has a strong influence on overall device degradation.",
+          "verdict": "supported",
+          "reason": "E1/E2 explicitly state that the area near the recombination zone strongly influences degradation behavior."
+        },
+        {
+          "claim": "Differences in lifetime for different blocking/transport layers are attributed to chemical stability and interactions near the emission zone.",
+          "verdict": "supported",
+          "reason": "E1/E2 attribute significant lifetime differences (e.g., BPhen vs BAlq) to chemical degradation channels and focus on stability and interactions near the emitter zone."
+        },
+        {
+          "claim": "The documents do not provide a universal quantitative relation between electron mobility and lifetime; dependence is device- and material-dependent.",
+          "verdict": "unsupported",
+          "reason": "This meta-claim is not stated in the provided evidence."
+        }
+      ],
+      "claim_count": 12,
+      "unsupported_claims": 2,
+      "partial_claims": 4,
+      "key_points_covered": 0.6666666666666666,
+      "judge_cost_usd": 0.02708375
+    },
+    {
+      "id": "mh1",
+      "category": "multi_hop",
+      "pair_id": "mh_mobility_lifetime",
+      "question": "How does electron mobility in the electron transport layer influence the operational lifetime of an OLED?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "Summary — how ETL electron mobility affects OLED operational lifetime:\n\n- High electron-transport conductivity/mobility in the ETL (better electron transport and energy alignment with the emissive layer and electrodes) improves charge balance and reduces operating voltage, and this has been shown to ‘‘significantly enhance’’ device lifetime [1].\n\n- Inserting a suitably conducting ETL (or engineering ETL/electron-injection layers) lowers the junction potential barrier, improves electron injection efficiency, and reduces device temperature during operation — all factors that mitigate degradation and extend lifetime [2].\n\n- Conversely, poor electron transport (low mobility or electron trapping in the ETL) leads to increased electric-field strength and a higher operating voltage, which are associated with accelerated degradation and device failure pathways (voltage rise and luminance loss) [3].\n\n- Empirical evidence that ETL modifications change lifetime: doping the ETL with an electron-trapping dopant in one study produced a >4× improvement in device half-life relative to the baseline device, showing that ETL properties strongly control operational stability (the same study also noted changes in operating voltage and field behavior) [3].\n\nNet technical picture supported by the documents: improving ETL electron transport (either by selecting higher-mobility ETL materials, using metal-doped ETLs, or otherwise optimizing ETL/electrode energy alignment) reduces injection barriers, lowers fields and operating voltage, limits heating and mechanical/thermal stress, and thereby extends OLED operational lifetime. The cited documents report these causal links between ETL transport properties, operating voltage/field, thermal effects, and lifetime outcomes rather than just correlations [1, 2, 3].\n\nCitations:",
+      "latency_s": 14.88,
+      "cost_usd": 0.00312,
+      "used_files": [
+        "Degradation Mechanisms in Small-Molecule and Polymer Organic Light-Emitting Diodes.pdf",
+        "[Review - IMP!] Approaches for Long Lifetime Organic Light Emitting Diodes.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "c0f126a93",
+          "title": "Approaches for Long Lifetime Organic Light Emitting Diodes",
+          "url": "https://doi.org/10.1002/advs.202002254",
+          "file_name": "[Review - IMP!] Approaches for Long Lifetime Organic Light Emitting Diodes.pdf",
+          "page": 17
+        },
+        {
+          "chunk_id": "c325497b5",
+          "title": "Approaches for Long Lifetime Organic Light Emitting Diodes",
+          "url": "https://doi.org/10.1002/advs.202002254",
+          "file_name": "[Review - IMP!] Approaches for Long Lifetime Organic Light Emitting Diodes.pdf",
+          "page": 12
+        },
+        {
+          "chunk_id": "c43e77e83",
+          "title": "Degradation Mechanisms in Small‐Molecule and Polymer Organic Light‐Emitting Diodes",
+          "url": "https://doi.org/10.1002/adma.200902624",
+          "file_name": "Degradation Mechanisms in Small-Molecule and Polymer Organic Light-Emitting Diodes.pdf",
+          "page": 6
+        }
+      ],
+      "searches": 1,
+      "llm_calls": 3,
+      "prompt_tokens": 4472,
+      "completion_tokens": 1001,
+      "cached_tokens": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "plan",
+          "t": 1.9,
+          "domain": "in_domain",
+          "reason": "The question asks about electron mobility in the electron transport layer and its effect on OLED operational lifetime, which is squarely within OLED/device physics and degradation mechanisms.",
+          "subquestions": [
+            "How does electron mobility in the electron transport layer (ETL) influence the operational lifetime of an organic light-emitting diode (OLED)?"
+          ]
+        },
+        {
+          "step": 2,
+          "type": "search",
+          "t": 8.87,
+          "query": "electron mobility in electron transport layer influence on OLED operational lifetime ETL mobility lifetime degradation mechanisms",
+          "status": "ok",
+          "max_relevance": 0.884,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 3,
+          "type": "stop",
+          "t": 14.88,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "run": 2,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": false,
+      "claims": [
+        {
+          "claim": "High ETL conductivity and good energy alignment with adjacent layers improve charge balance and reduce operating voltage, enhancing lifetime.",
+          "verdict": "partially_supported",
+          "reason": "E1 supports that high conductivity and good energy alignment improve charge balance and significantly enhance lifetime with reduced voltage, but does not explicitly tie this to electron mobility per se."
+        },
+        {
+          "claim": "Metal-doped ETLs can reduce driving voltage, increase efficiency, and improve OLED operation lifetime by over 3×.",
+          "verdict": "supported",
+          "reason": "E1 reports a 2.59 V drop in driving voltage, 47.3% rise in efficiency, and 3.14× improvement in operation lifetime with metal-doped ETL/cathode materials."
+        },
+        {
+          "claim": "Inserting a suitable ETL and EIL lowers the junction potential barrier and improves electron injection efficiency.",
+          "verdict": "supported",
+          "reason": "E2 states that adding suitable ETL and EIL lowers the junction potential barrier and advances the efficiency of electron injection."
+        },
+        {
+          "claim": "Inserting a suitable ETL and EIL lowers the device operating temperature compared to a device without those layers.",
+          "verdict": "supported",
+          "reason": "E2 reports the real-time temperature is much lower with ETL and EIL than without them."
+        },
+        {
+          "claim": "Lower operating temperatures mitigate thermal degradation in OLEDs, helping extend lifetime.",
+          "verdict": "partially_supported",
+          "reason": "E2 links thermal instability to irreversible degradation and shows ETL/EIL lower temperature, but does not explicitly quantify lifetime extension from temperature reduction."
+        },
+        {
+          "claim": "Electron trapping in the ETL increases electric-field strength and operating voltage.",
+          "verdict": "supported",
+          "reason": "E3 states that trapping by rubrene in the transport layer causes a significant increase in electric-field strength, evidenced by a 0.7 V increase in operating voltage."
+        },
+        {
+          "claim": "Poor electron transport (e.g., low mobility or trapping) is associated with accelerated degradation and failure pathways such as voltage rise and luminance loss.",
+          "verdict": "partially_supported",
+          "reason": "E3 shows voltage rise and differing luminance decay, but is cautious about causation; low mobility is not discussed directly."
+        },
+        {
+          "claim": "Doping the ETL with an electron-trapping dopant improved device half-life by more than 4× in one study.",
+          "verdict": "supported",
+          "reason": "E3 explicitly states the half-life is improved by >4× with rubrene doping in the ETL."
+        },
+        {
+          "claim": "ETL transport modifications can alter operating voltage and intralayer electric fields.",
+          "verdict": "supported",
+          "reason": "E3 links trapping in ETL to increased electric field and operating voltage and discusses evaluating fields via voltage vs. thickness."
+        },
+        {
+          "claim": "Selecting higher-mobility ETL materials and optimizing ETL/electrode alignment reduce injection barriers and fields, lower voltage and heating, and extend lifetime.",
+          "verdict": "partially_supported",
+          "reason": "E1/E2 support reduced barriers, improved alignment, lower voltage/temperature and enhanced lifetime; however, higher mobility specifically is not directly evidenced."
+        },
+        {
+          "claim": "The cited documents demonstrate causal links between ETL transport properties, operating voltage/field, thermal effects, and lifetime outcomes.",
+          "verdict": "partially_supported",
+          "reason": "E1/E2 provide causal relationships (e.g., doping/architecture changes leading to lower voltage, better injection, higher lifetime). E3 is cautious about causality."
+        }
+      ],
+      "claim_count": 11,
+      "unsupported_claims": 0,
+      "partial_claims": 5,
+      "key_points_covered": 0.3333333333333333,
+      "judge_cost_usd": 0.0284325
+    },
+    {
+      "id": "mh2",
+      "category": "multi_hop",
+      "pair_id": "mh_lowindex_etl",
+      "question": "Why can a low-refractive-index electron transport layer raise EQE, and which optical loss channel does it reduce?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "A low-refractive-index ETL can raise the EQE primarily by increasing the optical out‑coupling: lowering the ETL index reduces how much emitter power is lost to near‑field evanescent/metal‑coupled modes (surface plasmon polaritons, SPPs) and to the TM waveguided (TMWG) loss that is concentrated near the metallic cathode, shifting dipole power from lossy evanescent/WG regions into the substrate and air modes and thus into the far field [1][2][3].\n\nMechanisms shown in the cited work:\n- The SPP dispersion depends on the ETL dielectric constant; a smaller n_ETL gives a smaller in‑plane SPP wavevector (k_in_SPP), shifting and reducing the SPP peak so less dipole power couples into the SPP/evanescent region [2].\n- Optical simulations and experiment with a low‑n ETL (3TPYMB, n≈1.65) showed a large EQE increase (≈76% device improvement; ≈59% of that attributed to the low index), confirming that suppressing evanescent/SPP and TM‑WG losses increases outcoupling [3][1].\n- Additionally, a lower index ETL often requires larger thickness to maintain constructive interference, which further reduces evanescent loss according to the Fermi’s golden rule treatment of dipole coupling [2].\n\nBottom line: a low‑n ETL raises EQE by reducing coupling to evanescent/metal‑coupled modes (SPP) and the TM waveguided loss channel, thereby increasing the fraction of emitter radiation that escapes as substrate/air (far‑field) modes [1][2][3].",
+      "latency_s": 14.11,
+      "cost_usd": 0.0035985,
+      "used_files": [
+        "Highly Efﬁcient Organic Light-Emitting Diode Using A Low Refractive Index Electron Transport Layer.pdf",
+        "[Franky So - Review] Recent Advances in OLED Optical Design.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "c287ac3cb",
+          "title": "Highly Efficient Organic Light‐Emitting Diode Using A Low Refractive Index Electron Transport Layer",
+          "url": "https://doi.org/10.1002/adom.201700197",
+          "file_name": "Highly Efﬁcient Organic Light-Emitting Diode Using A Low Refractive Index Electron Transport Layer.pdf",
+          "page": 1
+        },
+        {
+          "chunk_id": "c335033e6",
+          "title": "Recent Advances in OLED Optical Design",
+          "url": "https://doi.org/10.1002/adfm.201808803",
+          "file_name": "[Franky So - Review] Recent Advances in OLED Optical Design.pdf",
+          "page": 6
+        },
+        {
+          "chunk_id": "c9624a7dc",
+          "title": "Highly Efficient Organic Light‐Emitting Diode Using A Low Refractive Index Electron Transport Layer",
+          "url": "https://doi.org/10.1002/adom.201700197",
+          "file_name": "Highly Efﬁcient Organic Light-Emitting Diode Using A Low Refractive Index Electron Transport Layer.pdf",
+          "page": 1
+        }
+      ],
+      "searches": 1,
+      "llm_calls": 3,
+      "prompt_tokens": 5530,
+      "completion_tokens": 1108,
+      "cached_tokens": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "plan",
+          "t": 3.0,
+          "domain": "in_domain",
+          "reason": "The question asks about optical design of OLED stacks (electron-transport layer refractive index effect on external quantum efficiency), which is squarely within OLED/organic semiconductor device physics.",
+          "subquestions": [
+            "Why can a low-refractive-index electron transport layer (ETL) raise the external quantum efficiency (EQE), and which optical loss channel does it reduce?"
+          ]
+        },
+        {
+          "step": 2,
+          "type": "search",
+          "t": 9.56,
+          "query": "low refractive index electron transport layer raises EQE reduces which optical loss channel microcavity waveguided substrate modes OLED ETL low-index",
+          "status": "ok",
+          "max_relevance": 0.919,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 3,
+          "type": "stop",
+          "t": 14.11,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "run": 0,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": true,
+      "claims": [
+        {
+          "claim": "A low-refractive-index ETL can raise EQE primarily by increasing optical out-coupling.",
+          "verdict": "supported",
+          "reason": "E1/E3 state that ETL refractive index significantly impacts out-coupling and show EQE enhancement with a low-index ETL; E2 explains increased outcoupling when ETL index is reduced."
+        },
+        {
+          "claim": "Lowering the ETL index reduces power lost to near-field evanescent/metal-coupled modes (SPPs) and TM waveguided loss concentrated near the metallic cathode.",
+          "verdict": "supported",
+          "reason": "E2 explicitly says reducing ETL index suppresses evanescent loss and TMWG loss; TM modes including SPP are distributed near the metal cathode."
+        },
+        {
+          "claim": "Reducing ETL index shifts dipole power from lossy evanescent/waveguide regions into substrate and air modes, increasing far-field output.",
+          "verdict": "supported",
+          "reason": "E2 notes the SPP and TM WG peaks shift from WG/evanescent regions to air/substrate regions as ETL index decreases."
+        },
+        {
+          "claim": "SPP dispersion depends on the ETL dielectric constant; a smaller n_ETL gives a smaller in-plane SPP wavevector, shifting and reducing the SPP peak so less dipole power couples into the SPP/evanescent region.",
+          "verdict": "supported",
+          "reason": "E2 provides the SPP dispersion equation involving ε_ETL and states that smaller n_ETL leads to smaller k_in_SPP, with reduced intensity and a shifted SPP peak."
+        },
+        {
+          "claim": "Optical simulations and experiment with a low-index ETL (3TPYMB, n≈1.65) showed a large EQE increase (~76% device improvement; ~59% attributed to the low index).",
+          "verdict": "supported",
+          "reason": "E1/E3 report 3TPYMB n=1.65 yielding 21% EQE with ~76% enhancement, and E3 attributes ~59% of enhancement to the low index via simulations."
+        },
+        {
+          "claim": "A lower-index ETL often requires a larger thickness to maintain constructive interference, which further reduces evanescent loss according to Fermi’s golden rule.",
+          "verdict": "supported",
+          "reason": "E2 states that a smaller refractive index ETL requires a larger thickness to maintain optical path length, leading to a further decrease in evanescent loss following Fermi’s golden rule."
+        },
+        {
+          "claim": "Thus, a low-index ETL raises EQE by reducing coupling to evanescent/metal-coupled (SPP) and TM waveguided losses, increasing the fraction escaping as substrate/air modes.",
+          "verdict": "supported",
+          "reason": "Synthesis of E1–E3: reduced ETL index suppresses SPP and TMWG losses and shifts power to air/substrate modes, improving outcoupling and EQE."
+        }
+      ],
+      "claim_count": 7,
+      "unsupported_claims": 0,
+      "partial_claims": 0,
+      "key_points_covered": 0.5,
+      "judge_cost_usd": 0.0192525
+    },
+    {
+      "id": "mh2",
+      "category": "multi_hop",
+      "pair_id": "mh_lowindex_etl",
+      "question": "Why can a low-refractive-index electron transport layer raise EQE, and which optical loss channel does it reduce?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "A low‑refractive‑index ETL raises EQE because it reduces near‑field (evanescent) coupling of the emitting dipoles to the metallic cathode (surface plasmon polaritons / lossy surface waves), thereby increasing the fraction of generated photons that are coupled into extractable far‑field modes rather than lost to the metal. The ETL sits between the EML and the cathode, so the dielectric constant (refractive index) of the ETL controls the strength of coupling into the SPP/evanescent modes; lowering the ETL index reduces that coupling and boosts outcoupling efficiency and EQE [1][2].\n\nEvidence from device studies: using a low‑index ETL (3TPYMB, n≈1.65) produced a ≈76% EQE enhancement in one report, with optical simulation indicating ≈59% of that improvement came from the lower refractive index (the rest from improved charge balance). Other work using a low‑n ETL (PO‑T2T, n<1.8) also demonstrated substantially higher EQEs and shows the same refractive‑index effect in optical modeling [2][3].\n\nWhich optical loss channel is reduced: the evanescent (near‑field) loss channel that feeds surface plasmon polaritons / lossy surface waves on the metallic cathode (often grouped as SPP/evanescent losses) is the channel specifically reduced by a low‑n ETL [1][2].",
+      "latency_s": 13.43,
+      "cost_usd": 0.003027,
+      "used_files": [
+        "Highly Efﬁcient Organic Light-Emitting Diode Using A Low Refractive Index Electron Transport Layer.pdf",
+        "[J.J.Kim] Sky-Blue Phosphorescent OLEDs with 34.1% External Quantum Efficiency Using a Low Refractive.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "c287ac3cb",
+          "title": "Highly Efficient Organic Light‐Emitting Diode Using A Low Refractive Index Electron Transport Layer",
+          "url": "https://doi.org/10.1002/adom.201700197",
+          "file_name": "Highly Efﬁcient Organic Light-Emitting Diode Using A Low Refractive Index Electron Transport Layer.pdf",
+          "page": 1
+        },
+        {
+          "chunk_id": "c9624a7dc",
+          "title": "Highly Efficient Organic Light‐Emitting Diode Using A Low Refractive Index Electron Transport Layer",
+          "url": "https://doi.org/10.1002/adom.201700197",
+          "file_name": "Highly Efﬁcient Organic Light-Emitting Diode Using A Low Refractive Index Electron Transport Layer.pdf",
+          "page": 1
+        },
+        {
+          "chunk_id": "c6eeb0f50",
+          "title": "Sky‐Blue Phosphorescent OLEDs with 34.1% External Quantum Efficiency Using a Low Refractive Index Electron Transporting Layer",
+          "url": "https://doi.org/10.1002/adma.201506065",
+          "file_name": "[J.J.Kim] Sky-Blue Phosphorescent OLEDs with 34.1% External Quantum Efficiency Using a Low Refractive.pdf",
+          "page": 1
+        }
+      ],
+      "searches": 1,
+      "llm_calls": 3,
+      "prompt_tokens": 5428,
+      "completion_tokens": 835,
+      "cached_tokens": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "plan",
+          "t": 1.61,
+          "domain": "in_domain",
+          "reason": "Question concerns OLED device optics and materials (electron transport layer refractive index effects on external quantum efficiency).",
+          "subquestions": [
+            "Why can a low-refractive-index electron transport layer (ETL) raise external quantum efficiency (EQE), and which optical loss channel does it reduce?"
+          ]
+        },
+        {
+          "step": 2,
+          "type": "search",
+          "t": 8.06,
+          "query": "low refractive index electron transport layer raise EQE reduces which optical loss channel waveguiding substrate modes outcoupling OLED",
+          "status": "ok",
+          "max_relevance": 0.793,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 3,
+          "type": "stop",
+          "t": 13.43,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "run": 1,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": true,
+      "claims": [
+        {
+          "claim": "A low-refractive-index ETL raises EQE by reducing near-field (evanescent) coupling of emitting dipoles to the metallic cathode (SPP/losy surface waves), increasing photons coupled to far-field modes rather than lost to the metal.",
+          "verdict": "supported",
+          "reason": "E1 explains large dipole radiation is lost to evanescent region coupling to SPP/LSW at the metallic cathode, and that ETL refractive index impacts out-coupling efficiency. This implies reducing such coupling increases far-field extraction."
+        },
+        {
+          "claim": "The ETL is between the EML and the metallic cathode, and the ETL dielectric constant (refractive index) controls coupling into SPP/evanescent modes; lowering the index reduces that coupling and boosts outcoupling efficiency and EQE.",
+          "verdict": "supported",
+          "reason": "E1 states ETL is the intermediate layer between EML and metallic cathode and that SPP loss magnitude is determined by dielectric constants of cathode and ETL; thus ETL refractive index significantly impacts out-coupling efficiency."
+        },
+        {
+          "claim": "Using a low-index ETL (3TPYMB, n≈1.65) produced about a 76% EQE enhancement.",
+          "verdict": "supported",
+          "reason": "E1/E2 report 3TPYMB with n=1.65 gives nearly a 76% EQE enhancement."
+        },
+        {
+          "claim": "Optical simulation indicated about 59% of that improvement came from the lower refractive index, with the remainder from improved charge balance.",
+          "verdict": "supported",
+          "reason": "E2 states 59% of the enhancement is from the low refractive index and the remaining 17% from change in charge balance."
+        },
+        {
+          "claim": "Using a low-n ETL PO-T2T (n<1.8) demonstrated substantially higher EQEs and shows the same refractive-index effect in optical modeling.",
+          "verdict": "partially_supported",
+          "reason": "E3 shows a sky-blue PhOLED with 34.1% EQE using PO-T2T (average n<1.8) and presents calculations varying refractive indices, but it does not explicitly state “the same effect”; the modeling of refractive index dependence is implied."
+        },
+        {
+          "claim": "The optical loss channel reduced is the evanescent (near-field) channel feeding SPP/losy surface waves on the metallic cathode.",
+          "verdict": "supported",
+          "reason": "E1 identifies evanescent-mode loss coupling to SPP and lossy surface waves at the metallic cathode and that ETL refractive index affects this loss."
+        }
+      ],
+      "claim_count": 6,
+      "unsupported_claims": 0,
+      "partial_claims": 1,
+      "key_points_covered": 0.5,
+      "judge_cost_usd": 0.02050125
+    },
+    {
+      "id": "mh2",
+      "category": "multi_hop",
+      "pair_id": "mh_lowindex_etl",
+      "question": "Why can a low-refractive-index electron transport layer raise EQE, and which optical loss channel does it reduce?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "A low‑refractive‑index ETL raises EQE because it reduces emitter power coupled into near‑field and metal‑coupled loss modes (SPP and TM waveguided/evanescent modes), redirecting that power into air and substrate (outcoupled) modes.\n\nEvidence and mechanisms from the documents:\n- A large portion of dipole radiation from the emissive layer is lost to the evanescent region and modes coupled to the metallic cathode (surface plasmon polariton, SPP, and lossy surface waves); the magnitude of that loss is determined by the dielectric constants of the cathode and the ETL, so the ETL refractive index can significantly impact outcoupling efficiency [1].\n- Optical simulations show that lowering the ETL refractive index shifts the SPP dispersion (reducing the SPP in‑plane wavevector k_in_SPP) and reduces the intensity of the SPP peak; lowering n_ETL also shifts the TM waveguide (TMWG) peak and moves dipole power from WG/evanescent regions into air and substrate modes, increasing outcoupling [2][3].\n- An ETL with smaller refractive index can require larger thickness to keep the optical path for constructive interference, which further decreases evanescent loss (via Fermi’s golden rule) and increases extraction [2][3].\n- Experimentally, replacing a typical ETL with a low‑index ETL (3TPYMB, n ≈ 1.65 at 550 nm) produced a ≈76% EQE enhancement in one study; optical simulation attributed ≈59% of that enhancement to the low refractive index reducing optical (evanescent/SPP/TM‑WG) losses, with the remainder due to electrical effects (charge balance) [4].\n\nDirect answers:\n- Why: Because reducing the ETL refractive index weakens coupling of emitter dipoles to lossy near‑field/metal modes (SPP and TM waveguided/evanescent modes), shifting emission into extractable modes and enabling thicker ETL designs that further suppress evanescent loss [1][2][4].\n- Which optical loss channel: Primarily the evanescent/metal‑coupled losses (SPP and related TM waveguide/evanescent modes) are reduced, increasing outcoupling and EQE [1][2][4].",
+      "latency_s": 18.88,
+      "cost_usd": 0.00511655,
+      "used_files": [
+        "Highly Efﬁcient Organic Light-Emitting Diode Using A Low Refractive Index Electron Transport Layer.pdf",
+        "[Franky So - Review] Recent Advances in OLED Optical Design.pdf",
+        "[Review] Recent Advances in OLED Optical Design.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "c287ac3cb",
+          "title": "Highly Efficient Organic Light‐Emitting Diode Using A Low Refractive Index Electron Transport Layer",
+          "url": "https://doi.org/10.1002/adom.201700197",
+          "file_name": "Highly Efﬁcient Organic Light-Emitting Diode Using A Low Refractive Index Electron Transport Layer.pdf",
+          "page": 1
+        },
+        {
+          "chunk_id": "c335033e6",
+          "title": "Recent Advances in OLED Optical Design",
+          "url": "https://doi.org/10.1002/adfm.201808803",
+          "file_name": "[Franky So - Review] Recent Advances in OLED Optical Design.pdf",
+          "page": 6
+        },
+        {
+          "chunk_id": "c4f4cae0f",
+          "title": "Recent Advances in OLED Optical Design",
+          "url": "https://doi.org/10.1002/adfm.201808803",
+          "file_name": "[Review] Recent Advances in OLED Optical Design.pdf",
+          "page": 6
+        },
+        {
+          "chunk_id": "c9624a7dc",
+          "title": "Highly Efficient Organic Light‐Emitting Diode Using A Low Refractive Index Electron Transport Layer",
+          "url": "https://doi.org/10.1002/adom.201700197",
+          "file_name": "Highly Efﬁcient Organic Light-Emitting Diode Using A Low Refractive Index Electron Transport Layer.pdf",
+          "page": 1
+        }
+      ],
+      "searches": 1,
+      "llm_calls": 4,
+      "prompt_tokens": 10679,
+      "completion_tokens": 1641,
+      "cached_tokens": 3712,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "plan",
+          "t": 2.88,
+          "domain": "in_domain",
+          "reason": "The question is about OLED optical design (refractive index of ETL, EQE and optical loss channels) which falls squarely within OLED/device physics.",
+          "subquestions": [
+            "Why can a low-refractive-index electron transport layer (ETL) raise external quantum efficiency (EQE), and which optical loss channel does it reduce?"
+          ]
+        },
+        {
+          "step": 2,
+          "type": "search",
+          "t": 9.48,
+          "query": "low refractive index electron transport layer raise EQE reduce optical losses waveguided modes substrate modes outcoupling OLED ETL index contrast",
+          "status": "ok",
+          "max_relevance": 0.931,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 3,
+          "type": "answer_rejected",
+          "t": 14.82,
+          "errors": [
+            "Chunk IDs must appear only inside square brackets, e.g. [c335033e6]."
+          ],
+          "revision": 1
+        },
+        {
+          "step": 4,
+          "type": "stop",
+          "t": 18.88,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "run": 2,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": true,
+      "claims": [
+        {
+          "claim": "A low-refractive-index ETL reduces coupling of emissive-layer dipoles to near-field and metal-coupled loss modes such as SPP and TM waveguided/evanescent modes.",
+          "verdict": "supported",
+          "reason": "Evidence explains that ETL index affects SPP and evanescent/TM-WG losses; lowering n suppresses these losses."
+        },
+        {
+          "claim": "Reducing this coupling shifts emission power into air and substrate modes, increasing optical outcoupling and EQE.",
+          "verdict": "supported",
+          "reason": "Evidence shows lowering ETL index shifts SPP/TM-WG peaks from WG/evanescent to air/substrate modes, and experiments show higher EQE with low-index ETL."
+        },
+        {
+          "claim": "A large portion of dipole radiation can be lost to the evanescent region and modes coupled to the metallic cathode.",
+          "verdict": "supported",
+          "reason": "Evidence states significant dipole radiation is lost to evanescent region and SPP/lossy surface waves at the cathode."
+        },
+        {
+          "claim": "The magnitude of SPP loss depends on the dielectric constants of the cathode and ETL, so the ETL refractive index strongly impacts outcoupling efficiency.",
+          "verdict": "supported",
+          "reason": "Evidence explicitly states SPP loss is determined by dielectric constants of the metallic cathode and ETL, impacting out-coupling."
+        },
+        {
+          "claim": "Lowering the ETL refractive index decreases the SPP in-plane wavevector and reduces the SPP peak intensity.",
+          "verdict": "supported",
+          "reason": "Evidence provides the SPP dispersion relation and notes that smaller ETL index leads to smaller k_in_SPP and reduced SPP peak intensity."
+        },
+        {
+          "claim": "Lowering ETL index shifts the TM waveguide peak and moves power from waveguide/evanescent regions into air and substrate modes.",
+          "verdict": "supported",
+          "reason": "Evidence states that reducing ETL index shifts the TM WG peak and moves dipole power from WG/evanescent to air/substrate modes."
+        },
+        {
+          "claim": "A lower-index ETL requires a larger thickness to maintain the optical path for constructive interference.",
+          "verdict": "supported",
+          "reason": "Evidence says an ETL with smaller refractive index requires larger thickness to keep the required optical path."
+        },
+        {
+          "claim": "This increased ETL thickness further decreases evanescent loss via Fermi’s golden rule and increases extraction.",
+          "verdict": "partially_supported",
+          "reason": "Evidence supports further decrease in evanescent loss following Fermi’s golden rule; it implies but does not explicitly state the increase in extraction due to thickness."
+        },
+        {
+          "claim": "Using 3TPYMB (n ≈ 1.65 at 550 nm) as the ETL yielded about a 76% EQE enhancement compared to typical ETLs.",
+          "verdict": "supported",
+          "reason": "Evidence reports 3TPYMB has n=1.65 and produced nearly a 76% EQE enhancement."
+        },
+        {
+          "claim": "Optical simulation attributed about 59% of that EQE enhancement to the low refractive index reducing optical losses, with the remainder due to improved charge balance (electrical effects).",
+          "verdict": "supported",
+          "reason": "Evidence states 59% of enhancement comes from the low refractive index and 17% from charge balance changes."
+        },
+        {
+          "claim": "The primary optical loss channels reduced by a low-index ETL are the evanescent/metal-coupled losses, including SPP and TM waveguided modes.",
+          "verdict": "supported",
+          "reason": "Evidence consistently identifies suppression of SPP and TM waveguide (evanescent) losses when lowering ETL index."
+        }
+      ],
+      "claim_count": 11,
+      "unsupported_claims": 0,
+      "partial_claims": 1,
+      "key_points_covered": 0.5,
+      "judge_cost_usd": 0.02708625
+    },
+    {
+      "id": "mh3",
+      "category": "multi_hop",
+      "pair_id": "mh_tta",
+      "question": "How does triplet-triplet annihilation raise the efficiency limit of fluorescent OLEDs, while also causing roll-off in phosphorescent OLEDs?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "Short answer\n• In fluorescent OLEDs, triplet–triplet annihilation (TTA) can “up‑convert” two non‑emitting triplet excitons into one emissive singlet, increasing the fraction of excitons that produce fluorescence well above the 25% spin‑statistical limit—practically raising singlet yield toward ≈62.5% in ideal cases and giving typical TTA contributions of ~20–30% in state‑of‑the‑art devices [1][2][3].\n• In phosphorescent OLEDs, emission relies on triplet excitons; TTA at high exciton densities annihilates those triplets (via diffusion or triplet–triplet energy transfer), producing non‑emissive or otherwise lost states and thus reducing internal quantum efficiency at high current (efficiency roll‑off) [4][5][6].\n\nMechanisms and how they lead to opposite effects\n1) How TTA raises fluorescent OLED efficiency\n- Pathway: two T1 excitons encounter and react such that T1 + T1 → S1 + S0 (or via intermediate higher states), producing an emissive S1 that would not be formed by direct charge recombination in a simple spin‑statistical picture. This TTA upconversion therefore augments the population of emitting singlets beyond the direct recombination yield [1][3].\n- Quantitative effect: because each successful TTA event converts two triplets into one singlet, the singlet output can, in principle and depending on branching ratios, be increased from the classical 25% toward (25 + 75/2)=62.5% (the textbook “doubling” limit when all triplet pairs produce singlets in the favorable branching) and typical devices show sizable TTA contributions (common 20–30%, sometimes higher) [2][3].\n- Important caveats: the actual gain depends on molecular energetics and kinetics (branching between singlet and triplet channels of TTA, reversibility of encounter pairs), so some host/guest systems (e.g., rubrene) give especially large singlet yield via favorable energetics, while others do not reach the ideal limit [3][2].\n\n2) Why the same TTA causes roll‑off in phosphorescent OLEDs\n- In phosphorescent emitters the useful emissive species are triplets. TTA removes two emissive triplets by annihilation, producing higher excited states or nonradiative products (or regenerating one triplet and a ground state), thereby decreasing the population available for phosphorescent emission under high excitation density [4][6].\n- Dominant microscopic processes: TTA in PHOLEDs is driven by triplet diffusion and short‑range Dexter exchange (triplet–triplet energy transfer); aggregate formation or high local emitter concentration enhances encounters and so increases TTA and roll‑off [4][5].\n- Observed consequences: TTA (and related triplet‑polaron quenching) is identified as a principal intrinsic limit causing efficiency roll‑off at the high brightness/current densities required for lighting and displays; devices with longer triplet lifetimes and thinner exciton zones show stronger roll‑off because triplets live longer and encounter each other more often [6][5].\n\nSummary (conceptual): TTA is beneficial in fluorescent OLEDs because it converts non‑emissive triplets into emissive singlets (upconversion), increasing singlet yield above the 25% limit; but in phosphorescent OLEDs TTA is deleterious because it annihilates the very triplet excitons that produce light, causing efficiency loss (roll‑off) at high excitation densities. All specific quantitative statements above are taken from the cited literature [1][2][3][4][5][6].",
+      "latency_s": 24.28,
+      "cost_usd": 0.00530805,
+      "used_files": [
+        "Highly phosphorescent organic mixed films - The effect of aggregation on triplet-triplet annihilation.pdf",
+        "Triplet-exciton quenching in organic phosphorescent light-emitting diodes with Ir-based emitters.pdf",
+        "Triplet–triplet annihilation in highly efficient fluorescent organic light-emitting diodes.pdf",
+        "[Yifan] Triplet diffusion leads to triplet–triplet annihilation in organic phosphorescent emitters.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "caf86464c",
+          "title": "Triplet–triplet annihilation in highly efficient fluorescent organic light-emitting diodes: current state and future outlook",
+          "url": "https://doi.org/10.1098/rsta.2014.0321",
+          "file_name": "Triplet–triplet annihilation in highly efficient fluorescent organic light-emitting diodes.pdf",
+          "page": 1
+        },
+        {
+          "chunk_id": "c9722b9a0",
+          "title": "Triplet–triplet annihilation in highly efficient fluorescent organic light-emitting diodes: current state and future outlook",
+          "url": "https://doi.org/10.1098/rsta.2014.0321",
+          "file_name": "Triplet–triplet annihilation in highly efficient fluorescent organic light-emitting diodes.pdf",
+          "page": 13
+        },
+        {
+          "chunk_id": "c6034d49c",
+          "title": "Triplet–triplet annihilation in highly efficient fluorescent organic light-emitting diodes: current state and future outlook",
+          "url": "https://doi.org/10.1098/rsta.2014.0321",
+          "file_name": "Triplet–triplet annihilation in highly efficient fluorescent organic light-emitting diodes.pdf",
+          "page": 12
+        },
+        {
+          "chunk_id": "c3e64159f",
+          "title": "Triplet diffusion leads to triplet–triplet annihilation in organic phosphorescent emitters",
+          "url": "https://doi.org/10.1016/j.cplett.2013.10.048",
+          "file_name": "[Yifan] Triplet diffusion leads to triplet–triplet annihilation in organic phosphorescent emitters.pdf",
+          "page": 1
+        },
+        {
+          "chunk_id": "c20d0ae22",
+          "title": "Highly phosphorescent organic mixed films: The effect of aggregation on triplet-triplet annihilation",
+          "url": "https://doi.org/10.1063/1.3123815",
+          "file_name": "Highly phosphorescent organic mixed films - The effect of aggregation on triplet-triplet annihilation.pdf",
+          "page": 2
+        },
+        {
+          "chunk_id": "c7c93bb78",
+          "title": "Triplet-exciton quenching in organic phosphorescent light-emitting diodes with Ir-based emitters",
+          "url": "https://doi.org/10.1103/physrevb.75.125328",
+          "file_name": "Triplet-exciton quenching in organic phosphorescent light-emitting diodes with Ir-based emitters.pdf",
+          "page": 1
+        }
+      ],
+      "searches": 2,
+      "llm_calls": 4,
+      "prompt_tokens": 12605,
+      "completion_tokens": 1496,
+      "cached_tokens": 3712,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "plan",
+          "t": 1.38,
+          "domain": "in_domain",
+          "reason": "The question concerns exciton dynamics (triplet-triplet annihilation) and their effects on fluorescent and phosphorescent OLED device efficiency, which fall squarely within OLED physics and materials.",
+          "subquestions": [
+            "How does triplet–triplet annihilation (TTA) raise the efficiency limit of fluorescent OLEDs, while also causing efficiency roll-off in phosphorescent OLEDs?"
+          ]
+        },
+        {
+          "step": 2,
+          "type": "search",
+          "t": 7.89,
+          "query": "triplet-triplet annihilation raises efficiency limit fluorescent OLEDs causes roll-off in phosphorescent OLEDs mechanism explanation",
+          "status": "ok",
+          "max_relevance": 0.879,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 3,
+          "type": "search",
+          "t": 15.65,
+          "query": "triplet-triplet annihilation upconversion fluorescent OLED increases efficiency limit singlet yield 62.5% TTA-UC fluorescent devices mechanism",
+          "status": "ok",
+          "max_relevance": 0.923,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 4,
+          "type": "stop",
+          "t": 24.28,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "run": 0,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": true,
+      "claims": [
+        {
+          "claim": "In fluorescent OLEDs, TTA up-converts two triplet excitons into one emissive singlet (T1+T1→S1+S0), raising singlet yield above the 25% spin-statistical limit.",
+          "verdict": "supported",
+          "reason": "E1 states TTA significantly increases the yield of excited singlet states in fluorescent OLEDs; E3 shows the singlet-channel TTA scheme yielding S1+S0."
+        },
+        {
+          "claim": "The theoretical singlet yield with TTA in fluorescent OLEDs can approach about 62.5% (25% + 37.5%).",
+          "verdict": "supported",
+          "reason": "E2 explicitly concludes TTA can, in principle, raise the singlet yield from 25% to almost 62.5%."
+        },
+        {
+          "claim": "TTA contributions of roughly 20–30% are common in state-of-the-art fluorescent OLEDs.",
+          "verdict": "supported",
+          "reason": "E1: “TTA contributions as high as 20–30% are common in the state-of-the-art OLEDs.”"
+        },
+        {
+          "claim": "Rubrene and related molecules can exhibit especially favorable energetics for the TTA singlet channel, enhancing singlet yield beyond simple spin-statistical limits.",
+          "verdict": "supported",
+          "reason": "E3 discusses reversibility and energetics; rubrene’s close energy match favors the singlet channel, explaining efficiencies exceeding the 37.5% limit."
+        },
+        {
+          "claim": "In phosphorescent OLEDs, emission originates from triplet excitons.",
+          "verdict": "supported",
+          "reason": "E5: “phosphorescent emitter dyes, where the emission originates from triplet excitons.”"
+        },
+        {
+          "claim": "In phosphorescent OLEDs, TTA at high exciton densities removes emissive triplets and reduces efficiency at high current, causing efficiency roll-off.",
+          "verdict": "supported",
+          "reason": "E4 identifies TTA as an intrinsic limit contributing to PHOLED efficiency roll-off; E5 states TTA is dominant at high excitation levels."
+        },
+        {
+          "claim": "A typical TTA event in phosphorescent systems can be described as T* + T* → S0 + T*, effectively reducing the number of triplets available for emission.",
+          "verdict": "supported",
+          "reason": "E4 presents the T* + T* → S0 + T* reaction for systems with rapid intersystem crossing."
+        },
+        {
+          "claim": "In PHOLEDs, TTA is primarily driven by triplet diffusion via Dexter exchange at practical emitter concentrations.",
+          "verdict": "supported",
+          "reason": "E4 finds TTA primarily results from triplet diffusion and follows Dexter exchange energy transfer."
+        },
+        {
+          "claim": "Aggregate formation or high local emitter concentration enhances triplet encounters, increasing TTA and thereby exacerbating efficiency roll-off in PHOLEDs.",
+          "verdict": "supported",
+          "reason": "E5 shows increased roll-off due to aggregate formation in phosphorescent host–guest systems."
+        },
+        {
+          "claim": "TTA and triplet–polaron quenching are principal processes that contribute to efficiency roll-off in PHOLEDs.",
+          "verdict": "supported",
+          "reason": "E4 lists TTA among factors causing roll-off; E6 models roll-off including both TTA and triplet–polaron quenching and shows both strongly influence performance."
+        },
+        {
+          "claim": "PHOLEDs with longer phosphorescent lifetimes and thinner exciton formation zones show stronger efficiency roll-off.",
+          "verdict": "supported",
+          "reason": "E6 reports the green Ir(ppy)3 device shows stronger roll-off mainly due to a longer phosphorescent lifetime and a thinner exciton formation zone."
+        }
+      ],
+      "claim_count": 11,
+      "unsupported_claims": 0,
+      "partial_claims": 0,
+      "key_points_covered": 1.0,
+      "judge_cost_usd": 0.03349
+    },
+    {
+      "id": "mh3",
+      "category": "multi_hop",
+      "pair_id": "mh_tta",
+      "question": "How does triplet-triplet annihilation raise the efficiency limit of fluorescent OLEDs, while also causing roll-off in phosphorescent OLEDs?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "1) How TTA raises the efficiency limit of fluorescent OLEDs\n- Mechanism: Triplet–triplet annihilation (TTA, also called triplet fusion) converts two non-emissive triplet excitons into a higher-energy singlet exciton (the emissive state) and a ground-state molecule; this process increases the population of emitting singlets beyond the 25% formed by direct charge recombination, so fluorescent devices can harvest a fraction of triplets via TTA and produce extra delayed fluorescence [1].\n- Magnitude: In practical high‑efficiency fluorescent OLEDs TTA contributions of order 20–30% to the emitted light are common, and in special cases TTA can substantially exceed the 25% spin‑statistical limit that would otherwise constrain fluorescent devices [1].\n- Fundamental limit: Because TTA is a bimolecular upconversion route (delayed fluorescence), the achievable internal‑quantum‑efficiency enhancement is limited (delayed‑fluorescence schemes reach roughly 50–55% IQE in reported analyses rather than 100% accessible to phosphorescence or TADF) — i.e. TTA can raise the fluorescent IQE well above 25% but not to unity [2].\n\n2) Why and how TTA causes efficiency roll‑off in phosphorescent OLEDs\n- Triplet population and long triplet lifetimes: Phosphorescent emitters rely on long‑lived triplet excitons; long triplet lifetimes allow triplet densities to build up at elevated current densities, which enables bimolecular loss processes including TTA and triplet–polaron quenching (TPQ) [3].\n- Role of TTA in roll‑off: TTA removes two triplets non‑radiatively (or produces an exciton of different fate), so at high current density TTA reduces the fraction of triplets that decay radiatively, producing a current‑dependent decrease of EQE (roll‑off); experimental and modelling work identifies TTA as a dominant loss mechanism determining EQE versus current in PHOLEDs [3].\n- Interaction with other loss channels and degradation: In addition to reducing instantaneous efficiency, triplet‑related bimolecular processes (TTA and TPQ) can transfer large energies to charges (triplet–polaron interactions) and lead to device degradation (trap formation), which further worsens efficiency and lifetime — this is especially important in blue PHOLEDs because higher triplet energies produce more destructive events [4].\n- Competition with singlet losses at high current: Analyses show that although TTA (delayed fluorescence) can increase efficiency at low current, at higher current densities the build‑up of triplets and related singlet quenching (singlet–triplet or singlet‑triplet annihilation pathways) cause the TTA benefit to be overtaken by losses, giving a characteristic efficiency peak and subsequent roll‑off [2].\n\nWhich parts are directly supported by the cited documents: all mechanistic and quantitative claims above are taken from the provided sources [1, 2, 3, 4].",
+      "latency_s": 15.04,
+      "cost_usd": 0.00379325,
+      "used_files": [
+        "Chapter 6 Organic Light Emitters.pdf",
+        "Triplet-exciton quenching in organic phosphorescent light-emitting diodes with Ir-based emitters.pdf",
+        "Triplet–triplet annihilation in highly efficient fluorescent organic light-emitting diodes.pdf",
+        "[Yifan] Tenfold increase in the lifetime of blue phosphorescent organic light-emitting diodes.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "caf86464c",
+          "title": "Triplet–triplet annihilation in highly efficient fluorescent organic light-emitting diodes: current state and future outlook",
+          "url": "https://doi.org/10.1098/rsta.2014.0321",
+          "file_name": "Triplet–triplet annihilation in highly efficient fluorescent organic light-emitting diodes.pdf",
+          "page": 1
+        },
+        {
+          "chunk_id": "c32ff3a48",
+          "title": "Chapter 6 Organic Light Emitters",
+          "url": null,
+          "file_name": "Chapter 6 Organic Light Emitters.pdf",
+          "page": 143
+        },
+        {
+          "chunk_id": "c59ca621b",
+          "title": "Triplet-exciton quenching in organic phosphorescent light-emitting diodes with Ir-based emitters",
+          "url": "https://doi.org/10.1103/physrevb.75.125328",
+          "file_name": "Triplet-exciton quenching in organic phosphorescent light-emitting diodes with Ir-based emitters.pdf",
+          "page": 1
+        },
+        {
+          "chunk_id": "cb53bbb0d",
+          "title": "Tenfold increase in the lifetime of blue phosphorescent organic light-emitting diodes",
+          "url": "https://doi.org/10.1038/ncomms6008",
+          "file_name": "[Yifan] Tenfold increase in the lifetime of blue phosphorescent organic light-emitting diodes.pdf",
+          "page": 2
+        }
+      ],
+      "searches": 1,
+      "llm_calls": 3,
+      "prompt_tokens": 4829,
+      "completion_tokens": 1293,
+      "cached_tokens": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "plan",
+          "t": 1.96,
+          "domain": "in_domain",
+          "reason": "The question asks about triplet–triplet annihilation and its contrasting roles in fluorescent versus phosphorescent OLEDs, which falls squarely within OLED device physics and exciton dynamics.",
+          "subquestions": [
+            "How does triplet–triplet annihilation (TTA) increase the internal/external efficiency limit of fluorescent organic light-emitting diodes (OLEDs)?",
+            "Why and how does triplet–triplet annihilation (TTA) cause efficiency roll-off in phosphorescent organic light-emitting diodes (OLEDs)?"
+          ]
+        },
+        {
+          "step": 2,
+          "type": "search",
+          "t": 8.17,
+          "query": "triplet-triplet annihilation increases fluorescent OLED efficiency limit mechanism TTA fluorescent OLEDs internal external quantum efficiency",
+          "status": "ok",
+          "max_relevance": 0.933,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 3,
+          "type": "stop",
+          "t": 15.04,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "run": 1,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": true,
+      "claims": [
+        {
+          "claim": "In fluorescent OLEDs, TTA (triplet fusion) converts two triplet excitons into a higher-energy singlet exciton and a ground-state molecule, increasing the emitting singlet population beyond 25% via delayed fluorescence.",
+          "verdict": "partially_supported",
+          "reason": "E1 and E2 support that TTA (triplet fusion/upconversion) increases the yield of excited singlet states and contributes delayed fluorescence, but they do not explicitly state the detailed product as “a singlet plus a ground-state molecule.”"
+        },
+        {
+          "claim": "TTA contributions of about 20–30% to emitted light are common in state-of-the-art fluorescent OLEDs.",
+          "verdict": "supported",
+          "reason": "E1: “TTA contributions as high as 20–30% are common in the state-of-the-art OLEDs.”"
+        },
+        {
+          "claim": "In special cases, TTA can substantially exceed the 25% spin-statistical limit in fluorescent devices.",
+          "verdict": "supported",
+          "reason": "E1: TTA can become dominant in special cases and “substantially exceed the spin-statistical limit.”"
+        },
+        {
+          "claim": "Delayed-fluorescence schemes like TTA reach roughly 50–55% maximum internal quantum efficiency, lower than the 100% accessible by phosphorescence or TADF.",
+          "verdict": "supported",
+          "reason": "E2: “highest internal quantum efficiency via delayed fluorescence is only 50% - 55%… considerably lower than 100%… accessible by phosphorescence or TADF.”"
+        },
+        {
+          "claim": "Phosphorescent OLEDs rely on long-lived triplet excitons, leading to high triplet densities at elevated current densities.",
+          "verdict": "supported",
+          "reason": "E3: Efficiency decreases with increased current density mainly due to the longer lifetime of the emitting triplet state, implying build-up at high current."
+        },
+        {
+          "claim": "High triplet densities enable bimolecular loss processes including TTA and triplet–polaron quenching (TPQ).",
+          "verdict": "supported",
+          "reason": "E3: Identifies TTA and triplet-polaron quenching as processes determining quantum efficiency under typical operation."
+        },
+        {
+          "claim": "TTA is a dominant loss mechanism contributing to EQE roll-off in phosphorescent OLEDs as current increases.",
+          "verdict": "supported",
+          "reason": "E3: Notes EQE decreases with current; cites Baldo et al. that TTA is the dominating process determining OLED quantum efficiency; model combines TTA and TPQ."
+        },
+        {
+          "claim": "TTA removes two triplets non-radiatively (or produces an exciton of different fate), reducing the fraction of radiative decay at high current.",
+          "verdict": "partially_supported",
+          "reason": "E3 supports that TTA affects efficiency and roll-off but does not state the specific mechanistic outcome of removing two triplets non-radiatively or producing a different exciton."
+        },
+        {
+          "claim": "Triplet-related bimolecular processes (TTA and TPQ) can transfer large energies to charges and lead to device degradation, especially severe in blue PHOLEDs due to higher triplet energies.",
+          "verdict": "partially_supported",
+          "reason": "E4 supports that triplet–polaron annihilation (TPA/TPQ) transfers energy to charges, causes trap-related degradation, and is worse in blue. It does not support TTA causing this charge-energy transfer or degradation."
+        },
+        {
+          "claim": "Although TTA can increase efficiency at low current, at higher current densities the build-up of triplets and singlet–triplet annihilation quench singlets, so losses overtake the TTA benefit leading to an efficiency peak and roll-off.",
+          "verdict": "supported",
+          "reason": "E2: “TTA-S can add to the device efficiency at low j, but at high j it must compete with losses due to STA… build-up of triplets results in quenching…,” defining a critical current where losses exceed gains."
+        },
+        {
+          "claim": "All mechanistic and quantitative claims above are directly supported by the cited sources.",
+          "verdict": "unsupported",
+          "reason": "Some mechanistic details (e.g., explicit singlet + ground-state product of TTA; TTA causing degradation via energy transfer to charges) are not stated in the provided evidence."
+        }
+      ],
+      "claim_count": 11,
+      "unsupported_claims": 1,
+      "partial_claims": 3,
+      "key_points_covered": 0.5,
+      "judge_cost_usd": 0.03146375
+    },
+    {
+      "id": "mh3",
+      "category": "multi_hop",
+      "pair_id": "mh_tta",
+      "question": "How does triplet-triplet annihilation raise the efficiency limit of fluorescent OLEDs, while also causing roll-off in phosphorescent OLEDs?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "1) How TTA raises the internal efficiency limit of fluorescent OLEDs:\n- In fluorescent OLEDs the radiative emission comes from singlet excitons; TTA allows two triplet excitons to interact and produce one higher-energy singlet (or a singlet plus ground-state), effectively converting non-emissive triplets into emissive singlets and so contributing additional singlet population beyond spin-statistical 25% singlet yield. This mechanism therefore raises the internal efficiency limit of fluorescent devices by harvesting triplet population via triplet–triplet annihilation (T + T → S + S0 or S + T) and producing extra singlets available for fluorescence [1].\n\n2) How TTA causes efficiency roll-off in phosphorescent OLEDs:\n- In phosphorescent OLEDs emission originates from long-lived triplet excitons. At high excitation densities the bimolecular interaction between triplets (TTA) becomes significant and leads to loss channels where two triplets annihilate instead of both radiatively decaying, reducing internal quantum efficiency at high current/brightness (efficiency roll-off) [2, 1].\n- TTA in phosphorescent systems is enhanced by triplet diffusion and triplet–triplet energy transfer (Dexter-type exchange), so materials and film morphology that increase triplet diffusion or spectral overlap between emitter emission and absorption increase TTA and the resulting roll-off [1, 2].\n- Empirically, phosphorescent emitters with long triplet lifetimes (e.g., Pt complexes) show particularly rapid roll-off because longer-lived triplets have higher probability to interact and annihilate at elevated exciton densities [3].\n\nNotes and limits of the evidence:\n- The cited documents state TTA can both convert triplets to singlets (beneficial for fluorescent OLEDs) and act as a bimolecular loss among triplets in phosphorescent OLEDs causing roll-off; specific quantitative gains in fluorescent internal quantum limit or numerical roll-off magnitudes are not provided in these chunks. If you want quantitative examples (e.g., how much IQE increases in TTA-assisted fluorescent emitters or typical percent roll-off vs luminance for given phosphors), I can search for papers reporting measurements.",
+      "latency_s": 14.63,
+      "cost_usd": 0.00268125,
+      "used_files": [
+        "Efficiency Roll-Off in Organic Light-Emitting Diodes.pdf",
+        "Highly phosphorescent organic mixed films - The effect of aggregation on triplet-triplet annihilation.pdf",
+        "[Yifan] Triplet diffusion leads to triplet–triplet annihilation in organic phosphorescent emitters.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "c3e64159f",
+          "title": "Triplet diffusion leads to triplet–triplet annihilation in organic phosphorescent emitters",
+          "url": "https://doi.org/10.1016/j.cplett.2013.10.048",
+          "file_name": "[Yifan] Triplet diffusion leads to triplet–triplet annihilation in organic phosphorescent emitters.pdf",
+          "page": 1
+        },
+        {
+          "chunk_id": "c20d0ae22",
+          "title": "Highly phosphorescent organic mixed films: The effect of aggregation on triplet-triplet annihilation",
+          "url": "https://doi.org/10.1063/1.3123815",
+          "file_name": "Highly phosphorescent organic mixed films - The effect of aggregation on triplet-triplet annihilation.pdf",
+          "page": 2
+        },
+        {
+          "chunk_id": "c4907658d",
+          "title": "Efficiency Roll‐Off in Organic Light‐Emitting Diodes",
+          "url": "https://doi.org/10.1002/adma.201301603",
+          "file_name": "Efficiency Roll-Off in Organic Light-Emitting Diodes.pdf",
+          "page": 13
+        }
+      ],
+      "searches": 1,
+      "llm_calls": 3,
+      "prompt_tokens": 4701,
+      "completion_tokens": 753,
+      "cached_tokens": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "plan",
+          "t": 2.2,
+          "domain": "in_domain",
+          "reason": "The question asks about triplet-triplet annihilation (TTA) mechanisms and their impact on fluorescent and phosphorescent OLED efficiency—topics squarely within OLED physics and exciton dynamics.",
+          "subquestions": [
+            "How does triplet-triplet annihilation (TTA) raise the internal efficiency limit of fluorescent OLEDs?",
+            "How does triplet-triplet annihilation (TTA) cause efficiency roll-off in phosphorescent OLEDs?"
+          ]
+        },
+        {
+          "step": 2,
+          "type": "search",
+          "t": 8.33,
+          "query": "triplet-triplet annihilation raises internal efficiency limit of fluorescent OLEDs and causes roll-off in phosphorescent OLEDs explanation mechanism",
+          "status": "ok",
+          "max_relevance": 0.894,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 3,
+          "type": "stop",
+          "t": 14.63,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "run": 2,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": true,
+      "claims": [
+        {
+          "claim": "In fluorescent OLEDs, emission is from singlet excitons.",
+          "verdict": "unsupported",
+          "reason": "The provided evidence does not discuss fluorescence emission originating from singlets."
+        },
+        {
+          "claim": "In fluorescent OLEDs, TTA converts two triplet excitons into a higher-energy singlet (or singlet plus ground state), harvesting non-emissive triplets.",
+          "verdict": "unsupported",
+          "reason": "No evidence discusses TTA generating singlets in fluorescent systems or delayed fluorescence."
+        },
+        {
+          "claim": "TTA increases the singlet population beyond the spin-statistical 25% in fluorescent OLEDs.",
+          "verdict": "unsupported",
+          "reason": "The evidence does not mention increased singlet yield in fluorescent devices due to TTA."
+        },
+        {
+          "claim": "TTA raises the internal efficiency limit of fluorescent OLEDs by producing extra singlets (e.g., T + T → S + S0 or S + T).",
+          "verdict": "unsupported",
+          "reason": "No evidence addresses TTA improving fluorescent OLED efficiency or these specific reaction pathways yielding singlets."
+        },
+        {
+          "claim": "In phosphorescent OLEDs, emission originates from long-lived triplet excitons.",
+          "verdict": "supported",
+          "reason": "E2 states phosphorescent emitter dyes have emission originating from triplet excitons and notes their long radiative lifetime."
+        },
+        {
+          "claim": "At high excitation densities, TTA between triplets becomes significant and reduces internal quantum efficiency, causing efficiency roll-off in phosphorescent OLEDs.",
+          "verdict": "supported",
+          "reason": "E1 and E2 identify TTA as a dominant cause of efficiency roll-off in phosphorescent systems at high excitation levels."
+        },
+        {
+          "claim": "In phosphorescent systems, TTA is enhanced by triplet diffusion and triplet–triplet energy transfer via Dexter exchange.",
+          "verdict": "supported",
+          "reason": "E1 concludes TTA is primarily due to triplet diffusion and that diffusion follows Dexter exchange energy transfer."
+        },
+        {
+          "claim": "Increased spectral overlap between emitter emission and absorption increases TTA and roll-off in phosphorescent OLEDs.",
+          "verdict": "supported",
+          "reason": "E1 proposes suppressing TTA by minimizing spectral overlap, implying increased overlap enhances TTA and associated roll-off."
+        },
+        {
+          "claim": "Materials or film morphologies that increase triplet diffusion increase TTA and roll-off in phosphorescent OLEDs.",
+          "verdict": "supported",
+          "reason": "E1 links TTA to triplet diffusion, so greater diffusion implies more TTA and hence more roll-off."
+        },
+        {
+          "claim": "Phosphorescent emitters with long triplet lifetimes, such as Pt complexes, show particularly rapid roll-off due to higher probability of triplet–triplet annihilation at high exciton densities.",
+          "verdict": "partially_supported",
+          "reason": "E3 reports PtOEP has very quick roll-off mainly due to exciton quenching and notes its long triplet lifetime; the generalized causal mechanism is implied but not explicitly detailed."
+        }
+      ],
+      "claim_count": 10,
+      "unsupported_claims": 4,
+      "partial_claims": 1,
+      "key_points_covered": 0.5,
+      "judge_cost_usd": 0.02394125
+    }
+  ],
+  "chunk_text_removed": true
+}

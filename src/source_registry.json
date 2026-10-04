@@ -1,0 +1,1180 @@
+{
+  "sources": {
+    "! Analysis of chemical degradation mechanism within sky blue phosphorescent organic light emitting diodes.pdf": {
+      "doi": "10.1016/j.orgel.2010.11.004",
+      "title": "Analysis of chemical degradation mechanism within sky blue phosphorescent organic light emitting diodes by laser-desorption/ionization time-of-flight mass spectrometry",
+      "url": "https://doi.org/10.1016/j.orgel.2010.11.004",
+      "verified_by": "crossref_doi"
+    },
+    "! Chemical degradation processes of highly stable red phosphorescent organic light emitting diodes.pdf": {
+      "doi": "10.1016/j.orgel.2012.04.025",
+      "title": "Chemical degradation processes of highly stable red phosphorescent organic light emitting diodes",
+      "url": "https://doi.org/10.1016/j.orgel.2012.04.025",
+      "verified_by": "crossref_doi"
+    },
+    "! Highly efficient blue OLED based on 9-anthracene-spirobenzofluorene derivatives as host materials.pdf": {
+      "doi": "10.1039/c0jm00593b",
+      "title": "Highly efficient blue OLED based on 9-anthracene-spirobenzofluorene derivatives as host materials",
+      "url": "https://doi.org/10.1039/c0jm00593b",
+      "verified_by": "crossref_title_search"
+    },
+    "! Influence of charge balance and exciton distribution on efficiency and lifetime of phosphorescent.pdf": {
+      "doi": "10.1063/1.2951960",
+      "title": "Influence of charge balance and exciton distribution on efficiency and lifetime of phosphorescent organic light-emitting devices",
+      "url": "https://doi.org/10.1063/1.2951960",
+      "verified_by": "crossref_title_search"
+    },
+    "! Photochemical reactions in organic semiconductor thin films.pdf": {
+      "doi": "10.1016/j.orgel.2007.06.002",
+      "title": "Photochemical reactions in organic semiconductor thin films",
+      "url": "https://doi.org/10.1016/j.orgel.2007.06.002",
+      "verified_by": "crossref_doi"
+    },
+    "!!! 중요 !!! Blue-emitting organic electrofluorescence materials - progress and prospective.pdf": {
+      "doi": "10.1039/c5tc02420j",
+      "title": "Blue-emitting organic electrofluorescence materials: progress and prospective",
+      "url": "https://doi.org/10.1039/c5tc02420j",
+      "verified_by": "crossref_doi"
+    },
+    "1.Triplet Emitters for Organic Light - Emitting Diodes - Basic Properties.pdf": {
+      "doi": "10.1002/9783527621309.ch1",
+      "title": "Triplet Emitters for Organic Light‐Emitting Diodes: Basic Properties",
+      "url": "https://doi.org/10.1002/9783527621309.ch1",
+      "verified_by": "crossref_doi"
+    },
+    "10.Electroluminescence from Metal - Containing Polymers and Metal Complexes with Functional Ligands.pdf": {
+      "doi": "10.1002/9783527621309.ch10",
+      "title": "Electroluminescence from Metal‐Containing Polymers and Metal Complexes with Functional Ligands",
+      "url": "https://doi.org/10.1002/9783527621309.ch10",
+      "verified_by": "crossref_doi"
+    },
+    "11.Molecular Engineering of Iridium Complexes and their Application in Organic Light Emitting Devices.pdf": {
+      "doi": "10.1002/9783527621309.ch11",
+      "title": "Molecular Engineering of Iridium Complexes and their Application in Organic Light Emitting Devices",
+      "url": "https://doi.org/10.1002/9783527621309.ch11",
+      "verified_by": "crossref_doi"
+    },
+    "12.Progress in Electroluminescence Based on Lanthanide Complexes.pdf": {
+      "doi": "10.1002/9783527621309.ch12",
+      "title": "Progress in Electroluminescence Based on Lanthanide Complexes",
+      "url": "https://doi.org/10.1002/9783527621309.ch12",
+      "verified_by": "crossref_doi"
+    },
+    "2.Spin Correlations in Organic Light - Emitting Diodes.pdf": {
+      "doi": "10.1002/9783527621309.ch2",
+      "title": "Spin Correlations in Organic Light‐Emitting Diodes",
+      "url": "https://doi.org/10.1002/9783527621309.ch2",
+      "verified_by": "crossref_doi"
+    },
+    "3 Stacked Top Emitting White OLED for High Resolution OLED TV.pdf": {
+      "doi": "10.1002/sdtp.10781",
+      "title": "52‐3: <i>Distinguished Paper</i> : 3 Stacked Top Emitting White OLED for High Resolution OLED TV",
+      "url": "https://doi.org/10.1002/sdtp.10781",
+      "verified_by": "crossref_doi"
+    },
+    "3.Cyclometallated Organoiridium Complexes as Emitters in Electrophosphorescent Devices.pdf": {
+      "doi": "10.1002/9783527621309.ch3",
+      "title": "Cyclometallated Organoiridium Complexes as Emitters in Electrophosphorescent Devices",
+      "url": "https://doi.org/10.1002/9783527621309.ch3",
+      "verified_by": "crossref_doi"
+    },
+    "4.Highly Effi cient Red - Phosphorescent Iridium Complexes.pdf": {
+      "doi": "10.1002/9783527621309.ch4",
+      "title": "Highly Efficient Red‐Phosphorescent Iridium Complexes",
+      "url": "https://doi.org/10.1002/9783527621309.ch4",
+      "verified_by": "crossref_doi"
+    },
+    "5.Pyridyl Azolate Based Luminescent Complexes - Strategic Design, Photophysics, and Applications.pdf": {
+      "doi": "10.1002/9783527621309.ch5",
+      "title": "Pyridyl Azolate Based Luminescent Complexes: Strategic Design, Photophysics, and Applications",
+      "url": "https://doi.org/10.1002/9783527621309.ch5",
+      "verified_by": "crossref_doi"
+    },
+    "6.Physical Processes in Polymer - Based Electrophosphorescent Devices.pdf": {
+      "doi": "10.1002/9783527621309.ch6",
+      "title": "Physical Processes in Polymer‐Based Electrophosphorescent Devices",
+      "url": "https://doi.org/10.1002/9783527621309.ch6",
+      "verified_by": "crossref_doi"
+    },
+    "7.Phosphorescent Platinum(II) Materials for OLED Applications.pdf": {
+      "doi": "10.1002/9783527621309.ch7",
+      "title": "Phosphorescent Platinum(II) Materials for OLED Applications",
+      "url": "https://doi.org/10.1002/9783527621309.ch7",
+      "verified_by": "crossref_doi"
+    },
+    "8.Energy - Transfer Processes between Phosphorescent Guest and Fluorescent Host Molecules in Phosphorescent OLEDs.pdf": {
+      "doi": "10.1002/9783527621309.ch8",
+      "title": "Energy‐Transfer Processes between Phosphorescent Guest and Fluorescent Host Molecules in Phosphorescent OLEDs",
+      "url": "https://doi.org/10.1002/9783527621309.ch8",
+      "verified_by": "crossref_doi"
+    },
+    "9.High-Efficiency Phosphorescent Polymer LEDs.pdf": {
+      "doi": "10.1002/9783527621309.ch9",
+      "title": "High‐Efficiency Phosphorescent Polymer LEDs",
+      "url": "https://doi.org/10.1002/9783527621309.ch9",
+      "verified_by": "crossref_doi"
+    },
+    "A Fluorescent Organic Light-Emitting Diode with 30% External Quantum.pdf": {
+      "doi": "10.1002/adma.201401407",
+      "title": "A Fluorescent Organic Light‐Emitting Diode with 30% External Quantum Efficiency",
+      "url": "https://doi.org/10.1002/adma.201401407",
+      "verified_by": "crossref_doi"
+    },
+    "A gradient sublimer for purification and crystal growth of organic donor and acceptor molecules.pdf": {
+      "doi": "10.1016/0022-0248(74)90173-0",
+      "title": "A gradient sublimer for purification and crystal growth of organic donor and acceptor molecules",
+      "url": "https://doi.org/10.1016/0022-0248(74)90173-0",
+      "verified_by": "crossref_title_search"
+    },
+    "A white OLED based on DPVBi blue light emitting host and DCJTB red dopant.pdf": {
+      "doi": "10.1016/j.displa.2003.09.004",
+      "title": "A white OLED based on DPVBi blue light emitting host and DCJTB red dopant",
+      "url": "https://doi.org/10.1016/j.displa.2003.09.004",
+      "verified_by": "crossref_doi"
+    },
+    "Analysis of Complete Organic Semiconductor Devices by Laser Desorption-Ionization Time-of-Flight Mass Spectrometry.pdf": {
+      "doi": "10.1002/adfm.200700816",
+      "title": "Analysis of Complete Organic Semiconductor Devices by Laser Desorption/Ionization Time‐of‐Flight Mass Spectrometry",
+      "url": "https://doi.org/10.1002/adfm.200700816",
+      "verified_by": "crossref_doi"
+    },
+    "Bisanthracene-Based Donor–Acceptor-type Light-Emitting Dopants.pdf": {
+      "doi": "10.1002/adfm.201302907",
+      "title": "Bisanthracene‐Based Donor–Acceptor‐type Light‐Emitting Dopants: Highly Efficient Deep‐Blue Emission in Organic Light‐Emitting Devices",
+      "url": "https://doi.org/10.1002/adfm.201302907",
+      "verified_by": "crossref_doi"
+    },
+    "Blue fluorescent OLED materials and their application for high-performance devices.pdf": {
+      "doi": "10.1088/1468-6996/15/3/034201",
+      "title": "Blue fluorescent OLED materials and their application for high-performance devices",
+      "url": "https://doi.org/10.1088/1468-6996/15/3/034201",
+      "verified_by": "crossref_title_search"
+    },
+    "Chapter 1 Introduction to Organic Semiconductors.pdf": {
+      "doi": null,
+      "title": "Chapter 1 Introduction to Organic Semiconductors",
+      "url": null,
+      "verified_by": null
+    },
+    "Chapter 2 Structure.pdf": {
+      "doi": null,
+      "title": "Chapter 2 Structure",
+      "url": null,
+      "verified_by": null
+    },
+    "Chapter 3 Optics.pdf": {
+      "doi": null,
+      "title": "Chapter 3 Optics",
+      "url": null,
+      "verified_by": null
+    },
+    "Chapter 4 Electronic properties.pdf": {
+      "doi": null,
+      "title": "Chapter 4 Electronic properties",
+      "url": null,
+      "verified_by": null
+    },
+    "Chapter 5 Materials Growth and Patterning.pdf": {
+      "doi": null,
+      "title": "Chapter 5 Materials Growth and Patterning",
+      "url": null,
+      "verified_by": null
+    },
+    "Chapter 6 Organic Light Emitters.pdf": {
+      "doi": null,
+      "title": "Chapter 6 Organic Light Emitters",
+      "url": null,
+      "verified_by": null
+    },
+    "Chapter 7 Organic Light Detectors.pdf": {
+      "doi": null,
+      "title": "Chapter 7 Organic Light Detectors",
+      "url": null,
+      "verified_by": null
+    },
+    "Charge-transfer excited states in phosphorescent organo-transition metal compounds.pdf": {
+      "doi": "10.1039/c5ra12962a",
+      "title": "Charge-transfer excited states in phosphorescent organo-transition metal compounds: a difficult case for time dependent density functional theory?",
+      "url": "https://doi.org/10.1039/c5ra12962a",
+      "verified_by": "crossref_doi"
+    },
+    "Chemical changes on the green emitter tris(8-hydroxy-quinolinato)aluminum during device aging of p-i-n.pdf": {
+      "doi": null,
+      "title": "Chemical changes on the green emitter tris(8-hydroxy-quinolinato)aluminum during device aging of p-i-n",
+      "url": null,
+      "verified_by": null
+    },
+    "Chemical degradation mechanisms of highly efficient blue phosphorescent emitters used for organic light emitting diodes.pdf": {
+      "doi": "10.1016/j.orgel.2012.10.003",
+      "title": "Chemical degradation mechanisms of highly efficient blue phosphorescent emitters used for organic light emitting diodes",
+      "url": "https://doi.org/10.1016/j.orgel.2012.10.003",
+      "verified_by": "crossref_doi"
+    },
+    "Comparison of ultraviolet- and charge-induced degradation phenom.pdf": {
+      "doi": null,
+      "title": "Comparison of ultraviolet- and charge-induced degradation phenom",
+      "url": null,
+      "verified_by": null
+    },
+    "Deep blue fluorophores incorporating sulfonelocked triphenylamine - the key for highly efficient fluorescence–phosphorescence hybrid white OLEDs with simplified structure.pdf": {
+      "doi": "10.1039/c5tc01373a",
+      "title": "Deep blue fluorophores incorporating sulfone-locked triphenylamine: the key for highly efficient fluorescence–phosphorescence hybrid white OLEDs with simplified structure",
+      "url": "https://doi.org/10.1039/c5tc01373a",
+      "verified_by": "crossref_doi"
+    },
+    "Degradation Mechanisms in Small-Molecule and Polymer Organic Light-Emitting Diodes.pdf": {
+      "doi": "10.1002/adma.200902624",
+      "title": "Degradation Mechanisms in Small‐Molecule and Polymer Organic Light‐Emitting Diodes",
+      "url": "https://doi.org/10.1002/adma.200902624",
+      "verified_by": "crossref_doi"
+    },
+    "Delayed Fluorescence Due to Triplet—Triplet Annihilation - A Theoretical Study.pdf": {
+      "doi": "10.1063/1.1840928",
+      "title": "Delayed Fluorescence Due to Triplet—Triplet Annihilation: A Theoretical Study",
+      "url": "https://doi.org/10.1063/1.1840928",
+      "verified_by": "crossref_title_search"
+    },
+    "Direct observation of host–guest triplet–triplet annihilation in phosphorescent solid mixed films.pdf": {
+      "doi": "10.1002/pssr.200802266",
+      "title": "Direct observation of host–guest triplet–triplet annihilation in phosphorescent solid mixed films",
+      "url": "https://doi.org/10.1002/pssr.200802266",
+      "verified_by": "crossref_doi"
+    },
+    "Efficiency Roll-Off in Organic Light-Emitting Diodes.pdf": {
+      "doi": "10.1002/adma.201301603",
+      "title": "Efficiency Roll‐Off in Organic Light‐Emitting Diodes",
+      "url": "https://doi.org/10.1002/adma.201301603",
+      "verified_by": "crossref_doi"
+    },
+    "Efficiency and rate of spontaneous emission in organic electroluminescent devices.pdf": {
+      "doi": null,
+      "title": "Efficiency and rate of spontaneous emission in organic electroluminescent devices",
+      "url": null,
+      "verified_by": null
+    },
+    "Efficient Phosphorescent OLEDs for Warm White And Cool White Lighting Applications.pdf": {
+      "doi": "10.1002/j.2168-0159.2012.tb05856.x",
+      "title": "45.3: Efficient Phosphorescent OLEDs for Warm White And Cool White Lighting Applications",
+      "url": "https://doi.org/10.1002/j.2168-0159.2012.tb05856.x",
+      "verified_by": "crossref_doi"
+    },
+    "Engineering Blue Fluorescent Bulk Emitters for OLEDs - Triplet Harvesting by Green Phosphors.pdf": {
+      "doi": "10.1021/cm500602y",
+      "title": "Engineering Blue Fluorescent Bulk Emitters for OLEDs: Triplet Harvesting by Green Phosphors",
+      "url": "https://doi.org/10.1021/cm500602y",
+      "verified_by": "crossref_title_search"
+    },
+    "Enhanced stability of organic light-emitting devices fabricated under ultra-high vacuum condition.pdf": {
+      "doi": "10.1016/j.cplett.2006.06.002",
+      "title": "Enhanced stability of organic light-emitting devices fabricated under ultra-high vacuum condition",
+      "url": "https://doi.org/10.1016/j.cplett.2006.06.002",
+      "verified_by": "crossref_doi"
+    },
+    "Exciplex-Forming Co-Host-Based Red Phosphorescent Organic LightEmitting Diodes with Long Operational Stability and High Efficiency.pdf": {
+      "doi": "10.1021/acsami.6b14438",
+      "title": "Exciplex-Forming Co-Host-Based Red Phosphorescent Organic Light-Emitting Diodes with Long Operational Stability and High Efficiency",
+      "url": "https://doi.org/10.1021/acsami.6b14438",
+      "verified_by": "crossref_title_search"
+    },
+    "Exciplex-Forming Co-host for Organic Light-Emitting Diodes with Ultimate.pdf": {
+      "doi": "10.1002/adfm.201300547",
+      "title": "Exciplex‐Forming Co‐host for Organic Light‐Emitting Diodes with Ultimate Efficiency",
+      "url": "https://doi.org/10.1002/adfm.201300547",
+      "verified_by": "crossref_doi"
+    },
+    "Exciton Induced Chemical Reactions in Organic Light Emitting Devices.pdf": {
+      "doi": "10.1889/1.3256875",
+      "title": "46.1: <i>Invited Paper</i> : Exciton Induced Chemical Reactions in Organic Light Emitting Devices",
+      "url": "https://doi.org/10.1889/1.3256875",
+      "verified_by": "crossref_doi"
+    },
+    "Extremely Low Operating Voltage Green Phosphorescent Organic Light-Emitting Devices.pdf": {
+      "doi": "10.1002/adfm.201301069",
+      "title": "Extremely Low Operating Voltage Green Phosphorescent Organic Light‐Emitting Devices",
+      "url": "https://doi.org/10.1002/adfm.201301069",
+      "verified_by": "crossref_doi"
+    },
+    "Extremely high-efficiency and ultrasimplified hybrid white organic light-emitting diodes exploiting double multifunctional blue emitting layers.pdf": {
+      "doi": "10.1038/lsa.2016.137",
+      "title": "Extremely high-efficiency and ultrasimplified hybrid white organic light-emitting diodes exploiting double multifunctional blue emitting layers",
+      "url": "https://doi.org/10.1038/lsa.2016.137",
+      "verified_by": "crossref_doi"
+    },
+    "High efficiency phosphorescent white organic light-emitting diodes with an ultra-thin red and green co-doped layer and dual blue emitting layers.pdf": {
+      "doi": "10.1016/j.orgel.2016.02.010",
+      "title": "High efficiency phosphorescent white organic light-emitting diodes with an ultra-thin red and green co-doped layer and dual blue emitting layers",
+      "url": "https://doi.org/10.1016/j.orgel.2016.02.010",
+      "verified_by": "crossref_doi"
+    },
+    "High-efficiency fluorescent organic light-emitting diodes enabled by triplet-triplet annihilation and horizontal emitter orientation.pdf": {
+      "doi": "10.1063/1.4901341",
+      "title": "High-efficiency fluorescent organic light-emitting diodes enabled by triplet-triplet annihilation and horizontal emitter orientation",
+      "url": "https://doi.org/10.1063/1.4901341",
+      "verified_by": "crossref_title_search"
+    },
+    "Highly Efficient White OLEDs with over 100.pdf": {
+      "doi": "10.1002/j.2168-0159.2013.tb06370.x",
+      "title": "66.2: <i>Invited Paper</i> : Highly Efficient White OLEDs with over 100 lm/W for General Lighting",
+      "url": "https://doi.org/10.1002/j.2168-0159.2013.tb06370.x",
+      "verified_by": "crossref_doi"
+    },
+    "Highly Efﬁcient Organic Light-Emitting Diode Using A Low Refractive Index Electron Transport Layer.pdf": {
+      "doi": "10.1002/adom.201700197",
+      "title": "Highly Efficient Organic Light‐Emitting Diode Using A Low Refractive Index Electron Transport Layer",
+      "url": "https://doi.org/10.1002/adom.201700197",
+      "verified_by": "crossref_doi"
+    },
+    "Highly efficient organic light emitting diodes (OLED) for displays and lighting.pdf": {
+      "doi": null,
+      "title": "Highly efficient organic light emitting diodes (OLED) for displays and lighting",
+      "url": null,
+      "verified_by": null
+    },
+    "Highly efficient white organic light emitting diodes comprising an interlayer to separate fluorescent and phosphorescent regions.pdf": {
+      "doi": "10.1063/1.2338588",
+      "title": "Highly efficient white organic light emitting diodes comprising an interlayer to separate fluorescent and phosphorescent regions",
+      "url": "https://doi.org/10.1063/1.2338588",
+      "verified_by": "crossref_title_search"
+    },
+    "Highly phosphorescent organic mixed films - The effect of aggregation on triplet-triplet annihilation.pdf": {
+      "doi": "10.1063/1.3123815",
+      "title": "Highly phosphorescent organic mixed films: The effect of aggregation on triplet-triplet annihilation",
+      "url": "https://doi.org/10.1063/1.3123815",
+      "verified_by": "crossref_title_search"
+    },
+    "Influence of charge balance and exciton distribution on efficiency and lifetime of phosphorescent organic light-emitting devices.pdf": {
+      "doi": "10.1063/1.2951960",
+      "title": "Influence of charge balance and exciton distribution on efficiency and lifetime of phosphorescent organic light-emitting devices",
+      "url": "https://doi.org/10.1063/1.2951960",
+      "verified_by": "crossref_title_search"
+    },
+    "Influence of the applied charge on the electro-chemical degradation in green phosphorescent organic light emitting diodes.pdf": {
+      "doi": "10.1016/j.orgel.2016.07.026",
+      "title": "Influence of the applied charge on the electro-chemical degradation in green phosphorescent organic light emitting diodes",
+      "url": "https://doi.org/10.1016/j.orgel.2016.07.026",
+      "verified_by": "crossref_doi"
+    },
+    "Laser desorption-ionization time-of-flight mass spectrometry - A predictive.pdf": {
+      "doi": null,
+      "title": "Laser desorption-ionization time-of-flight mass spectrometry - A predictive",
+      "url": null,
+      "verified_by": null
+    },
+    "Lensfree OLEDs with over 50% external quantum efficiency.pdf": {
+      "doi": "10.1038/s41467-018-05671-x",
+      "title": "Lensfree OLEDs with over 50% external quantum efficiency via external scattering and horizontally oriented emitters",
+      "url": "https://doi.org/10.1038/s41467-018-05671-x",
+      "verified_by": "crossref_title_search"
+    },
+    "Low-Driving-Voltage Blue Phosphorescent Organic Light-Emitting Devices with External Quantum Effi ciency of 30%.pdf": {
+      "doi": "10.1002/adma.201401621",
+      "title": "Low‐Driving‐Voltage Blue Phosphorescent Organic Light‐Emitting Devices with External Quantum Efficiency of 30%",
+      "url": "https://doi.org/10.1002/adma.201401621",
+      "verified_by": "crossref_doi"
+    },
+    "Low-voltage organic electroluminescent devices using pin structures.pdf": {
+      "doi": "10.1063/1.1432110",
+      "title": "Low-voltage organic electroluminescent devices using <i>pin</i> structures",
+      "url": "https://doi.org/10.1063/1.1432110",
+      "verified_by": "crossref_title_search"
+    },
+    "Manipulation of Charge and Exciton Distribution Based on Blue Aggregation-Induced Emission Fluorophors.pdf": {
+      "doi": "10.1002/adfm.201503368",
+      "title": "Manipulation of Charge and Exciton Distribution Based on Blue Aggregation‐Induced Emission Fluorophors: A Novel Concept to Achieve High‐Performance Hybrid White Organic Light‐Emitting Diodes",
+      "url": "https://doi.org/10.1002/adfm.201503368",
+      "verified_by": "crossref_doi"
+    },
+    "Molecular-scale simulation of electroluminescence in a multilayer white organic light-emitting diode.pdf": {
+      "doi": "10.1038/nmat3622",
+      "title": "Molecular-scale simulation of electroluminescence in a multilayer white organic light-emitting diode",
+      "url": "https://doi.org/10.1038/nmat3622",
+      "verified_by": "crossref_doi"
+    },
+    "Novel Emitting System Based on a Multifunctional Bipolar Phosphor - An Effective Approach for Highly.pdf": {
+      "doi": "10.1002/adma.201600451",
+      "title": "Novel Emitting System Based on a Multifunctional Bipolar Phosphor: An Effective Approach for Highly Efficient Warm‐White Light‐Emitting Devices with High Color‐Rendering Index at High Luminance",
+      "url": "https://doi.org/10.1002/adma.201600451",
+      "verified_by": "crossref_doi"
+    },
+    "OLED Display Fundamentals and Applications - 2017 - Tsujimura.pdf": {
+      "doi": null,
+      "title": "OLED Display Fundamentals and Applications - 2017 - Tsujimura",
+      "url": null,
+      "verified_by": null
+    },
+    "Organic electroluminescent devices with improved stability.pdf": {
+      "doi": "10.1063/1.117151",
+      "title": "Organic electroluminescent devices with improved stability",
+      "url": "https://doi.org/10.1063/1.117151",
+      "verified_by": "crossref_title_search"
+    },
+    "Organic electroluminescent diodes.pdf": {
+      "doi": null,
+      "title": "Organic electroluminescent diodes",
+      "url": null,
+      "verified_by": null
+    },
+    "Organic light-emitting diodes with a bipolar transport layer.pdf": {
+      "doi": null,
+      "title": "Organic light-emitting diodes with a bipolar transport layer",
+      "url": null,
+      "verified_by": null
+    },
+    "Performance and lifetime of vacuum deposited organic light-emitting diodes - Influence of residual gases present during device fabrication.pdf": {
+      "doi": "10.1016/j.orgel.2014.07.014",
+      "title": "Performance and lifetime of vacuum deposited organic light-emitting diodes: Influence of residual gases present during device fabrication",
+      "url": "https://doi.org/10.1016/j.orgel.2014.07.014",
+      "verified_by": "crossref_doi"
+    },
+    "Plasmonic and Photonic Crystals.pdf": {
+      "doi": null,
+      "title": "Plasmonic and Photonic Crystals",
+      "url": null,
+      "verified_by": null
+    },
+    "Quantitative description of charge-carrier transport in a white organic light-emitting diode.pdf": {
+      "doi": "10.1103/physrevb.84.165326",
+      "title": "Quantitative description of charge-carrier transport in a white organic light-emitting diode",
+      "url": "https://doi.org/10.1103/physrevb.84.165326",
+      "verified_by": "crossref_title_search"
+    },
+    "Role of oxygen-bonds in the degradation process of phosphorescent organic light emitting diodes.pdf": {
+      "doi": "10.1063/1.3617459",
+      "title": "Role of oxygen-bonds in the degradation process of phosphorescent organic light emitting diodes",
+      "url": "https://doi.org/10.1063/1.3617459",
+      "verified_by": "crossref_title_search"
+    },
+    "Self-Heating, Bistability, and Thermal Switching in Organic Semiconductors.pdf": {
+      "doi": "10.1103/physrevlett.110.126601",
+      "title": "Self-Heating, Bistability, and Thermal Switching in Organic Semiconductors",
+      "url": "https://doi.org/10.1103/physrevlett.110.126601",
+      "verified_by": "crossref_title_search"
+    },
+    "Simultaneous Realization of High EQE of 30%, Low Drive Voltage, and Low Efficiency Roll-Off at High Brightness in Blue Phosphorescent OLEDs.pdf": {
+      "doi": "10.1002/adom.201500462",
+      "title": "Simultaneous Realization of High EQE of 30%, Low Drive Voltage, and Low Efficiency Roll‐Off at High Brightness in Blue Phosphorescent OLEDs",
+      "url": "https://doi.org/10.1002/adom.201500462",
+      "verified_by": "crossref_title_search"
+    },
+    "Single-Step Triplet-Triplet Annihilation - An Intrinsic Limit for the High Brightness Efficiency of Phosphorescent Organic Light Emitting Diodes.pdf": {
+      "doi": "10.1103/physrevlett.98.197402",
+      "title": "Single-Step Triplet-Triplet Annihilation: An Intrinsic Limit for the High Brightness Efficiency of Phosphorescent Organic Light Emitting Diodes",
+      "url": "https://doi.org/10.1103/physrevlett.98.197402",
+      "verified_by": "crossref_title_search"
+    },
+    "Storage of charge carriers on emitter molecules in organic light-emitting diodes.pdf": {
+      "doi": "10.1103/physrevb.86.075204",
+      "title": "Storage of charge carriers on emitter molecules in organic light-emitting diodes",
+      "url": "https://doi.org/10.1103/physrevb.86.075204",
+      "verified_by": "crossref_title_search"
+    },
+    "The role of charge generation layers in the operational stability of tandem organic light-emitting diodes.pdf": {
+      "doi": "10.1039/c3tc32023e",
+      "title": "The role of charge generation layers in the operational stability of tandem organic light-emitting diodes",
+      "url": "https://doi.org/10.1039/c3tc32023e",
+      "verified_by": "crossref_title_search"
+    },
+    "Transparent organic light-emitting diodes with different bi-directional emission colors using color-conversion capping layers.pdf": {
+      "doi": "10.1016/j.jlumin.2015.02.032",
+      "title": "Transparent organic light-emitting diodes with different bi-directional emission colors using color-conversion capping layers",
+      "url": "https://doi.org/10.1016/j.jlumin.2015.02.032",
+      "verified_by": "crossref_doi"
+    },
+    "Trap-assisted and Langevin-type recombination in organic light-emitting diodes.pdf": {
+      "doi": "10.1103/physrevb.83.165204",
+      "title": "Trap-assisted and Langevin-type recombination in organic light-emitting diodes",
+      "url": "https://doi.org/10.1103/physrevb.83.165204",
+      "verified_by": "crossref_title_search"
+    },
+    "Triplet Harvesting in Hybrid White OrganicLight-Emitting Diodes.pdf": {
+      "doi": "10.1002/adfm.200801503",
+      "title": "Triplet Harvesting in Hybrid White Organic Light‐Emitting Diodes",
+      "url": "https://doi.org/10.1002/adfm.200801503",
+      "verified_by": "crossref_doi"
+    },
+    "Triplet-Triplet Annihilation and Delayed Fluorescence in Molecular Aggregates.pdf": {
+      "doi": null,
+      "title": "Triplet-Triplet Annihilation and Delayed Fluorescence in Molecular Aggregates",
+      "url": null,
+      "verified_by": null
+    },
+    "Triplet-exciton quenching in organic phosphorescent light-emitting diodes with Ir-based emitters.pdf": {
+      "doi": "10.1103/physrevb.75.125328",
+      "title": "Triplet-exciton quenching in organic phosphorescent light-emitting diodes with Ir-based emitters",
+      "url": "https://doi.org/10.1103/physrevb.75.125328",
+      "verified_by": "crossref_title_search"
+    },
+    "Triplet–triplet annihilation in highly efficient fluorescent organic light-emitting diodes.pdf": {
+      "doi": "10.1098/rsta.2014.0321",
+      "title": "Triplet–triplet annihilation in highly efficient fluorescent organic light-emitting diodes: current state and future outlook",
+      "url": "https://doi.org/10.1098/rsta.2014.0321",
+      "verified_by": "crossref_title_search"
+    },
+    "[Adachi & Jullie] 100% phosphorescence quantum efficiency of Ir ( III ) complexes in organic semiconductor films.pdf": {
+      "doi": "10.1063/1.1862777",
+      "title": "100% phosphorescence quantum efficiency of Ir(III) complexes in organic semiconductor films",
+      "url": "https://doi.org/10.1063/1.1862777",
+      "verified_by": "crossref_title_search"
+    },
+    "[Adachi] Endothermic energy transfer - A mechanism for generating very efficient high-energy phosphorescent emission in organic materials.pdf": {
+      "doi": "10.1063/1.1400076",
+      "title": "Endothermic energy transfer: A mechanism for generating very efficient high-energy phosphorescent emission in organic materials",
+      "url": "https://doi.org/10.1063/1.1400076",
+      "verified_by": "crossref_title_search"
+    },
+    "[Adachi] High-efficiency organic electrophosphorescent devices with.pdf": {
+      "doi": null,
+      "title": "High-efficiency organic electrophosphorescent devices with",
+      "url": null,
+      "verified_by": null
+    },
+    "[Baldo - IMP!] Interface-limited injection in amorphous organic semiconductors.pdf": {
+      "doi": "10.1103/physrevb.64.085201",
+      "title": "Interface-limited injection in amorphous organic semiconductors",
+      "url": "https://doi.org/10.1103/physrevb.64.085201",
+      "verified_by": "crossref_title_search"
+    },
+    "[Baldo] Excitonic singlet-triplet ratio in a semiconducting organic thin film.pdf": {
+      "doi": "10.1103/physrevb.60.14422",
+      "title": "Excitonic singlet-triplet ratio in a semiconducting organic thin film",
+      "url": "https://doi.org/10.1103/physrevb.60.14422",
+      "verified_by": "crossref_title_search"
+    },
+    "[Baldo] High-efficiency fluorescent organic light-emitting devices using a phosphorescent sensitizer.pdf": {
+      "doi": "10.1038/35001541",
+      "title": "High-efficiency fluorescent organic light-emitting devices using a phosphorescent sensitizer",
+      "url": "https://doi.org/10.1038/35001541",
+      "verified_by": "crossref_title_search"
+    },
+    "[Baldo] Highly efficient phosphorescent emission from organic electroluminescent devices.pdf": {
+      "doi": "10.1038/25954",
+      "title": "Highly efficient phosphorescent emission from organic electroluminescent devices",
+      "url": "https://doi.org/10.1038/25954",
+      "verified_by": "crossref_title_search"
+    },
+    "[Baldo] Improved energy transfer in electrophosphorescent devices.pdf": {
+      "doi": "10.1063/1.123055",
+      "title": "Improved energy transfer in electrophosphorescent devices",
+      "url": "https://doi.org/10.1063/1.123055",
+      "verified_by": "crossref_title_search"
+    },
+    "[Baldo] Transient analysis of organic electrophosphorescence. I. Transient analysis of triplet energy transfer.pdf": {
+      "doi": "10.1103/physrevb.62.10958",
+      "title": "Transient analysis of organic electrophosphorescence: I. Transient analysis of triplet energy transfer",
+      "url": "https://doi.org/10.1103/physrevb.62.10958",
+      "verified_by": "crossref_title_search"
+    },
+    "[Baldo] Transient analysis of organic electrophosphorescence. II. Transient analysis of triplet-triplet annihilation.pdf": {
+      "doi": "10.1103/physrevb.62.10967",
+      "title": "Transient analysis of organic electrophosphorescence. II. Transient analysis of triplet-triplet annihilation",
+      "url": "https://doi.org/10.1103/physrevb.62.10967",
+      "verified_by": "crossref_title_search"
+    },
+    "[Baldo] Very high-efficiency green organic light-emitting devices based on electrophosphorescence.pdf": {
+      "doi": "10.1063/1.124258",
+      "title": "Very high-efficiency green organic light-emitting devices based on electrophosphorescence",
+      "url": "https://doi.org/10.1063/1.124258",
+      "verified_by": "crossref_title_search"
+    },
+    "[Brutting] Analyzing degradation effects of organic light-emitting diodes via transient optical and electrical measurements.pdf": {
+      "doi": "10.1063/1.4921829",
+      "title": "Analyzing degradation effects of organic light-emitting diodes via transient optical and electrical measurements",
+      "url": "https://doi.org/10.1063/1.4921829",
+      "verified_by": "crossref_doi"
+    },
+    "[Bulovic] Reliability and degradation of organic light emitting devices.pdf": {
+      "doi": null,
+      "title": "Reliability and degradation of organic light emitting devices",
+      "url": null,
+      "verified_by": null
+    },
+    "[Bulovic] Thermally induced failure mechanisms of organic light emitting device structures probed by X-ray specular reflectivity.pdf": {
+      "doi": "10.1016/s0009-2614(97)00941-x",
+      "title": "Thermally induced failure mechanisms of organic light emitting device structures probed by X-ray specular reflectivity",
+      "url": "https://doi.org/10.1016/s0009-2614(97)00941-x",
+      "verified_by": "crossref_title_search"
+    },
+    "[Bulovic] Transform-Limited, Narrow-Linewidth Lasing Action in Organic Semiconductor Microcavities.pdf": {
+      "doi": "10.1126/science.279.5350.553",
+      "title": "Transform-Limited, Narrow-Linewidth Lasing Action in Organic Semiconductor Microcavities",
+      "url": "https://doi.org/10.1126/science.279.5350.553",
+      "verified_by": "crossref_title_search"
+    },
+    "[Bulovic] Transparent light-emitting devices.pdf": {
+      "doi": null,
+      "title": "Transparent light-emitting devices",
+      "url": null,
+      "verified_by": null
+    },
+    "[Bulovic] Weak microcavity effects in organic light-emitting devices.pdf": {
+      "doi": null,
+      "title": "Weak microcavity effects in organic light-emitting devices",
+      "url": null,
+      "verified_by": null
+    },
+    "[CYYang] Lifetime and degradation effects in polymer light-emitting diodes.pdf": {
+      "doi": "10.1063/1.369564",
+      "title": "Lifetime and degradation effects in polymer light-emitting diodes",
+      "url": "https://doi.org/10.1063/1.369564",
+      "verified_by": "crossref_title_search"
+    },
+    "[Calculation - IMP!!] Lifetime of an emitting molecule near a partially reflecting surface.pdf": {
+      "doi": "10.1063/1.1681437",
+      "title": "Lifetime of an emitting molecule near a partially reflecting surface",
+      "url": "https://doi.org/10.1063/1.1681437",
+      "verified_by": "crossref_title_search"
+    },
+    "[Calculation - SPP - IMP!!] Coupling of InGaN quantum-well photoluminescence to silver surface plasmons.pdf": {
+      "doi": "10.1103/physrevb.60.11564",
+      "title": "Coupling of InGaN quantum-well photoluminescence to silver surface plasmons",
+      "url": "https://doi.org/10.1103/physrevb.60.11564",
+      "verified_by": "crossref_title_search"
+    },
+    "[Caleb] Charge Balance and Exciton Confinement in Phosphorescent Organic Light Emitting Diodes.pdf": {
+      "doi": "10.1002/adom.201600067",
+      "title": "Charge Balance and Exciton Confinement in Phosphorescent Organic Light Emitting Diodes",
+      "url": "https://doi.org/10.1002/adom.201600067",
+      "verified_by": "crossref_doi"
+    },
+    "[Caleb] Effects of Charge Balance and Exciton Confinement on the Operational Lifetime of Blue Phosphorescent Organic Light-Emitting Diodes.pdf": {
+      "doi": "10.1103/physrevapplied.7.041002",
+      "title": "Effects of Charge Balance and Exciton Confinement on the Operational Lifetime of Blue Phosphorescent Organic Light-Emitting Diodes",
+      "url": "https://doi.org/10.1103/physrevapplied.7.041002",
+      "verified_by": "crossref_title_search"
+    },
+    "[Charge vs degradation] Total charge amount as indicator for the degradation of small molecule organic solar cells.pdf": {
+      "doi": "10.1016/j.solmat.2010.09.031",
+      "title": "Total charge amount as indicator for the degradation of small molecule organic solar cells",
+      "url": "https://doi.org/10.1016/j.solmat.2010.09.031",
+      "verified_by": "crossref_doi"
+    },
+    "[Degradation] Analyzing degradation effects of organic light-emitting diodes via transient optical and electrical measurements.pdf": {
+      "doi": "10.1063/1.4921829",
+      "title": "Analyzing degradation effects of organic light-emitting diodes via transient optical and electrical measurements",
+      "url": "https://doi.org/10.1063/1.4921829",
+      "verified_by": "crossref_title_search"
+    },
+    "[Franky So - Review] Recent Advances in OLED Optical Design.pdf": {
+      "doi": "10.1002/adfm.201808803",
+      "title": "Recent Advances in OLED Optical Design",
+      "url": "https://doi.org/10.1002/adfm.201808803",
+      "verified_by": "crossref_doi"
+    },
+    "[Franky So] Evidence for Exciton Confinement in Crystalline Organic Multiple Quantum Wells.pdf": {
+      "doi": "10.1103/physrevlett.66.2649",
+      "title": "Evidence for exciton confinement in crystalline organic multiple quantum wells",
+      "url": "https://doi.org/10.1103/physrevlett.66.2649",
+      "verified_by": "crossref_title_search"
+    },
+    "[Franky So] Organic Electronics Materials, Processing, Devices and Applications.pdf": {
+      "doi": null,
+      "title": "Organic Electronics Materials, Processing, Devices and Applications",
+      "url": null,
+      "verified_by": null
+    },
+    "[Giebink] Direct evidence for degradation of polaron excited states in organic light emitting diodes.pdf": {
+      "doi": "10.1063/1.3151689",
+      "title": "Direct evidence for degradation of polaron excited states in organic light emitting diodes",
+      "url": "https://doi.org/10.1063/1.3151689",
+      "verified_by": "crossref_title_search"
+    },
+    "[Giebink] Ideal diode equation for organic heterojunctions. I. Derivation and application.pdf": {
+      "doi": "10.1103/physrevb.82.155305",
+      "title": "Ideal diode equation for organic heterojunctions. I. Derivation and application",
+      "url": "https://doi.org/10.1103/physrevb.82.155305",
+      "verified_by": "crossref_title_search"
+    },
+    "[Giebink] Ideal diode equation for organic heterojunctions. II. The role of polaron pair recombination.pdf": {
+      "doi": "10.1103/physrevb.82.155306",
+      "title": "Ideal diode equation for organic heterojunctions. II. The role of polaron pair recombination",
+      "url": "https://doi.org/10.1103/physrevb.82.155306",
+      "verified_by": "crossref_title_search"
+    },
+    "[Giebink] Intrinsic luminance loss in phosphorescent small-molecule organic light emitting.pdf": {
+      "doi": "10.1063/1.2884530",
+      "title": "Intrinsic luminance loss in phosphorescent small-molecule organic light emitting devices due to bimolecular annihilation reactions",
+      "url": "https://doi.org/10.1063/1.2884530",
+      "verified_by": "crossref_title_search"
+    },
+    "[Giebink] Quantum efficiency harmonic analysis of exciton annihilation in organic light emitting diodes.pdf": {
+      "doi": "10.1063/1.4923471",
+      "title": "Quantum efficiency harmonic analysis of exciton annihilation in organic light emitting diodes",
+      "url": "https://doi.org/10.1063/1.4923471",
+      "verified_by": "crossref_doi"
+    },
+    "[Giebink] Quantum efficiency roll-off at high brightness in fluorescent and phosphorescent organic light emitting diodes.pdf": {
+      "doi": "10.1103/physrevb.77.235215",
+      "title": "Quantum efficiency roll-off at high brightness in fluorescent and phosphorescent organic light emitting diodes",
+      "url": "https://doi.org/10.1103/physrevb.77.235215",
+      "verified_by": "crossref_title_search"
+    },
+    "[Giebink] Temporal response of optically pumped organic semiconductor lasers and its implication for reaching threshold under electrical excitation.pdf": {
+      "doi": "10.1103/physrevb.79.073302",
+      "title": "Temporal response of optically pumped organic semiconductor lasers and its implication for reaching threshold under electrical excitation",
+      "url": "https://doi.org/10.1103/physrevb.79.073302",
+      "verified_by": "crossref_title_search"
+    },
+    "[Giebink] Transient analysis of triplet exciton dynamics in amorphous organic semiconductor thin films.pdf": {
+      "doi": "10.1016/j.orgel.2006.04.007",
+      "title": "Transient analysis of triplet exciton dynamics in amorphous organic semiconductor thin films",
+      "url": "https://doi.org/10.1016/j.orgel.2006.04.007",
+      "verified_by": "crossref_doi"
+    },
+    "[Holmes] Investigating the Role of Emissive Layer Architecture on the Exciton Recombination Zone in Organic Light-Emitting Devices.pdf": {
+      "doi": "10.1002/adfm.201300101",
+      "title": "Investigating the Role of Emissive Layer Architecture on the Exciton Recombination Zone in Organic Light‐Emitting Devices",
+      "url": "https://doi.org/10.1002/adfm.201300101",
+      "verified_by": "crossref_doi"
+    },
+    "[Hopping!!!] Charge Transport in Disordered Organic  Photoconductors.pdf": {
+      "doi": "10.1002/pssb.2221750102",
+      "title": "Charge Transport in Disordered Organic Photoconductors a Monte Carlo Simulation Study",
+      "url": "https://doi.org/10.1002/pssb.2221750102",
+      "verified_by": "crossref_doi"
+    },
+    "[IMP!!] Electron traps in semiconducting polymers - Exponential versus Gaussian trap distribution.pdf": {
+      "doi": "10.1103/physrevb.83.195204",
+      "title": "Electron traps in semiconducting polymers: Exponential versus Gaussian trap distribution",
+      "url": "https://doi.org/10.1103/physrevb.83.195204",
+      "verified_by": "crossref_title_search"
+    },
+    "[IMP!!] Modeling Current–Voltage Characteristics of Bilayer Organic Light-Emitting Diodes.pdf": {
+      "doi": "10.1109/ted.2018.2843681",
+      "title": "Modeling Current–Voltage Characteristics of Bilayer Organic Light-Emitting Diodes",
+      "url": "https://doi.org/10.1109/ted.2018.2843681",
+      "verified_by": "crossref_doi"
+    },
+    "[IMPORTANT!!] Triplet Harvesting in Hybrid White OrganicLight-Emitting Diodes.pdf": {
+      "doi": "10.1002/adfm.200801503",
+      "title": "Triplet Harvesting in Hybrid White Organic Light‐Emitting Diodes",
+      "url": "https://doi.org/10.1002/adfm.200801503",
+      "verified_by": "crossref_doi"
+    },
+    "[Injection] Origin of Enhanced Hole Injection in Inverted Organic Devices with Electron Accepting Interlayer.pdf": {
+      "doi": "10.1002/adfm.201200185",
+      "title": "Origin of Enhanced Hole Injection in Inverted Organic Devices with Electron Accepting Interlayer",
+      "url": "https://doi.org/10.1002/adfm.201200185",
+      "verified_by": "crossref_doi"
+    },
+    "[Intersting] Modeling of organic light emitting diodes - From molecular to device.pdf": {
+      "doi": null,
+      "title": "Modeling of organic light emitting diodes - From molecular to device",
+      "url": null,
+      "verified_by": null
+    },
+    "[J. Y. Lee] Above 30% External Quantum Effi ciency in Blue Phosphorescent Organic Light-Emitting Diodes Using Pyrido[2,3- b ]indole Derivatives as Host Materials.pdf": {
+      "doi": "10.1002/adma.201301091",
+      "title": "Above 30% External Quantum Efficiency in Blue Phosphorescent Organic Light‐Emitting Diodes Using Pyrido[2,3‐<i>b</i>]indole Derivatives as Host Materials",
+      "url": "https://doi.org/10.1002/adma.201301091",
+      "verified_by": "crossref_doi"
+    },
+    "[J.J.Kim - Calculation] Luminescence from oriented emitting dipoles in.pdf": {
+      "doi": "10.1364/oe.23.00a279",
+      "title": "Luminescence from oriented emitting dipoles in a birefringent medium",
+      "url": "https://doi.org/10.1364/oe.23.00a279",
+      "verified_by": "crossref_title_search"
+    },
+    "[J.J.Kim - Subs] Lensfree OLEDs with over 50% external quantum efficiency.pdf": {
+      "doi": "10.1038/s41467-018-05671-x",
+      "title": "Lensfree OLEDs with over 50% external quantum efficiency via external scattering and horizontally oriented emitters",
+      "url": "https://doi.org/10.1038/s41467-018-05671-x",
+      "verified_by": "crossref_title_search"
+    },
+    "[J.J.Kim - WG] Vacuum nano-hole array embedded organic light emitting diodes.pdf": {
+      "doi": "10.1039/c3nr05331h",
+      "title": "Vacuum nano-hole array embedded organic light emitting diodes",
+      "url": "https://doi.org/10.1039/c3nr05331h",
+      "verified_by": "crossref_title_search"
+    },
+    "[J.J.Kim] Phosphorescent dye-based supramolecules for high-efficiency organic light-emitting diodes.pdf": {
+      "doi": "10.1038/ncomms5769",
+      "title": "Phosphorescent dye-based supramolecules for high-efficiency organic light-emitting diodes",
+      "url": "https://doi.org/10.1038/ncomms5769",
+      "verified_by": "crossref_doi"
+    },
+    "[J.J.Kim] Sky-Blue Phosphorescent OLEDs with 34.1% External Quantum Efficiency Using a Low Refractive.pdf": {
+      "doi": "10.1002/adma.201506065",
+      "title": "Sky‐Blue Phosphorescent OLEDs with 34.1% External Quantum Efficiency Using a Low Refractive Index Electron Transporting Layer",
+      "url": "https://doi.org/10.1002/adma.201506065",
+      "verified_by": "crossref_doi"
+    },
+    "[JJKim - Best!! - WG] High-Quality White OLEDs with Comparable Efficiencies to LEDs.pdf": {
+      "doi": "10.1002/adom.201701349",
+      "title": "High‐Quality White OLEDs with Comparable Efficiencies to LEDs",
+      "url": "https://doi.org/10.1002/adom.201701349",
+      "verified_by": "crossref_doi"
+    },
+    "[JV equation] Langevin and Trap-Assisted Recombination in Phosphorescent Organic Light Emitting Diodes.pdf": {
+      "doi": "10.1002/adfm.201303453",
+      "title": "Langevin and Trap‐Assisted Recombination in Phosphorescent Organic Light Emitting Diodes",
+      "url": "https://doi.org/10.1002/adfm.201303453",
+      "verified_by": "crossref_doi"
+    },
+    "[Jaesang] An electrophosphorescent organic light emitting concentrator.pdf": {
+      "doi": "10.1038/lsa.2014.62",
+      "title": "An electrophosphorescent organic light emitting concentrator",
+      "url": "https://doi.org/10.1038/lsa.2014.62",
+      "verified_by": "crossref_doi"
+    },
+    "[Jaesang] Deep blue phosphorescent organic light-emitting diodes with very high brightness and efficiency.pdf": {
+      "doi": "10.1038/nmat4446",
+      "title": "Deep blue phosphorescent organic light-emitting diodes with very high brightness and efficiency",
+      "url": "https://doi.org/10.1038/nmat4446",
+      "verified_by": "crossref_doi"
+    },
+    "[Junji Kido] A systematic study on efficiency enhancements in phosphorescent green, red and blue microcavity organic light emitting devices.pdf": {
+      "doi": "10.1038/lsa.2013.30",
+      "title": "A systematic study on efficiency enhancements in phosphorescent green, red and blue microcavity organic light emitting devices",
+      "url": "https://doi.org/10.1038/lsa.2013.30",
+      "verified_by": "crossref_doi"
+    },
+    "[Junji Kido] Low-Driving-Voltage Blue Phosphorescent Organic LightEmitting Devices with External Quantum Efficiency of 30%.pdf": {
+      "doi": "10.1002/adma.201401621",
+      "title": "Low‐Driving‐Voltage Blue Phosphorescent Organic Light‐Emitting Devices with External Quantum Efficiency of 30%",
+      "url": "https://doi.org/10.1002/adma.201401621",
+      "verified_by": "crossref_doi"
+    },
+    "[Junji Kido] Simultaneous Realization of High EQE of 30%, Low Drive Voltage, and Low Efﬁ ciency Roll-Off at High Brightness.pdf": {
+      "doi": "10.1002/adom.201500462",
+      "title": "Simultaneous Realization of High EQE of 30%, Low Drive Voltage, and Low Efficiency Roll‐Off at High Brightness in Blue Phosphorescent OLEDs",
+      "url": "https://doi.org/10.1002/adom.201500462",
+      "verified_by": "crossref_doi"
+    },
+    "[Junji Kido] Ultra High Efficiency Green Organic Light-Emitting Devices.pdf": {
+      "doi": null,
+      "title": "Ultra High Efficiency Green Organic Light-Emitting Devices",
+      "url": null,
+      "verified_by": null
+    },
+    "[K Leo] Quantification of energy loss mechanisms in organic light-emitting diodes.pdf": {
+      "doi": "10.1063/1.3527936",
+      "title": "Quantification of energy loss mechanisms in organic light-emitting diodes",
+      "url": "https://doi.org/10.1063/1.3527936",
+      "verified_by": "crossref_doi"
+    },
+    "[LDI-TOF-MS] Chemical degradation mechanism of TAPC as hole transport layer in blue phosphorescent OLED.pdf": {
+      "doi": "10.1016/j.orgel.2016.11.041",
+      "title": "Chemical degradation mechanism of TAPC as hole transport layer in blue phosphorescent OLED",
+      "url": "https://doi.org/10.1016/j.orgel.2016.11.041",
+      "verified_by": "crossref_doi"
+    },
+    "[M. Slootsky] Full-wave simulation of enhanced outcoupling of organic light-emitting devices with an embedded low-index grid.pdf": {
+      "doi": "10.1063/1.3116644",
+      "title": "Full-wave simulation of enhanced outcoupling of organic light-emitting devices with an embedded low-index grid",
+      "url": "https://doi.org/10.1063/1.3116644",
+      "verified_by": "crossref_title_search"
+    },
+    "[McGehee] High Efficiency Polymer Solar Cells with Long Operating Lifetimes.pdf": {
+      "doi": "10.1002/aenm.201100138",
+      "title": "High Efficiency Polymer Solar Cells with Long Operating Lifetimes",
+      "url": "https://doi.org/10.1002/aenm.201100138",
+      "verified_by": "crossref_doi"
+    },
+    "[Nature Comm] Realization of high-efficiency fluorescent organic light-emitting diodes with low driving voltage.pdf": {
+      "doi": "10.1038/s41467-019-10260-7",
+      "title": "Realization of high-efficiency fluorescent organic light-emitting diodes with low driving voltage",
+      "url": "https://doi.org/10.1038/s41467-019-10260-7",
+      "verified_by": "crossref_doi"
+    },
+    "[Orientation] Control of Molecular Dye Orientation in Organic Luminescent Films by the Glass Transition Temperature.pdf": {
+      "doi": "10.1021/acs.chemmater.5b00062",
+      "title": "Control of Molecular Dye Orientation in Organic Luminescent Films by the Glass Transition Temperature of the Host Material",
+      "url": "https://doi.org/10.1021/acs.chemmater.5b00062",
+      "verified_by": "crossref_title_search"
+    },
+    "[PL vs EL] Studies of the degradation mechanism of organic light-emitting diodes based on.pdf": {
+      "doi": null,
+      "title": "Studies of the degradation mechanism of organic light-emitting diodes based on",
+      "url": null,
+      "verified_by": null
+    },
+    "[Quinn] Centimetre-scale electron diffusion in photoactive organic heterostructures.pdf": {
+      "doi": "10.1038/nature25148",
+      "title": "Centimetre-scale electron diffusion in photoactive organic heterostructures",
+      "url": "https://doi.org/10.1038/nature25148",
+      "verified_by": "crossref_doi"
+    },
+    "[Read!!] The triplet state of organo-transition metal compounds. Triplet harvesting and singlet harvesting for efficient OLEDs.pdf": {
+      "doi": "10.1016/j.ccr.2011.01.042",
+      "title": "The triplet state of organo-transition metal compounds. Triplet harvesting and singlet harvesting for efficient OLEDs",
+      "url": "https://doi.org/10.1016/j.ccr.2011.01.042",
+      "verified_by": "crossref_doi"
+    },
+    "[Review - IMP!] Approaches for Long Lifetime Organic Light Emitting Diodes.pdf": {
+      "doi": "10.1002/advs.202002254",
+      "title": "Approaches for Long Lifetime Organic Light Emitting Diodes",
+      "url": "https://doi.org/10.1002/advs.202002254",
+      "verified_by": "crossref_doi"
+    },
+    "[Review - Junji Kido] Development of high performance OLEDs for general lighting.pdf": {
+      "doi": "10.1039/c2tc00584k",
+      "title": "Development of high performance OLEDs for general lighting",
+      "url": "https://doi.org/10.1039/c2tc00584k",
+      "verified_by": "crossref_title_search"
+    },
+    "[Review - Karl Leo] Efficiency Roll-Off in Organic Light-Emitting Diodes.pdf": {
+      "doi": "10.1002/adma.201301603",
+      "title": "Efficiency Roll‐Off in Organic Light‐Emitting Diodes",
+      "url": "https://doi.org/10.1002/adma.201301603",
+      "verified_by": "crossref_doi"
+    },
+    "[Review - Nat] All-organic thermally activated delayed fluorescence materials for organic light-emitting diodes.pdf": {
+      "doi": null,
+      "title": "All-organic thermally activated delayed fluorescence materials for organic light-emitting diodes",
+      "url": null,
+      "verified_by": null
+    },
+    "[Review - Nat] The role of chemical design in the performance of organic semiconductors.pdf": {
+      "doi": "10.1038/s41570-019-0152-9",
+      "title": "The role of chemical design in the performance of organic semiconductors",
+      "url": "https://doi.org/10.1038/s41570-019-0152-9",
+      "verified_by": "crossref_doi"
+    },
+    "[Review] Approaches to high performance white organic light-emitting diodes for general lighting.pdf": {
+      "doi": "10.1039/c6qm00365f",
+      "title": "Approaches to high performance white organic light-emitting diodes for general lighting",
+      "url": "https://doi.org/10.1039/c6qm00365f",
+      "verified_by": "crossref_doi"
+    },
+    "[Review] Development of high performance OLEDs for general lighting.pdf": {
+      "doi": "10.1039/c2tc00584k",
+      "title": "Development of high performance OLEDs for general lighting",
+      "url": "https://doi.org/10.1039/c2tc00584k",
+      "verified_by": "crossref_title_search"
+    },
+    "[Review] Multifunctional Materials in High-Performance OLEDs - Challenges for Solid-State Lighting.pdf": {
+      "doi": "10.1021/cm1024052",
+      "title": "Multifunctional Materials in High-Performance OLEDs: Challenges for Solid-State Lighting",
+      "url": "https://doi.org/10.1021/cm1024052",
+      "verified_by": "crossref_title_search"
+    },
+    "[Review] Organic light-emitting-diode lighting overview.pdf": {
+      "doi": null,
+      "title": "Organic light-emitting-diode lighting overview",
+      "url": null,
+      "verified_by": null
+    },
+    "[Review] Recent Advancement in Boron-Based Efficient and Pure Blue Thermally Activated.pdf": {
+      "doi": "10.3389/fchem.2020.00373",
+      "title": "Recent Advancement in Boron-Based Efficient and Pure Blue Thermally Activated Delayed Fluorescence Materials for Organic Light-Emitting Diodes",
+      "url": "https://doi.org/10.3389/fchem.2020.00373",
+      "verified_by": "crossref_title_search"
+    },
+    "[Review] Recent Advances in OLED Optical Design.pdf": {
+      "doi": "10.1002/adfm.201808803",
+      "title": "Recent Advances in OLED Optical Design",
+      "url": "https://doi.org/10.1002/adfm.201808803",
+      "verified_by": "crossref_doi"
+    },
+    "[Review] Recent Developments in Light Extraction Technologies of Organic Light Emitting Diodes.pdf": {
+      "doi": "10.1007/s13391-011-0601-1",
+      "title": "Review paper: Recent developments in light extraction technologies of organic light emitting diodes",
+      "url": "https://doi.org/10.1007/s13391-011-0601-1",
+      "verified_by": "crossref_title_search"
+    },
+    "[Review] Recent Progress of Highly Efﬁcient Red and Near-Infrared Thermally Activated Delayed Fluorescent Emitters.pdf": {
+      "doi": "10.1002/adom.201800255",
+      "title": "Recent Progress of Highly Efficient Red and Near‐Infrared Thermally Activated Delayed Fluorescent Emitters",
+      "url": "https://doi.org/10.1002/adom.201800255",
+      "verified_by": "crossref_doi"
+    },
+    "[Review] Recent advances in light outcoupling from white organic light-emitting diodes.pdf": {
+      "doi": "10.1117/1.jpe.5.057607",
+      "title": "Recent advances in light outcoupling from white organic light-emitting diodes",
+      "url": "https://doi.org/10.1117/1.jpe.5.057607",
+      "verified_by": "crossref_title_search"
+    },
+    "[Review] Recent progress in the use of fluorescent and phosphorescent organic compounds for organic light-emitting diode lighting.pdf": {
+      "doi": "10.1117/1.jpe.5.057608",
+      "title": "Recent progress in the use of fluorescent and phosphorescent organic compounds for organic light-emitting diode lighting",
+      "url": "https://doi.org/10.1117/1.jpe.5.057608",
+      "verified_by": "crossref_title_search"
+    },
+    "[S Reineke - SPP WG - Nat. Comm] Tailor-made nanostructures bridging chaos and order for highly efficient white organic.pdf": {
+      "doi": "10.1038/s41467-019-11032-z",
+      "title": "Tailor-made nanostructures bridging chaos and order for highly efficient white organic light-emitting diodes",
+      "url": "https://doi.org/10.1038/s41467-019-11032-z",
+      "verified_by": "crossref_doi"
+    },
+    "[S to T ratio] Transients of Volume-Controlled Current and of Recombination Radiation in Anthracene.pdf": {
+      "doi": "10.1063/1.1727152",
+      "title": "Transients of Volume-Controlled Current and of Recombination Radiation in Anthracene",
+      "url": "https://doi.org/10.1063/1.1727152",
+      "verified_by": "crossref_title_search"
+    },
+    "[S. Forrest] A metal-free cathode for organic semiconductor devices.pdf": {
+      "doi": "10.1063/1.121301",
+      "title": "A metal-free cathode for organic semiconductor devices",
+      "url": "https://doi.org/10.1063/1.121301",
+      "verified_by": "crossref_doi"
+    },
+    "[S. Forrest] Transparent organic light emitting devices.pdf": {
+      "doi": null,
+      "title": "Transparent organic light emitting devices",
+      "url": null,
+      "verified_by": null
+    },
+    "[SCLC & triplet harvesting] Harvesting Triplet Excitons from Fluorescent Blue Emitters in White.pdf": {
+      "doi": "10.1002/adma.200700641",
+      "title": "Harvesting Triplet Excitons from Fluorescent Blue Emitters in White Organic Light‐Emitting Diodes",
+      "url": "https://doi.org/10.1002/adma.200700641",
+      "verified_by": "crossref_doi"
+    },
+    "[TPA - R. Friend] Exciton-Charge Annihilation in Organic Semiconductor Films.pdf": {
+      "doi": "10.1002/adfm.201102433",
+      "title": "Exciton‐Charge Annihilation in Organic Semiconductor Films",
+      "url": "https://doi.org/10.1002/adfm.201102433",
+      "verified_by": "crossref_doi"
+    },
+    "[TPA] Quenching of Excitons by Holes in Poly(3-hexylthiophene) Films.pdf": {
+      "doi": "10.1021/jp7113412",
+      "title": "Quenching of Excitons by Holes in Poly(3-hexylthiophene) Films",
+      "url": "https://doi.org/10.1021/jp7113412",
+      "verified_by": "crossref_title_search"
+    },
+    "[Temp] Influence of temperature and drive current on degradation mechanisms in organic light-emitting diodes.pdf": {
+      "doi": "10.1063/1.1476704",
+      "title": "Influence of temperature and drive current on degradation mechanisms in organic light-emitting diodes",
+      "url": "https://doi.org/10.1063/1.1476704",
+      "verified_by": "crossref_title_search"
+    },
+    "[Theory abt transport] Relationship between electroluminescence and current transport in organic heterojunction light-emitting devices.pdf": {
+      "doi": "10.1063/1.362350",
+      "title": "Relationship between electroluminescence and current transport in organic heterojunction light-emitting devices",
+      "url": "https://doi.org/10.1063/1.362350",
+      "verified_by": "crossref_title_search"
+    },
+    "[Y. Sun] High-efficiency top-emissive white-light-emitting organic electrophosphorescent devices.pdf": {
+      "doi": "10.1063/1.1947376",
+      "title": "High-efficiency top-emissive white-light-emitting organic electrophosphorescent devices",
+      "url": "https://doi.org/10.1063/1.1947376",
+      "verified_by": "crossref_title_search"
+    },
+    "[Y. Sun] Organic light emitting devices with enhanced outcoupling via microlenses fabricated by imprint lithography.pdf": {
+      "doi": "10.1063/1.2356904",
+      "title": "Organic light emitting devices with enhanced outcoupling via microlenses fabricated by imprint lithography",
+      "url": "https://doi.org/10.1063/1.2356904",
+      "verified_by": "crossref_title_search"
+    },
+    "[Yersin] The triplet state of organo-transition metal compounds. Triplet harvesting and singlet harvesting for efficient OLEDs.pdf": {
+      "doi": "10.1016/j.ccr.2011.01.042",
+      "title": "The triplet state of organo-transition metal compounds. Triplet harvesting and singlet harvesting for efficient OLEDs",
+      "url": "https://doi.org/10.1016/j.ccr.2011.01.042",
+      "verified_by": "crossref_doi"
+    },
+    "[Yifan] Enhanced efficiency in high-brightness fluorescent organic light emitting diodes through triplet management.pdf": {
+      "doi": "10.1063/1.3664771",
+      "title": "Enhanced efficiency in high-brightness fluorescent organic light emitting diodes through triplet management",
+      "url": "https://doi.org/10.1063/1.3664771",
+      "verified_by": "crossref_title_search"
+    },
+    "[Yifan] Existence of continuous-wave threshold for organic semiconductor lasers.pdf": {
+      "doi": "10.1103/physrevb.84.241301",
+      "title": "Existence of continuous-wave threshold for organic semiconductor lasers",
+      "url": "https://doi.org/10.1103/physrevb.84.241301",
+      "verified_by": "crossref_title_search"
+    },
+    "[Yifan] Singlet–triplet quenching in high intensity fluorescent organic light emitting diodes.pdf": {
+      "doi": "10.1016/j.cplett.2010.06.079",
+      "title": "Singlet–triplet quenching in high intensity fluorescent organic light emitting diodes",
+      "url": "https://doi.org/10.1016/j.cplett.2010.06.079",
+      "verified_by": "crossref_doi"
+    },
+    "[Yifan] Temperature dependence of polariton lasing in a crystalline anthracene microcavity.pdf": {
+      "doi": "10.1103/physrevb.86.045312",
+      "title": "Temperature dependence of polariton lasing in a crystalline anthracene microcavity",
+      "url": "https://doi.org/10.1103/physrevb.86.045312",
+      "verified_by": "crossref_title_search"
+    },
+    "[Yifan] Tenfold increase in the lifetime of blue phosphorescent organic light-emitting diodes.pdf": {
+      "doi": "10.1038/ncomms6008",
+      "title": "Tenfold increase in the lifetime of blue phosphorescent organic light-emitting diodes",
+      "url": "https://doi.org/10.1038/ncomms6008",
+      "verified_by": "crossref_doi"
+    },
+    "[Yifan] Triplet diffusion leads to triplet–triplet annihilation in organic phosphorescent emitters.pdf": {
+      "doi": "10.1016/j.cplett.2013.10.048",
+      "title": "Triplet diffusion leads to triplet–triplet annihilation in organic phosphorescent emitters",
+      "url": "https://doi.org/10.1016/j.cplett.2013.10.048",
+      "verified_by": "crossref_doi"
+    },
+    "[Yiru Sun - WG - Nat. Photon] Enhanced light out-coupling of organic light-emitting devices using embedded low-index grids.pdf": {
+      "doi": "10.1038/nphoton.2008.132",
+      "title": "Enhanced light out-coupling of organic light-emitting devices using embedded low-index grids",
+      "url": "https://doi.org/10.1038/nphoton.2008.132",
+      "verified_by": "crossref_title_search"
+    },
+    "[Yiru Sun] Enhanced outcoupling from organic light-emitting diodes using aperiodic dielectric mirrors.pdf": {
+      "doi": "10.1063/1.2748859",
+      "title": "Enhanced outcoupling from organic light-emitting diodes using aperiodic dielectric mirrors",
+      "url": "https://doi.org/10.1063/1.2748859",
+      "verified_by": "crossref_title_search"
+    },
+    "[Yiru Sun] High-efficiency white organic light emitting devices with three separate phosphorescent emission layers.pdf": {
+      "doi": "10.1063/1.2827178",
+      "title": "High-efficiency white organic light emitting devices with three separate phosphorescent emission layers",
+      "url": "https://doi.org/10.1063/1.2827178",
+      "verified_by": "crossref_title_search"
+    },
+    "[Yiru Sun] Management of singlet and triplet excitons for efficient white organic light-emitting devices.pdf": {
+      "doi": "10.1038/nature04645",
+      "title": "Management of singlet and triplet excitons for efficient white organic light-emitting devices",
+      "url": "https://doi.org/10.1038/nature04645",
+      "verified_by": "crossref_title_search"
+    },
+    "[Yue - Nat. Photon] Enhanced light extraction from organic light-emitting devices using a sub-anode grid.pdf": {
+      "doi": "10.1038/nphoton.2015.194",
+      "title": "Enhanced light extraction from organic light-emitting devices using a sub-anode grid",
+      "url": "https://doi.org/10.1038/nphoton.2015.194",
+      "verified_by": "crossref_doi"
+    },
+    "[Yue] Efficient, Nonintrusive Outcoupling in Organic Light Emitting Devices Using Embedded Microlens Arrays.pdf": {
+      "doi": "10.1021/acsphotonics.8b00255",
+      "title": "Efficient, Nonintrusive Outcoupling in Organic Light Emitting Devices Using Embedded Microlens Arrays",
+      "url": "https://doi.org/10.1021/acsphotonics.8b00255",
+      "verified_by": "crossref_doi"
+    },
+    "[Yue] Elimination of Plasmon Losses and Enhanced Light Extraction of Top-Emitting Organic Light-Emitting.pdf": {
+      "doi": "10.1021/acsphotonics.6b00847",
+      "title": "Elimination of Plasmon Losses and Enhanced Light Extraction of Top-Emitting Organic Light-Emitting Devices Using a Reflective Subelectrode Grid",
+      "url": "https://doi.org/10.1021/acsphotonics.6b00847",
+      "verified_by": "crossref_title_search"
+    },
+    "[p-i-n review] Highly Efficient Organic Devices Based on Electrically Doped Transport Layers.pdf": {
+      "doi": "10.1021/cr050156n",
+      "title": "Highly Efficient Organic Devices Based on Electrically Doped Transport Layers",
+      "url": "https://doi.org/10.1021/cr050156n",
+      "verified_by": "crossref_title_search"
+    },
+    "[r, nr] Exciton relaxation and radiative recombination in semiconductor quantum dots.pdf": {
+      "doi": "10.1103/physrevb.48.17637",
+      "title": "Exciton relaxation and radiative recombination in semiconductor quantum dots",
+      "url": "https://doi.org/10.1103/physrevb.48.17637",
+      "verified_by": "crossref_title_search"
+    },
+    "[r]Exciton radiative lifetime in transition metal dichalcogenide monolayers.pdf": {
+      "doi": "10.1103/physrevb.93.205423",
+      "title": "Exciton radiative lifetime in transition metal dichalcogenide monolayers",
+      "url": "https://doi.org/10.1103/physrevb.93.205423",
+      "verified_by": "crossref_title_search"
+    },
+    "[매우 중요!!] Anti-reflective coatings - A critical, in-depth review.pdf": {
+      "doi": null,
+      "title": "Anti-reflective coatings - A critical, in-depth review",
+      "url": null,
+      "verified_by": null
+    },
+    "[중요 - J.J.Kim] The Mechanism of Charge Generation in Charge-Generation Units Composed.pdf": {
+      "doi": "10.1002/adfm.201102212",
+      "title": "The Mechanism of Charge Generation in Charge‐Generation Units Composed of p‐Doped Hole‐Transporting Layer/HATCN/n‐Doped Electron‐Transporting Layers",
+      "url": "https://doi.org/10.1002/adfm.201102212",
+      "verified_by": "crossref_doi"
+    },
+    "[중요] Highly stable charge generation layers using caesium phosphate as n-dopants and inserting interlayers.pdf": {
+      "doi": "10.1063/1.4720064",
+      "title": "Highly stable charge generation layers using caesium phosphate as n-dopants and inserting interlayers",
+      "url": "https://doi.org/10.1063/1.4720064",
+      "verified_by": "crossref_title_search"
+    }
+  }
+}

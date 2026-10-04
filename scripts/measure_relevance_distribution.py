@@ -73,11 +73,12 @@ def distance_to_similarity(distance):
     """
     Convert a ChromaDB L2 distance into a raw cosine similarity.
 
-    The BGE embeddings are stored normalized, so for unit vectors:
-        d^2 = 2 - 2*cos  ->  cos = 1 - d^2 / 2
+    NOTE: Chroma's "l2" space returns the SQUARED Euclidean distance. The
+    BGE embeddings are stored normalized, so for unit vectors:
+        d = ||q - e||^2 = 2 - 2*cos  ->  cos = 1 - d / 2
     The result is clamped to [0, 1] to absorb small numerical drift.
     """
-    similarity = 1.0 - (float(distance) ** 2) / 2.0
+    similarity = 1.0 - float(distance) / 2.0
     return max(0.0, min(1.0, similarity))
 
 

@@ -168,9 +168,10 @@ JSON:"""
         Two steps happen here, and the intermediate value never leaves this
         method on purpose:
 
-        1. distance -> cosine similarity. The BGE embeddings are stored with
-           normalize_embeddings=True, so for unit vectors d^2 = 2 - 2*cos,
-           which rearranges to cos = 1 - d^2 / 2.
+        1. distance -> cosine similarity. Chroma's "l2" space gives us the
+           SQUARED Euclidean distance d = ||q - e||^2. Our BGE embeddings are
+           stored with normalize_embeddings=True, so for unit vectors
+           d = 2 - 2*cos, which rearranges to cos = 1 - d / 2.
         2. cosine similarity -> relevance, via the sigmoid. Raw similarities in
            a scientific corpus sit in a narrow band and are useless as a
            decision axis; the sigmoid spreads that band out.
@@ -178,7 +179,7 @@ JSON:"""
         Every threshold in this engine compares against the value returned
         here, never against the raw similarity.
         """
-        similarity = 1.0 - (float(distance) * float(distance)) / 2.0
+        similarity = 1.0 - float(distance) / 2.0
         similarity = max(0.0, min(1.0, similarity))
 
         exponent = -self.sigmoid_steepness * (similarity - self.sigmoid_midpoint)

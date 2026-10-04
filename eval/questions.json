@@ -1,0 +1,407 @@
+{
+  "description": "Evaluation set for workflow vs agent. expected_points and expected_sources were written from chunks verified in the current ChromaDB corpus. expected_sources are case-insensitive substrings of source file names; a hit on any one counts. pair_id links a normal question with its typo / paraphrase / abbreviation / ambiguous variants. Categories easy (one concept), multi_hop (independent parts), and sequential (the second part depends on the first part's answer) were added to evaluate model routing and multi-agent patterns.",
+  "questions": [
+    {
+      "id": "n01", "category": "normal", "pair_id": "tadf", "expected_mode": "RAG",
+      "question": "How does thermally activated delayed fluorescence (TADF) work?",
+      "expected_points": [
+        "Triplet excitons are converted to singlets by thermally activated reverse intersystem crossing (RISC), then emit as delayed fluorescence.",
+        "This requires a very small singlet-triplet energy gap (Delta E_ST); the RISC rate follows a Boltzmann factor exp(-Delta E_ST / kT).",
+        "A small Delta E_ST is obtained by separating HOMO and LUMO, e.g. with donor-acceptor molecular design."
+      ],
+      "expected_sources": ["Chapter 6 Organic Light Emitters", "Blue-emitting organic electrofluorescence", "thermally activated delayed fluor", "Thermally Activated"]
+    },
+    {
+      "id": "t01", "category": "typo", "pair_id": "tadf", "expected_mode": "RAG",
+      "question": "how does thermaly activted delayed florescence work",
+      "expected_points": [
+        "Triplets convert to singlets by thermally activated reverse intersystem crossing (RISC).",
+        "Requires a very small singlet-triplet energy gap (Delta E_ST)."
+      ],
+      "expected_sources": ["Chapter 6 Organic Light Emitters", "Blue-emitting organic electrofluorescence", "thermally activated delayed fluor", "Thermally Activated"]
+    },
+    {
+      "id": "p01", "category": "paraphrase", "pair_id": "tadf", "expected_mode": "RAG",
+      "question": "How can a purely organic emitter without heavy metals turn its dark triplet excitons into light?",
+      "expected_points": [
+        "Through TADF: thermally activated reverse intersystem crossing from T1 to S1 followed by delayed fluorescence.",
+        "Requires a small singlet-triplet gap obtained by HOMO/LUMO separation (donor-acceptor design)."
+      ],
+      "expected_sources": ["thermally activated delayed fluor", "Thermally Activated", "Chapter 6 Organic Light Emitters", "Blue-emitting organic electrofluorescence"]
+    },
+    {
+      "id": "a01", "category": "abbreviation", "pair_id": "tadf", "expected_mode": "RAG",
+      "question": "In TADF emitters, why must ΔEST be small?",
+      "expected_points": [
+        "RISC from T1 to S1 is thermally activated, with a rate proportional to exp(-Delta E_ST / kT), so a small gap makes up-conversion fast.",
+        "Small Delta E_ST comes from spatially separating HOMO and LUMO."
+      ],
+      "expected_sources": ["Chapter 6 Organic Light Emitters", "Blue-emitting organic electrofluorescence", "Thermally Activated", "thermally activated delayed fluor"]
+    },
+    {
+      "id": "n02", "category": "normal", "pair_id": "rolloff", "expected_mode": "RAG",
+      "question": "What causes efficiency roll-off in phosphorescent OLEDs at high current density?",
+      "expected_points": [
+        "Triplet-triplet annihilation (TTA).",
+        "Triplet-polaron annihilation (TPA).",
+        "Loss of charge balance (and possibly field-induced quenching) at high current."
+      ],
+      "expected_sources": ["Chapter 6 Organic Light Emitters", "Efficiency Roll-Off", "roll-off", "Single-Step Triplet-Triplet", "Triplet-exciton quenching"]
+    },
+    {
+      "id": "t02", "category": "typo", "pair_id": "rolloff", "expected_mode": "RAG",
+      "question": "what causes efficency rolloff in phosphorecent OLED at high curent density",
+      "expected_points": ["Triplet-triplet annihilation (TTA).", "Triplet-polaron annihilation (TPA).", "Loss of charge balance at high current."],
+      "expected_sources": ["Chapter 6 Organic Light Emitters", "Efficiency Roll-Off", "roll-off", "Single-Step Triplet-Triplet", "Triplet-exciton quenching"]
+    },
+    {
+      "id": "p02", "category": "paraphrase", "pair_id": "rolloff", "expected_mode": "RAG",
+      "question": "Why does a phosphorescent OLED become less efficient when I drive it at high brightness?",
+      "expected_points": ["Bimolecular quenching at high exciton/polaron density: TTA and TPA.", "Charge imbalance at high current."],
+      "expected_sources": ["Chapter 6 Organic Light Emitters", "Efficiency Roll-Off", "roll-off", "Single-Step Triplet-Triplet", "Triplet-exciton quenching"]
+    },
+    {
+      "id": "a02", "category": "abbreviation", "pair_id": "rolloff", "expected_mode": "RAG",
+      "question": "Why do TTA and TPA matter for PHOLED efficiency at high current?",
+      "expected_points": ["TTA and TPA are annihilation processes that quench triplets when exciton and polaron densities are high.", "They are the main causes of efficiency roll-off in phosphorescent OLEDs."],
+      "expected_sources": ["Chapter 6 Organic Light Emitters", "Efficiency Roll-Off", "roll-off", "Single-Step Triplet-Triplet", "Triplet-exciton quenching"]
+    },
+    {
+      "id": "n03", "category": "normal", "pair_id": "etl_mobility", "expected_mode": "RAG",
+      "question": "What are typical electron mobility values of common amorphous electron transport materials like Alq3?",
+      "expected_points": [
+        "Alq3 and anthracene derivatives (e.g. ADN) have electron mobilities around 1e-7 to 1e-5 cm^2/Vs.",
+        "This is at least an order of magnitude lower than the hole mobilities of common hole transporters (about 1e-5 to 1e-3 cm^2/Vs)."
+      ],
+      "expected_sources": ["Franky So] Organic Electronics", "Charge Transport in Disordered"]
+    },
+    {
+      "id": "t03", "category": "typo", "pair_id": "etl_mobility", "expected_mode": "RAG",
+      "question": "typical electorn mobilty of Alq3 ETL?",
+      "expected_points": ["Alq3 electron mobility is roughly 1e-7 to 1e-5 cm^2/Vs, lower than typical hole mobilities."],
+      "expected_sources": ["Franky So] Organic Electronics", "Charge Transport in Disordered"]
+    },
+    {
+      "id": "n04", "category": "normal", "pair_id": "cgl", "expected_mode": "RAG",
+      "question": "What is the role of a charge generation layer in a tandem OLED?",
+      "expected_points": [
+        "It connects stacked emitting units and generates electron-hole pairs, injecting electrons and holes into the adjacent units.",
+        "Stacking raises current efficiency/luminance at the same current, which helps with voltage-drop issues in large displays.",
+        "Example: n-doped (Cs3PO4:BCP) / p-doped (MoO3:NPD) CGLs."
+      ],
+      "expected_sources": ["Tsujimura", "charge generation layer", "Charge-Generation Units", "Charge Generation"]
+    },
+    {
+      "id": "a04", "category": "abbreviation", "pair_id": "cgl", "expected_mode": "RAG",
+      "question": "What does a CGL do in a tandem OLED?",
+      "expected_points": ["A charge generation layer generates and injects electrons and holes into neighboring stacked units so they operate in series."],
+      "expected_sources": ["Tsujimura", "charge generation layer", "Charge-Generation Units", "Charge Generation"]
+    },
+    {
+      "id": "n05", "category": "normal", "pair_id": "blue_lifetime", "expected_mode": "RAG",
+      "question": "How was the lifetime of blue phosphorescent OLEDs improved by reducing triplet-polaron annihilation?",
+      "expected_points": [
+        "A graded dopant concentration profile in a broadened emissive layer lowers the exciton density.",
+        "Lower exciton density suppresses triplet-polaron annihilation, giving a more than threefold lifetime improvement.",
+        "Combined with a stacked (tandem) structure, the lifetime improved about tenfold."
+      ],
+      "expected_sources": ["Tenfold increase in the lifetime"]
+    },
+    {
+      "id": "amb1", "category": "ambiguous", "pair_id": "blue_lifetime", "expected_mode": "RAG",
+      "question": "why do blue ones die so fast and how do you fix it?",
+      "expected_points": [
+        "Blue (phosphorescent) OLEDs have short lifetimes because high-energy excitons/polarons drive degradation such as exciton-polaron (triplet-polaron) annihilation.",
+        "Lowering exciton density, e.g. graded doping in a broadened emissive layer or stacked devices, extends lifetime."
+      ],
+      "expected_sources": ["Tenfold increase in the lifetime", "Intrinsic luminance loss", "Chemical degradation mechanisms of highly efficient blue", "Long Lifetime", "blue phosphorescent"]
+    },
+    {
+      "id": "n06", "category": "normal", "pair_id": "pin", "expected_mode": "RAG",
+      "question": "Why do electrically doped (p-i-n) transport layers lower the operating voltage of OLEDs?",
+      "expected_points": [
+        "Doping raises the conductivity of the transport layers, so ohmic losses are small and the bands are nearly flat.",
+        "The operating voltage approaches the photon energy of the emitted light.",
+        "Doping also improves injection at the contacts (thin depletion layer / better energetic alignment)."
+      ],
+      "expected_sources": ["p-i-n review", "pin structures", "Electrically Doped"]
+    },
+    {
+      "id": "a06", "category": "abbreviation", "pair_id": "pin", "expected_mode": "RAG",
+      "question": "Why use a PIN structure in OLEDs?",
+      "expected_points": ["Doped (p- and n-type) transport layers give high conductivity and efficient injection, enabling low operating voltage and high power efficiency."],
+      "expected_sources": ["p-i-n review", "pin structures", "Electrically Doped"]
+    },
+    {
+      "id": "n07", "category": "normal", "pair_id": "outcoupling", "expected_mode": "RAG",
+      "question": "Why is the external quantum efficiency of a typical OLED limited to about 20-25%?",
+      "expected_points": [
+        "Most generated light is trapped inside the device, so outcoupling efficiency is only about 20-25%.",
+        "Light is lost to waveguide modes, substrate modes, and surface plasmon polariton (SPP) modes at the metal cathode.",
+        "High-index organic/ITO layers (n about 1.8-2) versus glass (n about 1.5) cause the trapping."
+      ],
+      "expected_sources": ["Optical Design", "outcoupling", "Light Extraction", "Chapter 3 Optics", "out-coupling"]
+    },
+    {
+      "id": "p07", "category": "paraphrase", "pair_id": "outcoupling", "expected_mode": "RAG",
+      "question": "Where does most of the light generated inside an OLED get lost?",
+      "expected_points": ["Waveguide modes in the organic/ITO layers, substrate modes in the glass, and surface plasmon modes at the metal cathode; only about 20-25% escapes."],
+      "expected_sources": ["Optical Design", "outcoupling", "Light Extraction", "Chapter 3 Optics", "out-coupling"]
+    },
+    {
+      "id": "amb2", "category": "ambiguous", "pair_id": "outcoupling", "expected_mode": "RAG",
+      "question": "how do I get more light out?",
+      "expected_points": ["Improve outcoupling: e.g. microlens arrays/scattering layers, low-index grids or low-index layers, horizontally oriented emitters, reducing SPP losses."],
+      "expected_sources": ["Optical Design", "outcoupling", "Light Extraction", "out-coupling", "low-index", "Low Refractive Index", "Lensfree"]
+    },
+    {
+      "id": "n08", "category": "normal", "pair_id": "residual_gas", "expected_mode": "RAG",
+      "question": "How do residual gases like water vapor during vacuum deposition affect OLED lifetime?",
+      "expected_points": [
+        "Residual water vapor during fabrication reduces device lifetime.",
+        "Water introduces changes in electrical characteristics (e.g. series resistance / voltage rise).",
+        "Alq3 can decompose by an electrochemical reaction with intercalated water."
+      ],
+      "expected_sources": ["Performance and lifetime of vacuum deposited", "ultra-high vacuum"]
+    },
+    {
+      "id": "t08", "category": "typo", "pair_id": "residual_gas", "expected_mode": "RAG",
+      "question": "effect of residual water vapour in evaporation chamber on oled life time",
+      "expected_points": ["Water vapor present during deposition shortens OLED lifetime and changes electrical behaviour."],
+      "expected_sources": ["Performance and lifetime of vacuum deposited", "ultra-high vacuum"]
+    },
+    {
+      "id": "n09", "category": "normal", "pair_id": "exciplex", "expected_mode": "RAG",
+      "question": "What exciplex-forming co-host was used to make red phosphorescent OLEDs with both high efficiency and long lifetime?",
+      "expected_points": [
+        "A co-host of the hole transporter NPB and the electron transporter PO-T2T, which forms an exciplex.",
+        "Many earlier exciplex co-host OLEDs were efficient but had short operational lifetime; this one achieved both."
+      ],
+      "expected_sources": ["Exciplex-Forming Co-Host-Based Red"]
+    },
+    {
+      "id": "amb3", "category": "ambiguous", "pair_id": "spin_limit", "expected_mode": "RAG",
+      "question": "Is the 25% limit a real thing?",
+      "expected_points": [
+        "Spin statistics: electron-hole recombination forms 25% singlets and 75% triplets, so conventional fluorescent OLEDs are limited to 25% internal quantum efficiency.",
+        "The limit is overcome by phosphorescent emitters, TADF, or TTA."
+      ],
+      "expected_sources": ["Spin Correlations", "Franky So] Organic Electronics", "singlet-triplet ratio", "Blue-emitting organic electrofluorescence", "Chapter 6 Organic Light Emitters"]
+    },
+    {
+      "id": "mh1", "category": "multi_hop", "pair_id": "mh_mobility_lifetime", "expected_mode": "RAG",
+      "question": "How does electron mobility in the electron transport layer influence the operational lifetime of an OLED?",
+      "expected_points": [
+        "Common ETLs have low electron mobility (about 1e-7 to 1e-5 cm^2/Vs), much lower than hole mobilities.",
+        "Mobility affects charge balance, which shifts the recombination zone / exciton distribution.",
+        "Charge imbalance and recombination near interfaces or blocking layers accelerate degradation; surplus carriers damage materials, so balance improves lifetime."
+      ],
+      "expected_sources": ["Franky So] Organic Electronics", "charge balance and exciton distribution", "Tsujimura", "Charge Balance and Exciton Confinement"]
+    },
+    {
+      "id": "mh2", "category": "multi_hop", "pair_id": "mh_lowindex_etl", "expected_mode": "RAG",
+      "question": "Why can a low-refractive-index electron transport layer raise EQE, and which optical loss channel does it reduce?",
+      "expected_points": [
+        "Loss to the surface plasmon polariton (SPP) mode at the metal cathode depends on the dielectric constant of the ETL, so a low-index ETL reduces SPP (and waveguide) losses.",
+        "Low-index ETLs (e.g. PO-T2T) enabled EQE around 34% in sky-blue phosphorescent OLEDs."
+      ],
+      "expected_sources": ["Low Refractive Index Electron Transport", "Sky-Blue Phosphorescent OLEDs", "Optical Design"]
+    },
+    {
+      "id": "mh3", "category": "multi_hop", "pair_id": "mh_tta", "expected_mode": "RAG",
+      "question": "How does triplet-triplet annihilation raise the efficiency limit of fluorescent OLEDs, while also causing roll-off in phosphorescent OLEDs?",
+      "expected_points": [
+        "In fluorescent OLEDs, TTA fuses two triplets into a singlet (delayed fluorescence), raising the maximum IQE from 25% to about 62.5% (25% + 37.5%).",
+        "In phosphorescent OLEDs, TTA quenches emissive triplets at high density, causing efficiency roll-off."
+      ],
+      "expected_sources": ["Triplet–triplet annihilation in highly efficient fluorescent", "triplet-triplet annihilation and horizontal", "Blue-emitting organic electrofluorescence", "Chapter 6 Organic Light Emitters", "Efficiency Roll-Off", "Single-Step Triplet-Triplet"]
+    },
+    {
+      "id": "na1", "category": "no_answer", "pair_id": null, "expected_mode": "NO_ANSWER_IN_DOCS",
+      "question": "What is the supply chain cost of phosphorescent OLEDs?",
+      "expected_points": [], "expected_sources": []
+    },
+    {
+      "id": "na2", "category": "no_answer", "pair_id": null, "expected_mode": "NO_ANSWER_IN_DOCS",
+      "question": "Which company filed the most OLED patents last year?",
+      "expected_points": [], "expected_sources": []
+    },
+    {
+      "id": "na3", "category": "no_answer", "pair_id": null, "expected_mode": "NO_ANSWER_IN_DOCS",
+      "question": "What was Samsung Display's OLED panel revenue in 2024?",
+      "expected_points": [], "expected_sources": []
+    },
+    {
+      "id": "na4", "category": "no_answer", "pair_id": null, "expected_mode": "NO_ANSWER_IN_DOCS",
+      "question": "What is the peak HDR brightness of the LG G4 OLED TV?",
+      "expected_points": [], "expected_sources": []
+    },
+    {
+      "id": "ot1", "category": "off_topic", "pair_id": null, "expected_mode": "OFF_TOPIC",
+      "question": "How do I bake a chocolate cake?",
+      "expected_points": [], "expected_sources": []
+    },
+    {
+      "id": "ot2", "category": "off_topic", "pair_id": null, "expected_mode": "OFF_TOPIC",
+      "question": "Recommend me a Netflix show.",
+      "expected_points": [], "expected_sources": []
+    },
+    {
+      "id": "ot3", "category": "off_topic", "pair_id": null, "expected_mode": "OFF_TOPIC",
+      "question": "What is the capital city of France?",
+      "expected_points": [], "expected_sources": []
+    },
+    {
+      "id": "ot4", "category": "off_topic", "pair_id": null, "expected_mode": "OFF_TOPIC",
+      "question": "Write a Python function that reverses a string.",
+      "expected_points": [], "expected_sources": []
+    },
+    {
+      "id": "e01", "category": "easy", "pair_id": null, "expected_mode": "RAG",
+      "question": "What is an exciton in an organic semiconductor?",
+      "expected_points": [
+        "An exciton is a bound electron-hole pair formed when an electron and a hole recombine (or when a molecule is excited).",
+        "Excitons in organic semiconductors are tightly bound (Frenkel-like) and stable at room temperature, largely because of the low dielectric constant."
+      ],
+      "expected_sources": ["Chapter 3 Optics", "Cyclometallated Organoiridium", "Exciton Confinement", "high-efficiency fluorescent organic light-emitting diodes with low driving"]
+    },
+    {
+      "id": "e02", "category": "easy", "pair_id": null, "expected_mode": "RAG",
+      "question": "What are hole and electron blocking layers used for in an OLED?",
+      "expected_points": [
+        "Hole and electron blocking layers confine holes and electrons in the emission layer.",
+        "This improves the charge balance factor, to which the external efficiency is directly proportional."
+      ],
+      "expected_sources": ["Chapter 6 Organic Light Emitters", "Tsujimura"]
+    },
+    {
+      "id": "e03", "category": "easy", "pair_id": null, "expected_mode": "RAG",
+      "question": "What is the internal quantum efficiency of an OLED?",
+      "expected_points": [
+        "Internal quantum efficiency (IQE) is the number of photons generated inside the device per injected charge carrier (electron).",
+        "External quantum efficiency equals IQE multiplied by the light outcoupling efficiency."
+      ],
+      "expected_sources": ["Tsujimura", "Chapter 6 Organic Light Emitters"]
+    },
+    {
+      "id": "e04", "category": "easy", "pair_id": null, "expected_mode": "RAG",
+      "question": "How much longer can a tandem OLED last than a single-unit OLED?",
+      "expected_points": [
+        "With N stacked units, the same luminance needs about 1/N of the current density, giving an operational lifetime at least N times longer.",
+        "Tsujimura cites 2.82 times the lifetime for a two-stack and 5.20 times for a three-stack tandem OLED."
+      ],
+      "expected_sources": ["Franky So] Organic Electronics", "Tsujimura"]
+    },
+    {
+      "id": "e05", "category": "easy", "pair_id": null, "expected_mode": "RAG",
+      "question": "What is the maximum internal quantum efficiency of a fluorescent OLED that uses triplet-triplet annihilation?",
+      "expected_points": [
+        "TTA can raise the singlet yield from 25% to at most 62.5% (25% + 75%/2).",
+        "This limit is lower than the 100% reachable with phosphorescence or TADF."
+      ],
+      "expected_sources": ["Chapter 6 Organic Light Emitters", "Triplet–triplet annihilation in highly efficient", "Triplet-triplet annihilation in highly efficient"]
+    },
+    {
+      "id": "e06", "category": "easy", "pair_id": null, "expected_mode": "RAG",
+      "question": "Which acceptor was used to p-dope the hole transport layer in the low-voltage pin OLEDs from Leo's group?",
+      "expected_points": [
+        "F4-TCNQ (tetrafluoro-tetracyanoquinodimethane), a very strong acceptor, was used as the p-dopant."
+      ],
+      "expected_sources": ["Low-voltage organic electroluminescent devices using pin"]
+    },
+    {
+      "id": "mh4", "category": "multi_hop", "pair_id": null, "expected_mode": "RAG",
+      "question": "Compare how phosphorescent emitters and TADF emitters harvest triplet excitons.",
+      "expected_points": [
+        "Phosphorescent emitters contain heavy metals (Ir, Pt) whose strong spin-orbit coupling allows fast intersystem crossing and emission from the triplet state.",
+        "TADF emitters convert triplets to singlets by thermally activated reverse intersystem crossing, which needs a very small singlet-triplet gap, and emit delayed fluorescence.",
+        "Both can in principle reach 100% internal quantum efficiency."
+      ],
+      "expected_sources": ["Chapter 3 Optics", "Chapter 6 Organic Light Emitters", "Phosphorescent Polymer", "thermally activated delayed fluor", "Thermally Activated", "Tsujimura"]
+    },
+    {
+      "id": "mh5", "category": "multi_hop", "pair_id": null, "expected_mode": "RAG",
+      "question": "Which optical modes trap light inside an OLED, and how do microlens arrays help extract it?",
+      "expected_points": [
+        "Light is trapped in substrate modes (total internal reflection at the glass/air interface), waveguide modes (high-index organic/ITO layers), and surface plasmon polariton modes at the metal cathode.",
+        "Microlens arrays on the substrate extract substrate modes.",
+        "Microlens arrays designed for individual pixels can also help extract waveguided and SPP modes."
+      ],
+      "expected_sources": ["Embedded Microlens", "Recent Advances in OLED Optical Design", "Approaches to high performance white", "Chapter 6 Organic Light Emitters"]
+    },
+    {
+      "id": "mh6", "category": "multi_hop", "pair_id": null, "expected_mode": "RAG",
+      "question": "How does horizontal emitter dipole orientation affect light outcoupling, and how large was the efficiency gain reported for oriented fluorescent emitters?",
+      "expected_points": [
+        "The orientation of emissive molecules strongly affects outcoupling efficiency; horizontally oriented dipoles couple more light out.",
+        "In fluorescent small-molecule OLEDs, about 88% horizontal dipoles (vs 66% for isotropic) gave a 1.45-fold efficiency increase."
+      ],
+      "expected_sources": ["Recent advances in light outcoupling"]
+    },
+    {
+      "id": "mh7", "category": "multi_hop", "pair_id": null, "expected_mode": "RAG",
+      "question": "Why do blue phosphorescent OLEDs degrade quickly, and how does a tandem structure extend OLED lifetime?",
+      "expected_points": [
+        "Blue PhOLED degradation is attributed in part to triplet-polaron quenching that creates high-energy polarons and traps; the blue emitter FIrpic is known to be relatively unstable (ligand dissociation).",
+        "A tandem OLED reaches the same luminance at a lower current density, so its lifetime is extended (at least N times for N units)."
+      ],
+      "expected_sources": ["Approaches to high performance white", "Analysis of chemical degradation mechanism", "Chemical degradation mechanisms", "Franky So] Organic Electronics", "Tsujimura"]
+    },
+    {
+      "id": "mh8", "category": "multi_hop", "pair_id": null, "expected_mode": "RAG",
+      "question": "What is the difference between triplet-triplet annihilation and triplet-polaron annihilation in phosphorescent OLEDs?",
+      "expected_points": [
+        "In triplet-triplet annihilation two triplets interact (T1 + T1 -> S1 + S0), and one triplet is lost; it is a second-order (quadratic) process in excitation density.",
+        "In triplet-polaron annihilation a triplet exciton is quenched by a charge carrier (polaron).",
+        "Baldo et al. found triplet-polaron annihilation could not explain the quenching in PtOEP:CBP, which follows a quadratic dependence."
+      ],
+      "expected_sources": ["Transient analysis of triplet-triplet annihilation", "Cyclometallated Organoiridium", "Efficiency Roll-Off in Organic Light-Emitting Diodes"]
+    },
+    {
+      "id": "mh9", "category": "multi_hop", "pair_id": null, "expected_mode": "RAG",
+      "question": "How does an exciplex-forming co-host lower the driving voltage and reduce efficiency roll-off in phosphorescent OLEDs?",
+      "expected_points": [
+        "Charge carriers recombine in the exciplex host by Langevin recombination and energy is transferred to the emitter, instead of trap-assisted recombination on the dopant.",
+        "This gives low charge density and fewer polarons, reducing triplet-polaron quenching and roll-off.",
+        "Exciplex-host devices show low turn-on voltages (e.g. 2.6 V for mCBP:PO-T2T)."
+      ],
+      "expected_sources": ["Langevin and Trap-Assisted", "Exciplex-Forming Co-host", "Sky-Blue Phosphorescent OLEDs", "Exciplex-Forming Co-Host-Based Red"]
+    },
+    {
+      "id": "sq1", "category": "sequential", "pair_id": null, "expected_mode": "RAG",
+      "question": "What device structure gives an OLED several times the operational lifetime by stacking emission units, and what layer connects those units?",
+      "expected_points": [
+        "The tandem (stacked) OLED: N units reach the same luminance at about 1/N of the current density, so the lifetime is extended about N times.",
+        "The units are connected by a charge generation layer (CGL) that generates electrons and holes and injects them into the adjacent units."
+      ],
+      "expected_sources": ["Franky So] Organic Electronics", "Tsujimura", "charge generation layers", "Charge-Generation Units"]
+    },
+    {
+      "id": "sq2", "category": "sequential", "pair_id": null, "expected_mode": "RAG",
+      "question": "Which blue phosphorescent emitter was doped at 10 wt% in the sky-blue OLED with 34.1% EQE, and why is that emitter considered unstable?",
+      "expected_points": [
+        "The emitter is FIrpic.",
+        "FIrpic is known to be relatively unstable: its picolinate ligand can split off (reversible) or lose CO2 (irreversible), and the fragments can act as exciton quenchers."
+      ],
+      "expected_sources": ["Sky-Blue Phosphorescent OLEDs", "Analysis of chemical degradation mechanism", "Chemical degradation mechanisms"]
+    },
+    {
+      "id": "sq3", "category": "sequential", "pair_id": null, "expected_mode": "RAG",
+      "question": "Which phosphorescent dye did Baldo's transient analysis of triplet-triplet annihilation study in CBP, and how did its quenching depend on excitation intensity?",
+      "expected_points": [
+        "The dye was PtOEP (platinum octaethylporphyrin) doped in CBP (and Alq3).",
+        "Its triplets show intensity-dependent quenching consistent with triplet-triplet annihilation, a second-order process; simple TTA predictions fail at low PtOEP concentrations."
+      ],
+      "expected_sources": ["Transient analysis of triplet-triplet annihilation"]
+    },
+    {
+      "id": "sq4", "category": "sequential", "pair_id": null, "expected_mode": "RAG",
+      "question": "What strong acceptor was used to p-dope the hole transport layer in the low-voltage pin OLED, and why does doping the transport layers allow efficient injection despite energy barriers?",
+      "expected_points": [
+        "The p-dopant was F4-TCNQ.",
+        "Doping creates thin space-charge layers at the contacts, so carriers tunnel into the transport layers (efficient tunneling injection) and the voltage drop is low."
+      ],
+      "expected_sources": ["Low-voltage organic electroluminescent devices using pin", "Franky So] Organic Electronics", "Highly efficient organic light emitting diodes (OLED) for displays"]
+    }
+  ]
+}

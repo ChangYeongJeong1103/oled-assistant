@@ -1,5 +1,9 @@
 # Strict RAG Engine
 
+> This page describes the **workflow** engine (`ENGINE_MODE=workflow`, the
+> default). The agent engine reuses the same retrieval, filter, and reranker as
+> its search tool; see [Agent Engine](agent_engine.md).
+
 ## Philosophy
 For professional engineers at the PhD level, generic or hallucinated answers are unacceptable. Standard RAG systems often suffer from "General Knowledge Leakage," where the model fills gaps using non-technical internet data (news, blogs, Wikipedia).
 
@@ -20,8 +24,24 @@ We apply a **Sigmoid Transformation** to spread these scores out. This amplifies
 $$ relevance = \frac{1}{1 + e^{-k(x - x_0)}} $$
 
 - **$x$**: Cosine similarity of a **single** document against the query.
-- **$x_0$ (Midpoint)**: 0.68. The center of the current decision boundary.
-- **$k$ (Steepness)**: 10. Controls how aggressively we separate "relevant" from "irrelevant".
+- **$x_0$ (Midpoint)**: 0.60. The cosine where relevance = 0.50, i.e. the document filter.
+- **$k$ (Steepness)**: 17.27. Places relevance 0.25 (the off-topic gate) at cosine 0.536.
+
+### Distance → cosine (corrected)
+
+Chroma's default `l2` space returns the **squared** Euclidean distance
+$d = \lVert q - e \rVert^2$. For the normalized BGE embeddings
+$d = 2 - 2\cos$, so
+
+$$ \cos = 1 - \frac{d}{2} $$
+
+Our earlier version treated $d$ as the plain (unsquared) distance and computed
+$1 - d^2/2$, which is not the cosine. We fixed the formula and refit the
+sigmoid at the same time ($x_0$ 0.68 → 0.60, $k$ 10 → 17.27), so that the two
+decision boundaries (relevance 0.50 and 0.25) fall on exactly the same
+documents as before. This means every RAG / NO_ANSWER / OFF_TOPIC decision
+stays the same. The only difference is that the intermediate value is now a
+real cosine similarity.
 
 ### One score, one scale
 
