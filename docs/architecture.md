@@ -2,126 +2,111 @@
 
 ## Overview
 
-The **AI-Driven OLED Assistant** is a specialized Retrieval-Augmented Generation (RAG) system designed to support OLED display engineers. Unlike general-purpose chatbots, it enforces a **Strict RAG** policy and uses wide retrieval plus reranking so answers are grounded in the strongest available technical documents.
+The **AI-Driven OLED Assistant** is an agentic RAG (Retrieval-Augmented Generation) system for OLED display engineers. An agent plans each question, searches the technical documents with a tool, and answers only from the chunks it cites. Unlike general-purpose chatbots, it has no fallback to the model's own knowledge: if the documents do not cover the question, it says so.
 
-Two engines are available and selected with `ENGINE_MODE`:
+The system has three layers:
 
-| Engine | Flow | When it rejects |
-| :--- | :--- | :--- |
-| `workflow` (default) | One retrieval of the literal question → filter → rerank → one LLM call | Whenever that single retrieval is weak |
-| `agent` | Plan → search tool (repeatable, parallel) → cited answer, all limits enforced in Python; model routing, orchestrator-worker, and reviewer (each switchable, all on by default) | Only after searching, or when the question is clearly not about OLEDs |
+| Layer | Modules | What it does |
+| :-- | :-- | :-- |
+| Interface | `src/app.py` | Streamlit chat, live progress, numbered sources, agent trace |
+| Agent | `src/agent_runtime.py`, `src/agent_team.py`, `src/agent_prompts.py`, `src/agent_tools.py` | Planning, model routing, orchestrator-worker, reviewer, evidence ledger, budgets |
+| Retrieval | `src/retrieval.py`, `src/document_pipeline.py` | ChromaDB vector search, relevance filter, cross-encoder reranker |
 
-Both engines use the same ChromaDB, relevance filter, and reranker. The
-flowchart below shows the workflow. The agent is described in
-[Agent Engine](agent_engine.md).
+The flowchart below follows one request from the user query to the final response.
 
-## System Flowchart (workflow)
+## End-to-End System Flow
 
 ```mermaid
-graph TD
-  User["User / Engineer"] -->|Asks Question| UI["Streamlit Interface"]
-  UI -->|Query| Engine["StrictRAG Engine"]
+flowchart TD
+    Query["1. User Query"] --> UI["2. Streamlit Interface"]
+    UI --> Runtime["3. AgentAssistant.query()"]
+    Runtime --> Planner["4. Planner (GPT-6-Luna)<br/>original query + PLAN_INSTRUCTIONS"]
+    Planner --> Plan["Plan JSON<br/>domain · complexity · subquestions · sequential"]
+    Plan -->|out_of_domain| Off["🔴 OFF_TOPIC"]
+    Plan -->|in_domain / uncertain| Route{"5. Python Route Selector"}
 
-  Engine -->|Wide Vector Search, k=20| DB["ChromaDB"]
-  DB -->|Distances| Relevance["Sigmoid Relevance per Document"]
+    Route -->|"routing off"| Single["Single Agent<br/>AGENT_MODEL"]
+    Route -->|"simple"| Light["Light Research Agent<br/>GPT-6-Luna"]
+    Route -->|"complex"| Heavy["Heavy Research Agent<br/>GPT-6.1-Sol"]
+    Route -->|"workers on +<br/>2 or more subquestions"| Team
 
-  Relevance --> Filter{"relevance >= 0.50 ?"}
+    subgraph Team["Orchestrator-worker"]
+        W1["Luna Worker 1<br/>own context + tool loop"] -->|"findings + citations"| O
+        W2["Luna Worker 2<br/>own context + tool loop"] -->|"findings + citations"| O
+        O["Sol Orchestrator<br/>findings + original cited chunks"]
+    end
 
-  Filter -->|"No document survives"| Gate{"max relevance < 0.25 ?"}
-  Gate -->|Yes| OffTopic["Reject: Off Topic (no LLM call)"]
-  Gate -->|No| NoAns["Return: No Answer in Docs"]
+    Single & Light & Heavy & O --> Loop["6. Tool-calling Research Loop"]
+    Loop -->|"search_documents"| Search["Retrieval stack<br/>ChromaDB → relevance ≥ 0.50 → reranker"]
+    Search --> Ledger["Per-request evidence ledger"]
+    Ledger --> Loop
+    Loop -->|"declare_insufficient"| NA["🟠 NO_ANSWER_IN_DOCS"]
+    Loop -->|"submit_answer"| V{"7. Citations valid?"}
+    V -->|No, revisions left| Loop
+    V -->|"No, revision limit reached"| NA
+    V -->|Yes| R{"8. Reviewer enabled?"}
+    R -->|No| RAG["🟢 RAG + numbered sources"]
+    R -->|"Sol review passes"| RAG
+    R -->|"Revise or research"| Loop
+    R -->|"Final failure"| NA
 
-  Filter -->|"Survivors"| Rerank{"Survivors > Final Top-N ?"}
-  Rerank -->|Yes| CrossEncoder["BGE Cross-Encoder Reranker"]
-  Rerank -->|No| FinalDocs["Final Documents"]
-  CrossEncoder --> FinalDocs
+    Light -->|"Fixable failure<br/>at most once"| Esc["Sol escalation<br/>fresh context + collected evidence"]
+    Esc --> Loop
 
-  FinalDocs -->|Prompt Context| Generation["LLM Generation (JSON envelope)"]
-  Generation --> Check{"answer_found ?"}
-  Check -->|false| NoAns
-  Check -->|true| Final["Return: Technical Answer"]
-
-  OffTopic -->|Display| UI
-  NoAns -->|Display| UI
-  Final -->|Display| UI
+    Off --> Response["9. Final Response<br/>shown in Streamlit"]
+    NA --> Response
+    RAG --> Response
 ```
 
-> **One score, one scale.** Every threshold above is compared against
-> `relevance = sigmoid(cosine similarity)`. Raw cosine similarity is never
-> compared against a threshold, because scientific text clusters too tightly in
-> raw space to make a reliable decision axis.
+The planner is not a plan supplied by the user. `AgentAssistant.query()` sends the original user query and `PLAN_INSTRUCTIONS` to the light model (GPT-6-Luna under the current defaults), and Luna returns the structured plan. Python then validates that plan and selects the execution route. The planner does not search the documents or write the final answer.
+
+> **One score, one scale.** Every retrieval threshold is compared against `relevance = sigmoid(cosine similarity)`. Raw cosine similarity is never compared against a threshold, because scientific text clusters too tightly in raw space to make a reliable decision axis.
 
 ## Component Breakdown
 
 ### 1. User Interface (Streamlit)
+
 - **Role**: Provides a clean, chat-like interface for engineers
-- **Features**: 
+- **Features**:
   - Real-time chat history
-  - Source list with paper titles and verified DOI links (`src/source_registry.json`)
-  - Latency and Relevance Score monitoring
-  - Agent mode only: active models and features in the sidebar, live search
-    progress, numbered inline citations, and an **Agent Trace** expander (plan,
-    route, queries, worker and reviewer steps tagged by role, stop reason)
+  - Active models and agent features in the sidebar
+  - Live search progress while the agent works (`st.status`)
+  - Numbered inline citations and a source list with paper titles and verified DOI links (`src/source_registry.json`)
+  - An **Agent Trace** expander per answer: plan, route, queries, worker and reviewer steps tagged by role, and the stop reason
+  - Latency and relevance score monitoring
 
 ### 2. Knowledge Base (ChromaDB)
+
 - **Role**: Stores vector embeddings of technical PDFs (OLED physics, materials, fabrication)
 - **Model**: `BAAI/bge-m3`
 - **Persistence Strategy**: Cloud images include a prebuilt `chroma_db` for fast startup. At runtime, the app reuses this DB and rebuilds from `data/` only when the DB is missing or incompatible.
 
-### 3. Strict RAG Engine (Core Logic)
-- **Role**: The brain of the application. It decides *whether* to answer
-- **Algorithm**:
+### 3. Retrieval (`src/retrieval.py`)
+
+- **Role**: The only way the agent can read the documents. Every `search_documents` call runs these steps in Python:
   - Retrieves a wider candidate pool (`CANDIDATE_TOP_K = 20`)
-  - Converts every ChromaDB distance straight into a **relevance** score
-    (cosine similarity followed by a sigmoid). The intermediate raw similarity
-    never escapes the conversion helper
-  - Keeps the documents above `MIN_DOC_RELEVANCE = 0.50`. This is the only knob
-    that controls which documents reach the LLM
-  - Applies a `BAAI/bge-reranker-base` cross-encoder reranker when more than
-    `FINAL_TOP_N = 4` documents survive
-  - When *nothing* survives, `OFF_TOPIC_THRESHOLD = 0.25` picks the rejection
-    message: below it the question is out of domain, above it the question is
-    in domain but uncovered by our corpus
-  - If accepted, it prompts the LLM to use *only* the provided context and to
-    report grounding through an explicit `answer_found` flag
+  - Converts every ChromaDB distance straight into a **relevance** score (cosine similarity followed by a sigmoid). The intermediate raw similarity never escapes the conversion helper
+  - Keeps the documents above `MIN_DOC_RELEVANCE = 0.50`. This is the knob that controls which documents the agent sees
+  - Applies a `BAAI/bge-reranker-base` cross-encoder reranker when more than `FINAL_TOP_N = 4` documents survive
+- **Why it matters for the agent**: The model only chooses the query text. The thresholds come from config, so the agent cannot lower the filter or skip the reranker. Details are in [Retrieval](retrieval.md).
 
-> **Why the gate is loose while the filter is strict.** The two thresholds
-> answer different questions. The filter asks "is this document worth showing
-> the LLM?", so it guards answer quality. The gate only asks "was this question
-> ever about OLED?", so it just labels the rejection. Measured on the current
-> corpus, off-topic queries peak at `0.059` relevance while on-topic queries
-> start at `0.652`, which leaves a wide margin for a loose gate.
+### 4. Agent (`src/agent_*.py`)
 
-### 4. Agent Engine (`ENGINE_MODE=agent`)
-- **Role**: Decides *how* to look for evidence (rewording, splitting, and
-  searching again), instead of judging everything from one retrieval
-- **Modules**: `src/agent_runtime.py` (per-request state, planner, routing,
-  shared tool loop, budgets, trace), `src/agent_team.py` (orchestrator-worker,
-  reviewer), `src/agent_prompts.py` (prompts and tool schemas), and
-  `src/agent_tools.py` (search tool, evidence ledger, citation validation)
-- **API**: OpenAI Responses API with function tools and reasoning
-  (`store=False`); several searches may be issued in one turn
-- **Tools**: `search_documents(query)`, `submit_answer(answer, citations)`,
-  `submit_findings(findings, citations)` (workers), `declare_insufficient(missing)`
+- **Role**: Decides _how_ to look for evidence (rewording, splitting, and searching again) and answers only with cited chunks
+- **Modules**: `src/agent_runtime.py` (per-request state, planner, routing, shared tool loop, budgets, trace), `src/agent_team.py` (orchestrator-worker, reviewer), `src/agent_prompts.py` (prompts and tool schemas), and `src/agent_tools.py` (search tool, evidence ledger, citation validation)
+- **Planner**: `AgentAssistant.query()` sends the original user query and `PLAN_INSTRUCTIONS` to the light model (GPT-6-Luna by default). Luna returns `domain`, `complexity`, `subquestions`, and `sequential` as structured JSON; it does not search or answer
+- **Routing**: Python selects the team route first when workers are enabled and the plan has at least two subquestions. Otherwise, routing sends `simple` to Luna and `complex` to Sol
+- **API**: OpenAI Responses API with function tools and reasoning. `store=False` disables Responses API response storage, while the application carries the conversation context and encrypted reasoning items between turns; several searches may be issued in one turn
+- **Tools**: `search_documents(query)`, `submit_answer(answer, citations)`, `submit_findings(findings, citations)` (workers), `declare_insufficient(missing)`
 - **Switchable patterns** (environment flags; all three are enabled by default):
-  - model routing: simple → GPT-6 Luna, complex → GPT-6.1 Sol, plus at most one
-    escalation from Luna to Sol in a fresh context
-  - orchestrator-worker: two Luna workers with separate contexts; a Sol
-    orchestrator checks their findings against the original chunk text
-  - reviewer: Sol checks each claim against the cited chunks. The answer is
-    accepted only if the review is readable, the core question is answered,
-    and no claim is unsupported. Up to two revisions are allowed, and each one
-    is reviewed again. Statements about missing information have to be scoped
-    to the retrieved or cited evidence
-- **Guarantees enforced in Python**: The relevance filter cannot be bypassed,
-  and only chunks retrieved in the current request can be cited. All budgets
-  (LLM calls, searches, revisions, review rounds, time) are shared by every
-  agent working on the question. When one runs out, the run stops instead of
-  forcing an answer
+  - model routing: simple → GPT-6-Luna, complex → GPT-6.1-Sol, plus at most one escalation from Luna to Sol in a fresh context
+  - orchestrator-worker: two Luna workers with separate contexts; a Sol orchestrator receives their findings and the original cited chunks, checks the findings against that text, and writes the answer
+  - reviewer: Sol checks each claim against the cited chunks. The answer is accepted only if the review is readable, the core question is answered, and no claim is unsupported. Up to two revisions are allowed, and each one is reviewed again. Statements about missing information have to be scoped to the retrieved or cited evidence
+- **Guarantees enforced in Python**: The relevance filter cannot be bypassed, and only chunks retrieved in the current request can be cited. All budgets (LLM calls, searches, revisions, review rounds, time) are shared by every agent working on the question. When one runs out, the run stops instead of forcing an answer
+
+Details are in [Agent Engine](agent_engine.md).
 
 ### 5. LLM Serving Strategy (Cloud + Local)
-- **Role**: Generates natural language answers
-- **Cloud track (public deployment)**: GPT-5-mini via OpenAI API (`OPENAI_API_KEY`) for GCP deployment and low-latency serving.
-- **Internal track (private deployment)**: Mistral-Nemo via local/internal serving stack (privacy-first operation).
-- **Configuration**: GPT-5-mini uses its required default temperature (`1.0`) with `reasoning_effort="minimal"` for lower RAG latency.
-- **Agent engine**: GPT-6 Luna (light) and GPT-6.1 Sol (heavy) with reasoning effort `low`. With routing on (default), Sol answers the complex questions and also acts as orchestrator and reviewer. With routing off, every role uses `AGENT_MODEL` (Luna).
+
+- **Cloud track (this repository)**: GPT-6-Luna (light) and GPT-6.1-Sol (heavy) through the OpenAI Responses API (`OPENAI_API_KEY`), both with reasoning effort `low`. With routing on (default), Luna plans, answers simple questions, and runs the workers; Sol answers complex questions and acts as orchestrator and reviewer. With routing off, every role uses `AGENT_MODEL` (Luna).
+- **Internal track (private deployment)**: Mistral-Nemo via a local serving stack (privacy-first operation). It is not part of this repository.

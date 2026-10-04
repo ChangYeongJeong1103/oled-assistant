@@ -1,4 +1,4 @@
 """
-OLED Assistant - Strict RAG System
+OLED Assistant - Agentic RAG System
 """
 

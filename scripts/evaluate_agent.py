@@ -1,27 +1,26 @@
 """
-Evaluate the workflow and agent engines on the same question set.
+Evaluate the OLED agent on a fixed question set.
 
 What we measure for every question
 ----------------------------------
-- Mode: we compare the engine's mode with the expected mode, which gives us
+- Mode: we compare the agent's mode with the expected mode, which gives us
   the false rejections and false acceptances.
 - Unsupported claims: an independent judge model splits the answer into
-  claims and checks each one against the evidence the engine actually used
-  (for the workflow its final documents, for the agent the chunks it cited).
+  claims and checks each one against the chunks the agent cited.
 - Key-point coverage: does the answer contain the expected facts?
-- Source hit: did the engine use any of the expected source papers?
+- Source hit: did the agent use any of the expected source papers?
 - Searches, LLM calls, latency, tokens, and estimated cost.
 
 The judge is only part of this evaluation. It never runs inside the app.
 
 Usage (run from the project root, e.g. inside the Docker image)
 -----
-    python scripts/evaluate_engines.py --engine workflow --label baseline
-    python scripts/evaluate_engines.py --engine agent --ids t01,mh1 --repeat 3
-    AGENT_ROUTING=true python scripts/evaluate_engines.py --engine agent --label routing
-    python scripts/evaluate_engines.py --compare eval/results/A.json eval/results/B.json [C.json ...] --out name.md
-    python scripts/evaluate_engines.py --make-public eval/results/*.json
-    python scripts/evaluate_engines.py --rejudge eval/results/raw/A.json [B.json ...]
+    python scripts/evaluate_agent.py --run --label final
+    python scripts/evaluate_agent.py --run --ids t01,mh1 --repeat 3
+    AGENT_REVIEWER=false python scripts/evaluate_agent.py --run --label no_reviewer
+    python scripts/evaluate_agent.py --compare eval/results/A.json eval/results/B.json [C.json ...] --out name.md
+    python scripts/evaluate_agent.py --make-public eval/results/*.json
+    python scripts/evaluate_agent.py --rejudge eval/results/raw/A.json [B.json ...]
 
 Each run is saved twice:
 - eval/results/raw/ keeps the full result, including the text of the evidence
@@ -50,7 +49,6 @@ sys.path.insert(0, os.path.join(PROJECT_ROOT, "src"))
 from openai import OpenAI  # noqa: E402
 
 import config  # noqa: E402
-from source_registry import describe_source  # noqa: E402
 from utils import estimate_cost_usd  # noqa: E402
 
 QUESTIONS_FILE = os.path.join(PROJECT_ROOT, "eval", "questions.json")
@@ -67,82 +65,35 @@ REJECTION_MODES = {"NO_ANSWER_IN_DOCS", "OFF_TOPIC"}
 
 
 # ================================
-# Engine setup
+# Agent setup
 # ================================
-def build_engine(engine_name):
-    """Create the requested engine the same way the app does."""
-    from rag_engine import StrictRAGAssistant, create_embeddings, get_vectorstore
-
-    workflow = StrictRAGAssistant(
-        vectorstore=get_vectorstore(create_embeddings()),
-        llm_model=config.LLM_MODEL,
-        off_topic_threshold=config.OFF_TOPIC_THRESHOLD,
-        candidate_top_k=config.CANDIDATE_TOP_K,
-        min_doc_relevance=config.MIN_DOC_RELEVANCE,
-        final_top_n=config.FINAL_TOP_N,
-        reranker_enabled=config.RERANKER_ENABLED,
-        reranker_model=config.RERANKER_MODEL,
-        temperature=config.LLM_TEMPERATURE,
-        sigmoid_midpoint=config.SIGMOID_MIDPOINT,
-        sigmoid_steepness=config.SIGMOID_STEEPNESS,
-    )
-    if engine_name == "workflow":
-        return workflow
-
-    # Import the agent lazily so we can run the workflow baseline even before
-    # the agent exists.
+def build_agent():
+    """Create the agent the same way the app does."""
+    # Imported here so --compare, --make-public, and --rejudge don't have to
+    # load the embedding model and the reranker.
     from agent_runtime import AgentAssistant
+    from retrieval import build_retriever
 
-    return AgentAssistant(workflow)
+    return AgentAssistant(build_retriever())
 
 
 # ================================
 # Running one question
 # ================================
-def run_workflow(engine, question):
-    """
-    Run the fixed workflow pipeline and collect token usage with LangChain's
-    OpenAI callback.
-
-    The workflow sends its final documents to the LLM, so those are the
-    documents we judge its answer against.
-    """
-    from langchain_community.callbacks.manager import get_openai_callback
-
-    with get_openai_callback() as callback:
-        result = engine.query(question)
-
-    evidence = [
-        {"text": doc.page_content, **describe_source(doc.metadata)}
-        for doc in result.get("retrieved_docs", [])
-    ]
-    llm_called = callback.total_tokens > 0
-    return result, {
-        "evidence": evidence,
-        "searches": 1,
-        "llm_calls": 1 if llm_called else 0,
-        "prompt_tokens": callback.prompt_tokens,
-        "completion_tokens": callback.completion_tokens,
-        "cached_tokens": 0,
-        "stop_reason": result["mode"].lower(),
-        "trace": [],
-    }
-
-
-def run_agent(engine, question):
+def run_agent(agent, question):
     """
     Run the agent, which reports its own usage, evidence, and trace.
 
     The agent may use several models in one request (routing, workers,
     reviewer), so we take its cost from the per-model usage it reports.
     """
-    result = engine.query(question)
-    agent = result.get("agent", {})
-    usage = agent.get("usage", {})
-    plan = agent.get("plan") or {}
+    result = agent.query(question)
+    report = result.get("agent", {})
+    usage = report.get("usage", {})
+    plan = report.get("plan") or {}
     return result, {
-        "evidence": agent.get("evidence", []),
-        "searches": agent.get("searches", 0),
+        "evidence": report.get("evidence", []),
+        "searches": report.get("searches", 0),
         "llm_calls": usage.get("llm_calls", 0),
         "prompt_tokens": usage.get("prompt_tokens", 0),
         "completion_tokens": usage.get("completion_tokens", 0),
@@ -152,31 +103,20 @@ def run_agent(engine, question):
         "calls_by_role": usage.get("calls_by_role", {}),
         "cost_usd": usage.get("cost_usd"),
         "complexity": plan.get("complexity"),
-        "route": agent.get("route"),
-        "escalated": agent.get("escalated", False),
-        "review_rounds": agent.get("review_rounds", 0),
-        "parallel_turns": agent.get("parallel_turns", 0),
-        "stop_reason": agent.get("stop_reason", ""),
-        "trace": agent.get("trace", []),
+        "route": report.get("route"),
+        "escalated": report.get("escalated", False),
+        "review_rounds": report.get("review_rounds", 0),
+        "parallel_turns": report.get("parallel_turns", 0),
+        "stop_reason": report.get("stop_reason", ""),
+        "trace": report.get("trace", []),
     }
 
 
-def run_question(engine_name, engine, item):
+def run_question(agent, item):
     """Run one question and return a record with every raw measurement."""
     start = time.time()
-    if engine_name == "workflow":
-        result, extra = run_workflow(engine, item["question"])
-        # The workflow makes at most one LLM call, and always with LLM_MODEL,
-        # so we can price it directly.
-        cost = estimate_cost_usd(
-            config.LLM_MODEL,
-            extra["prompt_tokens"],
-            extra["completion_tokens"],
-            extra["cached_tokens"],
-        )
-    else:
-        result, extra = run_agent(engine, item["question"])
-        cost = extra.pop("cost_usd")
+    result, extra = run_agent(agent, item["question"])
+    cost = extra.pop("cost_usd")
     latency = time.time() - start
 
     used_files = sorted({entry["file_name"] for entry in extra["evidence"]})
@@ -266,7 +206,7 @@ def judge_answer(client, item, record):
     """
     Ask the judge model to grade the answer's claims and key-point coverage.
 
-    The judge only sees the evidence the engine actually used, so each claim
+    The judge only sees the evidence the agent actually cited, so each claim
     is graded against that evidence and nothing else.
 
     Args:
@@ -318,7 +258,7 @@ def add_scores(item, record, judgment):
     Turn the raw results and the judgment into per-question metrics.
 
     Note:
-        judgment is None when the judge did not run (--no-judge, or the engine
+        judgment is None when the judge did not run (--no-judge, or the agent
         did not answer), so the claim metrics are left empty.
     """
     expected, mode = record["expected_mode"], record["mode"]
@@ -405,8 +345,8 @@ def summarize(records):
         "variant_only_rejections": sum(
             pair["variant_only_rejections"] for pair in pair_report(records).values()
         ),
-        # Only the agent reports the fields below. Workflow records don't
-        # have them.
+        # Result files from the first agent version don't have all of the
+        # fields below, so we read them with .get().
         "stop_reasons": dict(Counter(r.get("stop_reason") or "n/a" for r in records)),
         "routes": dict(Counter(r.get("route") or "n/a" for r in records)),
         "escalations": sum(1 for r in records if r.get("escalated")),
@@ -455,7 +395,7 @@ def pair_report(records):
 
     Why we need this:
     A "variant-only rejection" is the failure this evaluation is looking for.
-    It happens when the engine answers the normal wording but rejects the
+    It happens when the agent answers the normal wording but rejects the
     typo, paraphrase, or abbreviation of the same question, which means the
     wording alone caused the rejection.
     """
@@ -533,11 +473,11 @@ def print_records(records):
 # ================================
 def evaluate(args):
     """
-    Run one engine over the question set and save the results.
+    Run the agent over the question set and save the results.
 
     Args:
-        args: Parsed command line arguments (--engine, --label, --ids,
-            --repeat, --no-judge)
+        args: Parsed command line arguments (--label, --ids, --repeat,
+            --no-judge)
     """
     with open(QUESTIONS_FILE, encoding="utf-8") as handle:
         questions = json.load(handle)["questions"]
@@ -545,17 +485,17 @@ def evaluate(args):
         wanted = set(args.ids.split(","))
         questions = [q for q in questions if q["id"] in wanted]
 
-    engine = build_engine(args.engine)
+    agent = build_agent()
     client = None if args.no_judge else OpenAI()
 
     # The judge only waits on the API, so we let it grade in background
-    # threads while the next question runs. The engine itself still runs one
+    # threads while the next question runs. The agent itself still runs one
     # question at a time, so other questions don't affect its latency.
     pending = []  # (item, record, future or None), in question order
     with ThreadPoolExecutor(max_workers=JUDGE_THREADS) as judge_pool:
         for item in questions:
             for run_index in range(args.repeat):
-                record = run_question(args.engine, engine, item)
+                record = run_question(agent, item)
                 record["run"] = run_index
                 future = None
                 if client and record["mode"] == "RAG" and record["answer"]:
@@ -569,19 +509,18 @@ def evaluate(args):
             records.append(add_scores(item, record, judgment))
 
     output = {
-        "engine": args.engine,
+        # Kept as a field so --compare can still read older result files.
+        "engine": "agent",
         "label": args.label,
         "created_at": datetime.now().isoformat(timespec="seconds"),
         "config": {
-            "llm_model": config.LLM_MODEL,
             "judge_model": None if args.no_judge else JUDGE_MODEL,
             "judge_policy": None if args.no_judge else JUDGE_POLICY,
             "candidate_top_k": config.CANDIDATE_TOP_K,
             "final_top_n": config.FINAL_TOP_N,
             "min_doc_relevance": config.MIN_DOC_RELEVANCE,
-            "off_topic_threshold": config.OFF_TOPIC_THRESHOLD,
             # Models, feature flags, and budgets the agent actually ran with.
-            "agent": engine.features() if args.engine == "agent" else None,
+            "agent": agent.features(),
         },
         "summary": summarize(records),
         "by_category": summarize_by_category(records),
@@ -591,19 +530,19 @@ def evaluate(args):
     }
 
     stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    name = f"{args.engine}_{args.label + '_' if args.label else ''}{stamp}.json"
+    name = f"agent_{args.label + '_' if args.label else ''}{stamp}.json"
     raw_path = os.path.join(RAW_RESULTS_DIR, name)
     write_json(raw_path, output)
     path = os.path.join(RESULTS_DIR, name)
     write_json(path, public_copy(output))
 
     print_records(records)
-    print_summary(f"{args.engine} overall", output["summary"])
+    print_summary("agent overall", output["summary"])
     for category, summary in output["by_category"].items():
         print(f"  [{category}] acc={summary['mode_accuracy']} false_rej={summary['false_rejection_rate']} "
               f"unsup={summary['unsupported_claim_rate']} lat={summary['latency_mean_s']}")
     print("\nPairs:", json.dumps(output["pairs"], indent=1))
-    print(f"\nJudge cost (not part of engine cost): ${output['judge_cost_usd']}")
+    print(f"\nJudge cost (not part of agent cost): ${output['judge_cost_usd']}")
     print(f"Saved {path} (public, no chunk text) and {raw_path} (local only)")
 
 
@@ -661,12 +600,12 @@ def make_public(paths):
 
 def rejudge(paths):
     """
-    Re-run only the judge against saved engine results.
+    Re-run only the judge against saved agent results.
 
     Why we need this:
-    Judge instructions can improve independently of the engine. The raw result
+    Judge instructions can improve independently of the agent. The raw result
     already contains the exact answer and evidence from the original run, so we
-    can apply the new grading rule without paying for or changing the engine
+    can apply the new grading rule without paying for or changing the agent
     run itself.
 
     Args:
@@ -790,13 +729,13 @@ def compare(paths, output_name="comparison.md"):
     path = os.path.join(RESULTS_DIR, output_name)
     with open(path, "w", encoding="utf-8") as handle:
         files = "\n".join(f"- {name}: `{os.path.basename(p)}`" for name, p in zip(names, paths))
-        handle.write(f"# Engine comparison\n\n{files}\n\n{report}\n")
+        handle.write(f"# Agent configuration comparison\n\n{files}\n\n{report}\n")
     print(f"\nSaved {path}")
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--engine", choices=["workflow", "agent"])
+    parser.add_argument("--run", action="store_true", help="Run the agent on the question set (paid API calls)")
     parser.add_argument("--label", default="", help="Tag added to the results file name")
     parser.add_argument("--ids", default="", help="Comma-separated question ids to run")
     parser.add_argument("--repeat", type=int, default=1, help="Runs per question (stochastic checks)")
@@ -806,7 +745,7 @@ def main():
     parser.add_argument("--make-public", nargs="+", metavar="RESULT_JSON",
                         help="Strip chunk text from existing result files (originals go to eval/results/raw/)")
     parser.add_argument("--rejudge", nargs="+", metavar="RESULT_JSON",
-                        help="Re-run the judge on saved results without re-running the engine")
+                        help="Re-run the judge on saved results without re-running the agent")
     args = parser.parse_args()
 
     if args.make_public:
@@ -817,10 +756,10 @@ def main():
         if len(args.compare) < 2:
             parser.error("--compare needs at least two result files.")
         compare(args.compare, args.out)
-    elif args.engine:
+    elif args.run:
         evaluate(args)
     else:
-        parser.error("Use --engine, --compare, --make-public, or --rejudge.")
+        parser.error("Use --run, --compare, --make-public, or --rejudge.")
 
 
 if __name__ == "__main__":

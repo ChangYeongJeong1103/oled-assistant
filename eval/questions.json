@@ -1,5 +1,5 @@
 {
-  "description": "Evaluation set for workflow vs agent. expected_points and expected_sources were written from chunks verified in the current ChromaDB corpus. expected_sources are case-insensitive substrings of source file names; a hit on any one counts. pair_id links a normal question with its typo / paraphrase / abbreviation / ambiguous variants. Categories easy (one concept), multi_hop (independent parts), and sequential (the second part depends on the first part's answer) were added to evaluate model routing and multi-agent patterns.",
+  "description": "Evaluation set for the OLED agent. expected_points and expected_sources were written from chunks verified in the current ChromaDB corpus. expected_sources are case-insensitive substrings of source file names; a hit on any one counts. pair_id links a normal question with its typo / paraphrase / abbreviation / ambiguous variants. Categories easy (one concept), multi_hop (independent parts), and sequential (the second part depends on the first part's answer) were added to evaluate model routing and multi-agent patterns.",
   "questions": [
     {
       "id": "n01", "category": "normal", "pair_id": "tadf", "expected_mode": "RAG",

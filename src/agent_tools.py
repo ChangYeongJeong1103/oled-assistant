@@ -2,12 +2,12 @@
 Tools and evidence bookkeeping for the OLED agent.
 
 The agent has no direct access to the vector store. The only search it can do
-is call search_documents(query), which runs the same pipeline as the workflow:
+is call search_documents(query), which runs the retrieval stack in retrieval.py:
 
     retrieve candidates -> relevance filter -> rerank -> return results
 
 The relevance threshold, the candidate pool size, and the final top-N are all
-read from the StrictRAGAssistant instance (i.e. from config). The model only
+read from the Retriever instance (i.e. from config). The model only
 chooses the query text, so it has no way to lower the threshold or skip the
 filter.
 
@@ -119,12 +119,12 @@ class EvidenceLedger:
 # search_documents tool
 # ================================
 class SearchTool:
-    """Wrap the workflow's retrieval methods as the agent's only search tool."""
+    """Wrap the Retriever as the agent's only search tool."""
 
-    def __init__(self, workflow):
-        # The StrictRAGAssistant instance owns the vector store, the reranker,
-        # and every threshold. We only call its methods here.
-        self.workflow = workflow
+    def __init__(self, retriever):
+        # The Retriever owns the vector store, the reranker, and every
+        # threshold. We only call its methods here.
+        self.retriever = retriever
         # IMPORTANT: Embedding and reranking run on the CPU and share one model
         # instance, so concurrent searches (parallel workers or other users)
         # take turns behind this lock. Running them at the same time would not
@@ -152,15 +152,15 @@ class SearchTool:
             return self._search(query, ledger)
 
     def _search(self, query, ledger):
-        candidates = self.workflow.retrieve_candidates(query)
-        survivors = self.workflow.filter_candidates_by_relevance(candidates)
+        candidates = self.retriever.retrieve_candidates(query)
+        survivors = self.retriever.filter_candidates_by_relevance(candidates)
         max_relevance = max((c["relevance"] for c in candidates), default=0.0)
 
         response = {
             "status": "ok" if survivors else "no_relevant_documents",
             "query": query,
             "max_relevance": round(max_relevance, 3),
-            "min_doc_relevance": self.workflow.min_doc_relevance,
+            "min_doc_relevance": self.retriever.min_doc_relevance,
             "candidate_count": len(candidates),
             "survivor_count": len(survivors),
             "reranker_used": False,
@@ -169,7 +169,7 @@ class SearchTool:
         if not survivors:
             return response
 
-        final_candidates, reranker_used = self.workflow.rerank_candidates(query, survivors)
+        final_candidates, reranker_used = self.retriever.rerank_candidates(query, survivors)
         response["reranker_used"] = reranker_used
 
         for candidate in final_candidates:

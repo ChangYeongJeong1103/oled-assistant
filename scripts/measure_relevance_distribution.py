@@ -3,19 +3,17 @@ Measure the relevance score distribution produced by the retrieval stage.
 
 Why this script exists
 ----------------------
-The Strict RAG pipeline makes two threshold decisions before the LLM is ever
-called:
+Every search the agent runs goes through the document filter
+(MIN_DOC_RELEVANCE): only documents above it reach the reranker and the agent.
 
-    1. OFF_TOPIC gate  : is this query about our domain at all?
-    2. Document filter : which retrieved documents deserve a reranker pass?
-
-Both thresholds must be expressed as RELEVANCE = sigmoid(cosine similarity),
+The threshold must be expressed as RELEVANCE = sigmoid(cosine similarity),
 never as raw cosine similarity. Raw scores in scientific corpora cluster very
 tightly (0.75 vs 0.82), which makes them useless as a decision axis.
 
 This script runs a set of representative queries against the existing ChromaDB
 and prints the relevance distribution for every retrieved candidate, so the
-thresholds can be chosen from measured data instead of guesswork.
+threshold can be chosen from measured data instead of guesswork. It also shows
+how far on-topic and off-topic queries are apart.
 
 The script is READ-ONLY: it never rebuilds or writes to the vector store.
 
@@ -39,7 +37,7 @@ import config  # noqa: E402
 
 
 # ---------------------------------------------------------------------------
-# Representative queries, grouped by the tier we EXPECT the pipeline to pick.
+# Representative queries, grouped by the answer mode we EXPECT.
 #
 # These mirror the example queries shown on the app's welcome screen, plus a
 # few "narrow" questions. Narrow questions are the interesting case: they are
@@ -184,42 +182,39 @@ def main():
             ]
             print(f"     survivors by filter threshold: {'  '.join(counts)}")
 
-            # What the live configuration would actually decide for this query.
-            print(f"     -> live config predicts: {predict_mode(relevances)}")
+            # What the agent's search tool would return with the live config.
+            print(f"     -> search tool returns: {predict_search_status(relevances)}")
         print()
 
     print_separation_report(results)
 
 
-def predict_mode(relevances):
+def predict_search_status(relevances):
     """
-    Replay the engine's decision using the thresholds currently in config.
+    Replay what search_documents returns using the thresholds in config.
 
-    Kept in sync with StrictRAGAssistant.query(): survivors decide whether we
-    answer at all, and the off-topic gate only labels the rejection.
+    Kept in sync with Retriever + SearchTool: documents above the filter are
+    reranked when there are more than FINAL_TOP_N of them. With no survivors,
+    the agent gets "no_relevant_documents" and decides whether to search again.
     """
     survivors = [value for value in relevances if value >= config.MIN_DOC_RELEVANCE]
-    if survivors:
-        # The reranker is skipped when the pool is already small enough.
-        reranked = "reranked" if len(survivors) > config.FINAL_TOP_N else "no rerank"
-        return f"RAG ({len(survivors)} survivors, {reranked})"
-
-    best = relevances[0] if relevances else 0.0
-    if best < config.OFF_TOPIC_THRESHOLD:
-        return "OFF_TOPIC"
-    return "NO_ANSWER_IN_DOCS"
+    if not survivors:
+        return "no_relevant_documents"
+    # The reranker is skipped when the pool is already small enough.
+    reranked = "reranked" if len(survivors) > config.FINAL_TOP_N else "no rerank"
+    return f"ok ({len(survivors)} survivors, {reranked})"
 
 
 def print_separation_report(results):
     """
-    Show how well each candidate statistic separates on-topic from off-topic.
+    Show how well each statistic separates on-topic from off-topic queries.
 
-    A usable gate statistic is one where the WORST on-topic query still scores
+    A statistic separates well when the WORST on-topic query still scores
     higher than the BEST off-topic query. The gap between those two numbers is
-    the safety margin we get to place a threshold in.
+    the safety margin for a threshold.
     """
     print("=" * 78)
-    print("GATE STATISTIC SEPARATION")
+    print("ON-TOPIC / OFF-TOPIC SEPARATION")
     print("=" * 78)
 
     on_topic = [stats for group, _, stats, _ in results if not group.startswith("OFF_TOPIC")]
@@ -234,9 +229,6 @@ def print_separation_report(results):
             f"  {key:10s}  worst on-topic={worst_on:.3f}   "
             f"best off-topic={best_off:.3f}   margin={margin:+.3f}  [{verdict}]"
         )
-        if margin > 0:
-            # Midpoint of the gap is the most robust place for the threshold.
-            print(f"              suggested OFF_TOPIC_THRESHOLD ~ {(worst_on + best_off) / 2:.2f}")
 
 
 if __name__ == "__main__":

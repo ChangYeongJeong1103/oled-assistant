@@ -1,17 +1,15 @@
 """
 AI-Driven OLED Assistant - Streamlit Application
-Aligned with OLED_assistant_v3_final.ipynb
+
+Every question goes to the OLED agent (agent_runtime.AgentAssistant).
 """
 import streamlit as st
 import time
 import os
-from rag_engine import StrictRAGAssistant, create_embeddings, get_vectorstore
+from retrieval import build_retriever
 from agent_runtime import AgentAssistant, save_trace
-from source_registry import describe_source
 import config
-from utils import logger, format_time
-
-IS_AGENT = config.ENGINE_MODE == "agent"
+from utils import format_time
 
 # Page Configuration
 st.set_page_config(
@@ -19,21 +17,6 @@ st.set_page_config(
     page_icon=config.APP_ICON,
     layout="wide"
 )
-
-
-def sources_from_docs(docs):
-    """
-    Turn workflow Documents into the same source dicts the agent returns.
-
-    Why we need this:
-    The workflow result only carries LangChain Documents, while the agent
-    already returns numbered source dicts. Converting them here lets the same
-    rendering code show sources for both engines.
-    """
-    sources = []
-    for number, doc in enumerate(docs, 1):
-        sources.append({"number": number, **describe_source(doc.metadata)})
-    return sources
 
 
 def format_source_line(source):
@@ -49,6 +32,18 @@ def format_source_line(source):
     label = f"[{title}]({source['url']})" if source.get("url") else title
     page = f" — p.{source['page']}" if source.get("page") else ""
     return f"**[{source['number']}]** {label}{page}"
+
+
+def format_answer_markdown(answer):
+    """
+    Prefix the answer with a bold "Answer:" label.
+
+    NOTE: Markdown tables, lists, and headings only render when they start on
+    their own line, so in that case the answer goes below the label.
+    """
+    starts_with_block = answer.lstrip().startswith(("|", "- ", "* ", "#"))
+    separator = "\n\n" if starts_with_block else " "
+    return f"**Answer:**{separator}{answer}"
 
 
 def render_trace(trace):
@@ -113,7 +108,7 @@ def render_trace(trace):
             st.markdown(f"⚠️ {who}{event_type}")
 
 
-def render_message_extras(metadata=None, sources=None, trace=None, sources_are_cited=False):
+def render_message_extras(metadata=None, sources=None, trace=None):
     """
     Render the source list and the "Agent Trace" / "Analysis Details" expanders.
 
@@ -127,17 +122,11 @@ def render_message_extras(metadata=None, sources=None, trace=None, sources_are_c
     bug on the very first render.
     """
     if sources:
-        # Agent answers cite [n] inline, so we show the source list right
-        # under the answer. Workflow answers have no inline citations, so we
-        # keep their sources folded inside an expander.
-        if sources_are_cited:
-            st.markdown("**Sources**")
-            for source in sources:
-                st.markdown(format_source_line(source))
-        else:
-            with st.expander("Retrieved Documents"):
-                for source in sources:
-                    st.markdown(format_source_line(source))
+        # Answers cite [n] inline, so the source list goes right under the
+        # answer instead of inside an expander.
+        st.markdown("**Sources**")
+        for source in sources:
+            st.markdown(format_source_line(source))
     if trace:
         with st.expander("Agent Trace"):
             render_trace(trace)
@@ -145,31 +134,11 @@ def render_message_extras(metadata=None, sources=None, trace=None, sources_are_c
         with st.expander("Analysis Details"):
             st.json(metadata)
 
-# Initialize Assistant (Cached to prevent reloading on every interaction)
-@st.cache_resource
-def get_assistant():
-    embeddings = create_embeddings()
-    vectorstore = get_vectorstore(embeddings)
-    return StrictRAGAssistant(
-        vectorstore=vectorstore,
-        llm_model=config.LLM_MODEL,
-        off_topic_threshold=config.OFF_TOPIC_THRESHOLD,
-        candidate_top_k=config.CANDIDATE_TOP_K,
-        min_doc_relevance=config.MIN_DOC_RELEVANCE,
-        final_top_n=config.FINAL_TOP_N,
-        reranker_enabled=config.RERANKER_ENABLED,
-        reranker_model=config.RERANKER_MODEL,
-        temperature=config.LLM_TEMPERATURE,
-        sigmoid_midpoint=config.SIGMOID_MIDPOINT,
-        sigmoid_steepness=config.SIGMOID_STEEPNESS,
-    )
-
-
+# Initialize the agent (cached, so the embedding model, the vector store, and
+# the reranker are loaded only once per server process).
 @st.cache_resource
 def get_agent():
-    # The agent reuses the cached workflow for retrieval, so the embedding
-    # model and reranker are loaded only once.
-    return AgentAssistant(get_assistant())
+    return AgentAssistant(build_retriever())
 
 
 try:
@@ -178,10 +147,9 @@ try:
             "❌ OPENAI_API_KEY not found. Set it in your environment or `.env` file before running the app."
         )
         st.stop()
-    # ENGINE_MODE=workflow keeps the original single-pass Strict RAG.
-    assistant = get_agent() if IS_AGENT else get_assistant()
+    assistant = get_agent()
 except Exception as e:
-    st.error(f"Failed to initialize RAG Engine: {str(e)}")
+    st.error(f"Failed to initialize the agent: {str(e)}")
     st.stop()
 
 # Sidebar
@@ -189,52 +157,35 @@ with st.sidebar:
     st.title(f"{config.APP_ICON} OLED Assistant")
     st.markdown("---")
     st.markdown("**System Status**")
-    if IS_AGENT:
-        features = assistant.features()
-        if features["routing"]:
-            st.success(f"Models: {features['light_model']} (light) / {features['heavy_model']} (heavy)")
-        else:
-            st.success(f"Model: {features['light_model']}")
+    features = assistant.features()
+    if features["routing"]:
+        st.success(f"Models: {features['light_model']} (light) / {features['heavy_model']} (heavy)")
     else:
-        st.success(f"Model: {config.LLM_MODEL}")
-    st.info(f"Engine: {'Agent (plan → search loop)' if IS_AGENT else 'Workflow (single pass)'}")
-    if IS_AGENT:
-        # Show which optional agent features are switched on (set by env flags).
-        st.info(
-            "Features: "
-            f"parallel search {'on' if features['parallel_search'] else 'off'} · "
-            f"routing {'on' if features['routing'] else 'off'} · "
-            f"workers {features['workers'] or 'off'} · "
-            f"reviewer {'on' if features['reviewer'] else 'off'}"
-        )
+        st.success(f"Model: {features['light_model']}")
+    # Show which optional agent features are switched on (set by env flags).
+    st.info(
+        "Features: "
+        f"parallel search {'on' if features['parallel_search'] else 'off'} · "
+        f"routing {'on' if features['routing'] else 'off'} · "
+        f"workers {features['workers'] or 'off'} · "
+        f"reviewer {'on' if features['reviewer'] else 'off'}"
+    )
     st.info(f"Retrieval: candidates={config.CANDIDATE_TOP_K}, final={config.FINAL_TOP_N}")
     st.info(f"Doc relevance filter ≥ {config.MIN_DOC_RELEVANCE}")
-    if IS_AGENT:
-        st.info(
-            f"Budget: {config.AGENT_MAX_SEARCHES} searches, "
-            f"{config.AGENT_MAX_LLM_CALLS} LLM calls, {config.AGENT_DEADLINE_SECONDS}s"
-        )
-    else:
-        st.info(f"Off-topic gate < {config.OFF_TOPIC_THRESHOLD}")
+    st.info(
+        f"Budget: {config.AGENT_MAX_SEARCHES} searches, "
+        f"{config.AGENT_MAX_LLM_CALLS} LLM calls, {config.AGENT_DEADLINE_SECONDS}s"
+    )
     st.markdown("---")
     st.markdown("### User Guide")
-    if IS_AGENT:
-        st.markdown("""
-        1. Ask questions about **OLED physics, materials, or fabrication**.
-        2. The agent first **plans**: is the question about OLEDs, and does it
-           need to be split into sub-questions?
-        3. It then **searches** (up to the budget), rewording the query when
-           results are weak, and answers only with **cited** evidence.
-        4. If the documents don't cover it, it says so instead of guessing.
-        """)
-    else:
-        st.markdown("""
-        1. Ask questions about **OLED physics, materials, or fabrication**.
-        2. Every retrieved document gets a **relevance** score (sigmoid-transformed).
-        3. Documents above the filter are **reranked**, and the strongest ones become
-           the **PRIMARY** source for the answer.
-        4. If no document clears the filter, the system says so instead of guessing.
-        """)
+    st.markdown("""
+    1. Ask questions about **OLED physics, materials, or fabrication**.
+    2. The agent first **plans**: is the question about OLEDs, and does it
+       need to be split into sub-questions?
+    3. It then **searches** (up to the budget), rewording the query when
+       results are weak, and answers only with **cited** evidence.
+    4. If the documents don't cover it, it says so instead of guessing.
+    """)
 
 # Initialize chat history (must come before any UI that reads it).
 if "messages" not in st.session_state:
@@ -277,12 +228,12 @@ with action_col:
 
 
 # ----------------------------------------------------------------------------
-# Welcome screen: example queries grouped by Strict-RAG decision tier.
+# Welcome screen: example queries grouped by answer mode.
 #
 # Why we show this:
-# - Strict RAG is intentionally tuned for high-precision rejection of
-#   off-topic queries. New users who don't yet know what the docs cover
-#   can otherwise get only "OFF_TOPIC" rejections and leave confused.
+# - The agent only answers from cited documents and refuses everything else.
+#   New users who don't yet know what the docs cover can otherwise get only
+#   rejections and leave confused.
 # - Showing one-click examples for every tier (RAG / NO_ANSWER / OFF_TOPIC)
 #   teaches the decision logic by demonstration in seconds.
 #
@@ -308,11 +259,7 @@ EXAMPLE_QUERIES = {
         ],
     },
     "🔴 OFF_TOPIC Mode": {
-        "caption": (
-            "Rejected at the planning step, before any search"
-            if IS_AGENT
-            else "Auto-rejected without calling the LLM"
-        ),
+        "caption": "Rejected at the planning step, before any search",
         "queries": [
             "How do I bake a chocolate cake?",
             "Recommend me a Netflix show.",
@@ -339,16 +286,10 @@ show_welcome = not st.session_state.messages
 if show_welcome:
     with welcome_slot.container():
         st.markdown("### Try these example queries")
-        if IS_AGENT:
-            st.caption(
-                "Click any example to see how the agent decides between three modes. "
-                "Open the Agent Trace under each answer to see its plan and searches."
-            )
-        else:
-            st.caption(
-                "Click any example to see how Strict RAG decides between three modes. "
-                "The relevance score determines whether the LLM is even called."
-            )
+        st.caption(
+            "Click any example to see how the agent decides between three modes. "
+            "Open the Agent Trace under each answer to see its plan and searches."
+        )
         # 3 columns so users can compare the three tiers at a glance.
         columns = st.columns(len(EXAMPLE_QUERIES))
         for col, (mode_label, payload) in zip(columns, EXAMPLE_QUERIES.items()):
@@ -374,7 +315,6 @@ for message in st.session_state.messages:
             metadata=message.get("metadata"),
             sources=message.get("sources"),
             trace=message.get("trace"),
-            sources_are_cited=message.get("sources_are_cited", False),
         )
 
 
@@ -422,11 +362,7 @@ if prompt:
     with st.chat_message("assistant"):
         start_time = time.time()
 
-        if IS_AGENT:
-            result = run_agent_with_progress(prompt)
-        else:
-            with st.spinner("Analyzing documents..."):
-                result = assistant.query(prompt)
+        result = run_agent_with_progress(prompt)
         # Create the answer slot after the status box so it renders below it.
         message_placeholder = st.empty()
 
@@ -449,11 +385,7 @@ if prompt:
         elif mode == "OFF_TOPIC":
             status_color = "red"
             icon = "🔴"
-            mode_text = (
-                "Off-Topic Rejection (Classified out of domain)"
-                if IS_AGENT
-                else "Off-Topic Rejection (Auto-Rejected, No LLM Call)"
-            )
+            mode_text = "Off-Topic Rejection (Classified out of domain)"
         elif mode == "ERROR":
             status_color = "gray"
             icon = "⚠️"
@@ -465,21 +397,21 @@ if prompt:
 
         # `score` is the relevance of the single strongest retrieved document.
         status_text = f"{icon} **{mode_text}** | Top Relevance: {score:.3f}"
-        if "agent" in result:
-            searches = result["agent"]["searches"]
-            # An out-of-domain question stops before any search, so showing
-            # "Top Relevance: 0.000" would be misleading. We show the search
-            # count instead.
-            if searches == 0:
-                status_text = f"{icon} **{mode_text}** | Searches: 0"
-            else:
-                status_text += f" | Searches: {searches}"
-            
-        # Display Answer
-        message_placeholder.markdown(
-            f"**Answer:** {answer}\n\n"
+        searches = result["agent"]["searches"]
+        # An out-of-domain question stops before any search, so showing
+        # "Top Relevance: 0.000" would be misleading. We show the search
+        # count instead.
+        if searches == 0:
+            status_text = f"{icon} **{mode_text}** | Searches: 0"
+        else:
+            status_text += f" | Searches: {searches}"
+
+        # Display Answer (the same text is saved to the chat history below)
+        answer_content = (
+            f"{format_answer_markdown(answer)}\n\n"
             f":{status_color}[{status_text}] | Time: {format_time(elapsed)}"
         )
+        message_placeholder.markdown(answer_content)
 
         # Build the metadata + docs payload ONCE so the live render and the
         # saved-history entry stay in perfect sync.
@@ -488,15 +420,10 @@ if prompt:
             "response_time": f"{elapsed:.2f}s",
             "retrieval": result.get("retrieval_metadata", {}),
         }
-        # We store plain dicts instead of Document objects so the chat history
+        # Sources are plain dicts (not Document objects), so the chat history
         # stays light.
-        if mode != "RAG":
-            live_sources = None
-        elif "sources" in result:
-            live_sources = result["sources"]
-        else:
-            live_sources = sources_from_docs(result["retrieved_docs"])
-        live_trace = result["agent"]["trace"] if "agent" in result else None
+        live_sources = result["sources"] if mode == "RAG" else None
+        live_trace = result["agent"]["trace"]
 
         # Render expanders right now so the user sees them immediately,
         # without waiting for the next Streamlit rerun.
@@ -504,15 +431,13 @@ if prompt:
             metadata=live_metadata,
             sources=live_sources,
             trace=live_trace,
-            sources_are_cited=IS_AGENT,
         )
 
         # Save to history so the same message keeps showing on later reruns.
         st.session_state.messages.append({
             "role": "assistant",
-            "content": f"**Answer:** {answer}\n\n:{status_color}[{status_text}] | Time: {format_time(elapsed)}",
+            "content": answer_content,
             "metadata": live_metadata,
             "sources": live_sources,
             "trace": live_trace,
-            "sources_are_cited": IS_AGENT,
         })

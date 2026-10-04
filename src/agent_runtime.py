@@ -207,8 +207,6 @@ class AgentRun:
             cost = None if (cost is None or model_cost is None) else cost + model_cost
         return {
             "llm_calls": self.llm_calls,
-            # We use the same key names as the workflow's token counter, so
-            # the evaluator can read both engines the same way.
             "prompt_tokens": totals["input_tokens"],
             "completion_tokens": totals["output_tokens"],
             "cached_tokens": totals["cached_tokens"],
@@ -258,15 +256,15 @@ class AgentRun:
 # ================================
 class AgentAssistant:
     """
-    Agent engine that returns the same query() result format as StrictRAGAssistant.
+    The OLED agent: plan, route, research with tools, review, and answer.
 
-    It reuses the workflow instance for retrieval, so the embedding model, the
+    It searches through one shared Retriever, so the embedding model, the
     vector store, and the reranker are only loaded once.
     """
 
-    def __init__(self, workflow_assistant):
-        self.workflow = workflow_assistant
-        self.search_tool = SearchTool(workflow_assistant)
+    def __init__(self, retriever):
+        self.retriever = retriever
+        self.search_tool = SearchTool(retriever)
         # max_retries=0 turns off the OpenAI client's own retries. respond()
         # retries transient errors itself, because that way we can cap every
         # attempt's timeout by the time left in the request. The client's
@@ -739,8 +737,8 @@ class AgentAssistant:
                 the main thread.
 
         Returns:
-            dict: The same fields as StrictRAGAssistant.query(), plus
-            "sources" and "agent" (plan, trace, usage, evidence).
+            dict: "answer", "mode", "relevance_score", "retrieval_metadata",
+            "sources", and "agent" (plan, trace, usage, evidence).
         """
         run = AgentRun(question, on_event)
         answer, citations = None, []
@@ -790,12 +788,11 @@ class AgentAssistant:
             "answer": display_answer,
             "mode": mode,
             "relevance_score": run.max_relevance,
-            "retrieved_docs": [entry["doc"] for entry in cited_entries],
             "retrieval_metadata": {
                 "engine": "agent",
                 "route": run.route,
                 "max_relevance": round(run.max_relevance, 3),
-                "min_doc_relevance": self.workflow.min_doc_relevance,
+                "min_doc_relevance": self.retriever.min_doc_relevance,
                 "searches": run.searches,
                 "llm_calls": run.llm_calls,
                 "ledger_size": len(run.ledger),
