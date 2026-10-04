@@ -2,12 +2,12 @@
 
 > **Note**: This is an early-stage record from the on-premise phase of the project, kept for reference. It does not describe the current system. The current public reproduction uses a GPT-6-Luna / GPT-6.1-Sol agent, and the Apple-internal version grew into a larger agent system on Apple's internal cloud service. See [README](../README.md#apple-internal-version-and-this-public-reproduction).
 
-## Decision: GPT-4o-mini (Cloud Deployment) & Mistral-Nemo (Local)
+## Decision at the Time: GPT-4o-mini (Cloud Deployment) & Mistral-Nemo (Local)
 
-For the cloud deployment track of this repository, we selected **GPT-4o-mini** as the default serving model.
-For the internal/private deployment track, we keep **Mistral-Nemo** as a local serving option.
+At this stage, we selected **GPT-4o-mini** as the default model for the cloud deployment track.
+For the internal/private deployment track, we kept **Mistral-Nemo** as a local serving option.
 
-### Why GPT-4o-mini for This Repo?
+### Why GPT-4o-mini at the Time?
 1.  **Cloud deployment simplicity**: Works directly with managed platforms (e.g., GCP) without hosting a separate model server.
 2.  **Low latency in deployment**: Supports fast response times in production-style cloud runs.
 3.  **Operational consistency**: Aligns with the deployment pattern already proven in `trading-advisor`.
@@ -33,10 +33,10 @@ Results below are taken from `experiments/llm_comparison/hyperparameter_experime
 
 Notes:
 - Mistral answered **3/6** test queries in RAG mode, slightly more than GPT (2/6). This does not mean Mistral is natively superior, but rather that our **Prompt Optimization** and **Hyperparameter Tuning** were highly effective for the local model.
-- GPT-4o-mini can achieve similar or better quality with dedicated tuning while providing better cloud deployment characteristics.
-- We intentionally preserve the local deployment goal: validating that an internal, privacy-first Mistral stack can still deliver production-grade Strict RAG quality.
+- GPT-4o-mini could reach similar or better quality with dedicated tuning while providing better cloud deployment characteristics.
+- We intentionally kept the local deployment goal: validating that an internal, privacy-first Mistral stack could still deliver production-grade Strict RAG quality.
 
-**Conclusion:** Both models are viable for Strict RAG. For this public cloud deployment repository, GPT-4o-mini is the default due to deployment speed and latency benefits, while the internal repository can keep local Mistral-based serving for privacy-first environments.
+**Conclusion at the time:** Both models were viable for Strict RAG. GPT-4o-mini became the cloud default because of its deployment speed and lower latency, and Mistral-Nemo remained the privacy-first local option. Both choices were later superseded, as described in the note at the top of this page.
 
 ## Detailed Logs
 Detailed comparison notebooks and logs can be found in `experiments/llm_comparison` directory.
