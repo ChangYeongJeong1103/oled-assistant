@@ -277,7 +277,7 @@ The team (two Luna workers + a Sol orchestrator) grounds its answers better than
 
 **Reviewer (initially kept off).** Unsupported claims went down from 3.8% to 2.3% (answers with one: 9 → 6). The reviewer sent 7 of 43 answers back, and 6 of them passed after one revision. The seventh (`sq2`) turned into a **false rejection**: the reviewer rejected "FIrpic was the emitter" even though the cited chunk names a "doped (10 wt% FIrpic) emitting layer", and the writer gave up. The same question was answered correctly without the reviewer. The reviewer also let through several claims that the judge later marked unsupported, so the two models disagree at the margin. This run still used the earlier approval rule, which kept an answer with unsupported claims after the last round as long as the core question was answered (the current rule is in section 7). Paying +80% cost and +67% latency (p90 45 s) for 1.5 points fewer unsupported claims and one new false rejection did not seem worth it in this first comparison. The corrected reviewer and combined default are measured below.
 
-**Caveats.** Each configuration ran once on 50 questions (13 of them hard), so differences of one or two claims are within run-to-run noise. Our corpus is also small and well covered. The internal version, with a larger and more complex document set, benefited more from routing and decomposition. The judge (`gpt-5`) is a different model from both the agents and the reviewer.
+**Caveats.** Each configuration ran once on 50 questions (13 of them hard), so differences of one or two claims are within run-to-run noise. Our corpus is also small and well covered. The judge (`gpt-5`) is a different model from both the agents and the reviewer.
 
 ## After the review fixes
 

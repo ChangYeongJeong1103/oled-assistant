@@ -25,7 +25,7 @@ The answers follow a **Strict RAG** policy: there is no fallback to the model's 
 - **Evaluation Pipeline**: `scripts/evaluate_agent.py` runs any agent configuration on 50 questions and reports false rejections, false acceptances, unsupported claims (graded by an independent judge model), latency, tokens per model, and cost.
 - **Kubernetes Deployment**: The same Docker image runs on Kubernetes with resource requests/limits, readiness and liveness probes, rolling back through `kubectl rollout undo`, and the API key stored in a Kubernetes Secret.
 - **Public Cloud Demo**: The application is deployed on Google Cloud Run and calls GPT-6-Luna and GPT-6.1-Sol through the OpenAI Responses API.
-- **Public Reproduction of an Apple-Internal System**: This project began as an Apple-internal OLED assistant, which grew larger than this repository: more tools, more dynamic routing, more iterative agent loops, and deployment on Apple's internal cloud service. Because its code and data are confidential, this repository reproduces the core design on a public corpus. See [Apple-Internal Version and This Public Reproduction](#apple-internal-version-and-this-public-reproduction).
+- **Public Reproduction of an Apple-Internal System**: Because Apple-internal code and data are confidential, this repository independently reproduces the project on a public corpus. See [Apple-Internal Version and This Public Reproduction](#apple-internal-version-and-this-public-reproduction).
 - **Production-Style Vector DB Lifecycle**: In cloud deployment, the image ships with a prebuilt `chroma_db` for fast startup. The app only rebuilds from `data/` when the DB is missing or incompatible.
 - **Wide Retrieval + BGE Reranking**: Every search retrieves a wider candidate pool, filters it by a per-document relevance threshold, then uses a `BAAI/bge-reranker-base` cross-encoder to select the strongest chunks for the agent.
 - **Measured, Not Guessed, Thresholds**: `scripts/measure_relevance_distribution.py` dumps the relevance distribution of every retrieved candidate across representative queries, so the document filter comes from observed separation between on-topic and off-topic questions.
@@ -67,20 +67,14 @@ This tool is designed for **PhD-level domain experts** who need precise, actiona
 
 ### Apple-Internal Version and This Public Reproduction
 
-This project was originally built at Apple as an **internal OLED assistant** for display engineers. It started as a privacy-first, on-premise RAG system with Mistral-Nemo served through Ollama, and it grew into a larger agent system than the one in this repository:
+This project was originally built at Apple as an **internal OLED assistant** for display engineers, using a privacy-first, on-premise RAG system with Mistral-Nemo served through Ollama.
 
-- **More tools** available to the agent
-- **More dynamic routing**
-- **More iterative agent loops**
-- **Deployment on Apple's internal cloud service**
-
-Everything in the internal version (code, documents, vector database, evaluation data, and deployment configuration) is Apple-confidential, so none of it is in this repository. This repository is a **public reproduction** of the core design, rebuilt on a public OLED corpus with public models and infrastructure. It is intentionally smaller in scope than the internal system.
+Everything in the internal version (code, documents, vector database, evaluation data, and deployment configuration) is Apple-confidential, so none of it is in this repository. This repository is an independent **public reproduction**, rebuilt on a public OLED corpus with public models and infrastructure.
 
 | | Apple-internal version | This public reproduction |
 | --- | --- | --- |
-| Scope | Full internal system: more tools, more dynamic routing, more agent loops | Core design: planner, model routing, orchestrator-worker, reviewer |
 | LLM | Mistral-Nemo via Ollama in the on-premise stage | GPT-6-Luna / GPT-6.1-Sol via OpenAI Responses API |
-| Runtime | On-premise hardware and Apple's internal cloud service | Google Cloud Run, Kubernetes |
+| Runtime | On-premise hardware | Google Cloud Run, Kubernetes |
 | Data | Confidential internal OLED documents | Publicly deployable OLED corpus and prebuilt ChromaDB |
 | Availability | Not public | This repository and the live demo |
 
@@ -121,7 +115,7 @@ In the evaluated OLED question set, PhD-level experts found the optimized Mistra
 
 - **App Interface**: `Streamlit` was chosen for rapid prototyping and its native support for chat interfaces (`st.chat_message`).
 - **Agent Runtime**: Plain Python on the OpenAI **Responses API** (function tools with reasoning), without an agent framework, so every limit, check, and route is visible in our own code. **GPT-6-Luna** is the light model (planner, workers, simple questions) and **GPT-6.1-Sol** the heavy model (complex questions, orchestrator, reviewer).
-- **Apple-Internal Version**: Started with **Mistral-Nemo 12B via Ollama** on on-premise hardware and grew into a larger agent system on Apple's internal cloud service. It is confidential and not part of this repository.
+- **Apple-Internal Version**: The privacy-first internal version used **Mistral-Nemo 12B via Ollama** on on-premise hardware. Its code and data are confidential and not part of this repository.
 - **Retrieval**: Custom retrieval logic performs wide vector search, sigmoid relevance scoring, per-document filtering, and BGE cross-encoder reranking. The agent can only reach it through its `search_documents` tool.
 - **Modular Data Pipeline**: `src/document_pipeline.py` isolates document loading, chunking, embedding, and ChromaDB lifecycle management from `src/retrieval.py`.
 - **Vector Database**: `ChromaDB` is prebuilt into the cloud image for low cold-start latency, then reused at runtime ("rebuild only if missing/incompatible").
@@ -223,7 +217,7 @@ False rejection is measured over the 42 answerable questions, and false acceptan
 - **Workers**: A trade-off between Luna and Sol. On the 13 hard questions, routing + workers lowered unsupported claims from 7.1% (Luna only) to 2.1% at less than half of Sol's cost ($0.0116 vs $0.0278). Sol alone was still lower (0.9%), and one small run is not enough to say the team matches it. The cost stays low because the search turns run on Luna, and Sol only reads the condensed evidence and writes the answer.
 - **Reviewer**: In this first comparison it had the fewest unsupported claims, but +80% cost and +67% latency. It also caused one false rejection, where it marked a claim as unsupported even though the cited chunk supports it. This was measured before the final reviewer and answer-policy fixes below.
 - **Parallel Tool Calling**: Used in 19 of 50 runs, and it covers more ground on multi-part questions. It does not reduce latency here, because retrieval runs on one local CPU.
-- **Caveat**: One run per configuration on a small, well-covered corpus, so differences of one or two claims are noise. The original Apple-internal version, with a larger and more complex document set, benefited more from routing and decomposition.
+- **Caveat**: One run per configuration on a small, well-covered corpus, so differences of one or two claims are noise.
 
 **Final default (routing + 2 workers + reviewer).** We chose this setup based on repeated tests during development. In those tests the two patterns solved different problems: the workers made sequential retrieval (`sq2`) more reliable, while the reviewer consistently refused `na1`, whose evidence only covered related facts. These tests ran on intermediate versions of the code, so we treat them as the reason for the choice rather than as a measured result.
 

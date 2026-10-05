@@ -1,6 +1,6 @@
 # LLM Comparison: Mistral-Nemo vs GPT-4o-mini
 
-> **Note**: This is an early-stage record from the on-premise phase of the project, kept for reference. It does not describe the current system. The current public reproduction uses a GPT-6-Luna / GPT-6.1-Sol agent, and the Apple-internal version grew into a larger agent system on Apple's internal cloud service. See [README](../README.md#apple-internal-version-and-this-public-reproduction).
+> **Note**: This is an early-stage record from the on-premise phase of the project, kept for reference. It does not describe the current system, which uses a GPT-6-Luna / GPT-6.1-Sol agent.
 
 ## Decision at the Time: GPT-4o-mini (Cloud Deployment) & Mistral-Nemo (Local)
 
