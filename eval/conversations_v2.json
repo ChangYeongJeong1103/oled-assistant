@@ -1,0 +1,206 @@
+{
+  "description": "Development conversations for contextual interpretation and independent Strict RAG. Not a held-out benchmark. Reference intents are grading-only and never passed to the agent.",
+  "conversations": [
+    {
+      "id": "pronoun",
+      "category": "pronoun",
+      "turns": [
+        {
+          "question": "How does thermally activated delayed fluorescence (TADF) work?",
+          "reference_question": "How does thermally activated delayed fluorescence (TADF) work?",
+          "reference_id": "n01",
+          "expected_mode": "RAG",
+          "interpretation_criteria": ""
+        },
+        {
+          "question": "Why must its ΔEST be small?",
+          "reference_question": "In TADF emitters, why must ΔEST be small?",
+          "reference_id": "a01",
+          "expected_mode": "RAG",
+          "interpretation_criteria": "The subject remains TADF emitters and the question is about their singlet-triplet energy gap."
+        }
+      ]
+    },
+    {
+      "id": "ellipsis",
+      "category": "ellipsis",
+      "turns": [
+        {
+          "question": "What causes efficiency roll-off in phosphorescent OLEDs at high current density?",
+          "reference_question": "What causes efficiency roll-off in phosphorescent OLEDs at high current density?",
+          "reference_id": "n02",
+          "expected_mode": "RAG",
+          "interpretation_criteria": ""
+        },
+        {
+          "question": "And TTA versus TPA?",
+          "reference_question": "What is the difference between triplet-triplet annihilation and triplet-polaron annihilation in phosphorescent OLEDs?",
+          "reference_id": "mh8",
+          "expected_mode": "RAG",
+          "interpretation_criteria": "Compare triplet-triplet and triplet-polaron annihilation in phosphorescent OLEDs."
+        }
+      ]
+    },
+    {
+      "id": "topic_switch",
+      "category": "topic_switch",
+      "turns": [
+        {
+          "question": "How does thermally activated delayed fluorescence (TADF) work?",
+          "reference_question": "How does thermally activated delayed fluorescence (TADF) work?",
+          "reference_id": "n01",
+          "expected_mode": "RAG",
+          "interpretation_criteria": ""
+        },
+        {
+          "question": "Now explain the charge generation layer in tandem OLEDs.",
+          "reference_question": "What is the role of a charge generation layer in a tandem OLED?",
+          "reference_id": "n04",
+          "expected_mode": "RAG",
+          "interpretation_criteria": "Switch to CGL in tandem OLEDs; do not retain TADF as the requested subject."
+        }
+      ]
+    },
+    {
+      "id": "offtopic",
+      "category": "off_topic_switch",
+      "turns": [
+        {
+          "question": "How does thermally activated delayed fluorescence (TADF) work?",
+          "reference_question": "How does thermally activated delayed fluorescence (TADF) work?",
+          "reference_id": "n01",
+          "expected_mode": "RAG",
+          "interpretation_criteria": ""
+        },
+        {
+          "question": "How do I bake a chocolate cake?",
+          "reference_question": "How do I bake a chocolate cake?",
+          "reference_id": "ot1",
+          "expected_mode": "OFF_TOPIC",
+          "interpretation_criteria": ""
+        },
+        {
+          "question": "Back to OLEDs: what are typical electron mobilities of Alq3?",
+          "reference_question": "What are typical electron mobility values of common amorphous electron transport materials like Alq3?",
+          "reference_id": "n03",
+          "expected_mode": "RAG",
+          "interpretation_criteria": "Explicitly returns from cooking to Alq3 electron mobility."
+        }
+      ]
+    },
+    {
+      "id": "after_no_answer",
+      "category": "after_no_answer",
+      "turns": [
+        {
+          "question": "What was Samsung Display's OLED panel revenue in 2024?",
+          "reference_question": "What was Samsung Display's OLED panel revenue in 2024?",
+          "reference_id": "na3",
+          "expected_mode": "NO_ANSWER_IN_DOCS",
+          "interpretation_criteria": ""
+        },
+        {
+          "question": "And in 2023?",
+          "reference_question": "What was Samsung Display's OLED panel revenue in 2023?",
+          "expected_mode": "NO_ANSWER_IN_DOCS",
+          "interpretation_criteria": "Preserve Samsung Display and OLED panel revenue, change only the year to 2023."
+        }
+      ]
+    },
+    {
+      "id": "clarify",
+      "category": "clarification",
+      "turns": [
+        {
+          "question": "How does thermally activated delayed fluorescence (TADF) work?",
+          "reference_question": "How does thermally activated delayed fluorescence (TADF) work?",
+          "reference_id": "n01",
+          "expected_mode": "RAG",
+          "interpretation_criteria": ""
+        },
+        {
+          "question": "Compare it with another mechanism.",
+          "reference_question": "Compare TADF with an unspecified second emission mechanism.",
+          "expected_mode": "CLARIFICATION",
+          "interpretation_criteria": "Ask which mechanism to compare with TADF; do not select phosphorescence or fluorescence arbitrarily."
+        },
+        {
+          "question": "Phosphorescence.",
+          "reference_question": "Compare thermally activated delayed fluorescence (TADF) with phosphorescence.",
+          "reference_id": "mh4",
+          "expected_mode": "RAG",
+          "interpretation_criteria": "Resolve the pending comparison between TADF and phosphorescence. A general comparison is correct; do not require an explicit focus on triplet harvesting that the user did not request."
+        }
+      ]
+    },
+    {
+      "id": "cancel_pending",
+      "category": "clarification_topic_switch",
+      "turns": [
+        {
+          "question": "How does thermally activated delayed fluorescence (TADF) work?",
+          "reference_question": "How does thermally activated delayed fluorescence (TADF) work?",
+          "reference_id": "n01",
+          "expected_mode": "RAG",
+          "interpretation_criteria": ""
+        },
+        {
+          "question": "Compare it with another mechanism.",
+          "reference_question": "Compare TADF with an unspecified second emission mechanism.",
+          "expected_mode": "CLARIFICATION",
+          "interpretation_criteria": "Ask for the missing comparison mechanism."
+        },
+        {
+          "question": "Never mind. How do I bake a chocolate cake?",
+          "reference_question": "How do I bake a chocolate cake?",
+          "reference_id": "ot1",
+          "expected_mode": "OFF_TOPIC",
+          "interpretation_criteria": "Drop the pending OLED comparison and classify the new cooking question."
+        }
+      ]
+    },
+    {
+      "id": "no_overclarify",
+      "category": "unnecessary_clarification",
+      "turns": [
+        {
+          "question": "Why do electrically doped (p-i-n) transport layers lower the operating voltage of OLEDs?",
+          "reference_question": "Why do electrically doped (p-i-n) transport layers lower the operating voltage of OLEDs?",
+          "reference_id": "n06",
+          "expected_mode": "RAG",
+          "interpretation_criteria": ""
+        },
+        {
+          "question": "Why does that lower the operating voltage?",
+          "reference_question": "Why do electrically doped (p-i-n) transport layers lower the operating voltage of OLEDs?",
+          "reference_id": "n06",
+          "expected_mode": "RAG",
+          "interpretation_criteria": "Resolve that to electrically doped p-i-n transport layers; do not ask an unnecessary clarification."
+        }
+      ]
+    },
+    {
+      "id": "korean",
+      "category": "multilingual",
+      "turns": [
+        {
+          "question": "TADF는 어떻게 작동하나요?",
+          "reference_question": "How does thermally activated delayed fluorescence (TADF) work?",
+          "reference_id": "n01",
+          "expected_mode": "RAG",
+          "interpretation_criteria": ""
+        },
+        {
+          "question": "그럼 에너지 차이가 왜 작아야 하나요?",
+          "reference_question": "In TADF emitters, why must ΔEST be small?",
+          "reference_id": "a01",
+          "expected_mode": "RAG",
+          "interpretation_criteria": "Resolve to the singlet-triplet energy gap of TADF emitters; preserve Korean language."
+        }
+      ]
+    }
+  ],
+  "version": 2,
+  "previous_dataset": "conversations.json",
+  "change_note": "Only the clarify/3 reference intent and interpretation criterion changed. User turns and historical v1 results are unchanged."
+}

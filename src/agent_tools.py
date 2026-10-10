@@ -1,20 +1,10 @@
-"""
-Tools and evidence bookkeeping for the OLED agent.
+"""Search tools and per-request evidence tracking for the OLED agent.
 
-The agent has no direct access to the vector store. The only search it can do
-is call search_documents(query), which runs the retrieval stack in retrieval.py:
-
-    retrieve candidates -> relevance filter -> rerank -> return results
-
-The relevance threshold, the candidate pool size, and the final top-N are all
-read from the Retriever instance (i.e. from config). The model only
-chooses the query text, so it has no way to lower the threshold or skip the
-filter.
-
-Every chunk we return to the model is recorded in an EvidenceLedger that lives
-for one request. When the model submits an answer, we check its citations
-against that ledger, so it can only cite evidence it was actually shown during
-this request.
+The agent cannot access the vector store directly.
+Its only search path is `search_documents(query)`, which retrieves a wide candidate pool, applies the relevance filter, reranks the survivors, and returns the final chunks.
+The model chooses search queries but cannot access the vector store or change retrieval settings.
+The relevance threshold, candidate-pool size and final top-N all come from the `Retriever`.
+Returned chunks enter an `EvidenceLedger`, and final citations must reference chunks shown during the same request.
 """
 
 import hashlib
@@ -24,14 +14,12 @@ import threading
 
 from source_registry import describe_source
 
-# Chunk IDs look like "c1a2b3c4d": a "c" followed by the first 8 hex characters
-# of a SHA-1 hash. 8 hex characters keep collisions negligible for our ~7k
-# chunks, and the ID is still short enough for the model to copy it reliably.
+# Chunk IDs use `c` plus the first eight SHA-1 characters.
+# Eight characters keep collisions negligible for roughly 7,000 chunks while remaining easy for the model to copy.
 CHUNK_ID_PATTERN = re.compile(r"\bc[0-9a-f]{8}\b")
 # Anything that looks like an attempt at a chunk ID, including malformed ones.
 CHUNK_ID_LIKE_PATTERN = re.compile(r"\bc[0-9a-f]{5,12}\b")
-# One or more IDs inside square brackets, e.g. "[c1a2b3c4d]" or
-# "[c1a2b3c4d, c5e6f7a8b]".
+# Match one or more chunk IDs inside square brackets.
 INLINE_CITATION_PATTERN = re.compile(r"\[\s*(c[0-9a-f]{8}(?:\s*[,;]\s*c[0-9a-f]{8})*)\s*\]")
 
 
@@ -45,14 +33,10 @@ class AgentStop(Exception):
 
 
 def make_chunk_id(doc) -> str:
-    """
-    Build a stable ID for a retrieved chunk.
+    """Create a stable chunk ID from its file name, page and text.
 
-    Why we need this:
-    The results we get from the persisted ChromaDB through LangChain don't
-    carry a stable ID, so we hash the things that identify a chunk: its file
-    name, page, and text. That way the same chunk gets the same ID in every
-    search and every request.
+    LangChain results from the persisted ChromaDB do not include a stable ID.
+    Hashing the fields that identify a chunk gives the same ID across searches and requests.
     """
     metadata = doc.metadata or {}
     key = "|".join(
@@ -66,12 +50,10 @@ def make_chunk_id(doc) -> str:
 
 
 def normalize_query(query: str) -> str:
-    """
-    Build the cache key for a search query. Only whitespace is normalized.
+    """Normalize only whitespace when creating a search-cache key.
 
-    NOTE: We keep signs, decimal points, case, and punctuation as they are,
-    because they can change what the query means (e.g. "-5 V" vs "+5 V",
-    "1.5 eV" vs "15 eV", "CO" vs "Co").
+    Signs, decimal points, case and punctuation are preserved because they can change meaning.
+    For example, `-5 V` differs from `+5 V`, `1.5 eV` differs from `15 eV`, and `CO` differs from `Co`.
     """
     return " ".join(query.split())
 
@@ -80,12 +62,10 @@ def normalize_query(query: str) -> str:
 # Evidence ledger
 # ================================
 class EvidenceLedger:
-    """
-    Every chunk that any agent was shown during ONE user request.
+    """Store every chunk shown to any agent during one user request.
 
-    We keep insertion order so the sources are always displayed in the same
-    order. Workers run in threads and share one ledger, so writes go through
-    a lock.
+    Insertion order keeps source display stable.
+    Workers share the ledger across threads, so writes are protected by a lock.
     """
 
     def __init__(self):
@@ -122,31 +102,18 @@ class SearchTool:
     """Wrap the Retriever as the agent's only search tool."""
 
     def __init__(self, retriever):
-        # The Retriever owns the vector store, the reranker, and every
-        # threshold. We only call its methods here.
+        # Retriever owns the vector store, reranker and every threshold.
         self.retriever = retriever
-        # IMPORTANT: Embedding and reranking run on the CPU and share one model
-        # instance, so concurrent searches (parallel workers or other users)
-        # take turns behind this lock. Running them at the same time would not
-        # make them any faster on a 1-CPU pod.
+        # Embedding and reranking share one CPU model instance.
+        # Concurrent searches therefore run one at a time behind this lock.
         self._lock = threading.Lock()
 
     def search(self, query: str, ledger: EvidenceLedger) -> dict:
-        """
-        Run retrieve, filter, and rerank for one query.
+        """Retrieve, filter and rerank one query.
 
-        Args:
-            query: The search query chosen by the model.
-            ledger: The EvidenceLedger of the current request. Every returned
-                chunk is added to it.
-
-        Returns:
-            dict with:
-              status:        "ok" or "no_relevant_documents"
-              max_relevance: the best relevance among ALL candidates, even when
-                             none passed the filter, so the agent can judge
-                             whether a reworded query might help
-              results:       the final chunks (id, title, page, relevance, text, ...)
+        Every returned chunk is added to the request ledger.
+        The response contains the status, maximum candidate relevance, filter threshold and final chunk records.
+        Maximum relevance is retained even when no candidate survives so the agent can decide whether a rewritten search may help.
         """
         with self._lock:
             return self._search(query, ledger)
@@ -192,14 +159,11 @@ class SearchTool:
 
 
 def search_result_for_model(response: dict, seen_chunk_ids: set) -> dict:
-    """
-    Shrink a search response down to what the model needs to see.
+    """Return full text only for chunks not already seen by this model context.
 
-    seen_chunk_ids holds the chunks that THIS model context has already
-    received. Each worker has its own context, so the shared ledger can't
-    tell us this. Chunks that are already in the set are sent as a short
-    reference instead of repeating their full text. The set is updated in
-    place.
+    Each worker has its own context, so the shared ledger cannot determine what that worker has read.
+    Chunks already in `seen_chunk_ids` are returned as short references instead of repeating their full text.
+    The set is updated in place.
     """
     results = []
     for item in response["results"]:
@@ -245,36 +209,20 @@ def inline_citation_ids(answer: str) -> list:
 
 
 def validate_submission(answer, citations, ledger: EvidenceLedger, max_answer_chars: int) -> list:
-    """
-    Check a submitted answer before we accept it.
+    """Validate a submitted answer before acceptance.
 
-    Args:
-        answer: The answer text from submit_answer.
-        citations: The "citations" list from submit_answer.
-        ledger: The EvidenceLedger of the current request.
-        max_answer_chars: Longest answer we allow.
-
-    Returns:
-        list of error messages. An empty list means the answer is valid.
-
-    Order of checks:
-      1) Is there at least one citation (inline [id] or in the citations list)?
-      2) Is every cited ID in THIS request's ledger?
-      3) Is the answer well-formed (non-empty, within the length limit, cites inline)?
-
-    Note:
-        These checks prove that the citations point to evidence the model
-        really saw. Whether each claim is actually supported by that evidence
-        is checked by the optional reviewer (agent_team.review_answer) and
-        measured separately in evaluation.
+    The answer must contain at least one citation, every cited ID must exist in the current request ledger, and inline citations must use `[chunk_id]`.
+    The answer must also be non-empty and within the configured length limit.
+    These checks prove that citations point to evidence shown to the model.
+    Claim-level support is handled by the optional reviewer and measured separately during evaluation.
+    The function returns an empty list when the submission is valid.
     """
     errors = []
     listed = [c for c in citations if isinstance(c, str)] if isinstance(citations, list) else []
     inline_ids = inline_citation_ids(answer) if isinstance(answer, str) else []
 
-    # We treat the inline [id] markers and the citations list together as one
-    # citation set. Requiring the two to match exactly only caused formatting
-    # retries.
+    # Inline markers and the citation list form one set.
+    # Requiring exact agreement caused unnecessary formatting retries.
     if not listed and not inline_ids:
         errors.append("No citations. Cite at least one chunk_id returned by search_documents.")
 
@@ -297,8 +245,7 @@ def validate_submission(answer, citations, ledger: EvidenceLedger, max_answer_ch
 
     if not inline_ids:
         errors.append("Cite evidence inline as [chunk_id] right after the statements it supports.")
-    # IDs written outside "[...]" would show up in the displayed answer without
-    # being replaced by a number.
+    # IDs outside brackets would remain visible instead of being replaced with display numbers.
     stray_ids = CHUNK_ID_LIKE_PATTERN.findall(INLINE_CITATION_PATTERN.sub("", answer))
     if stray_ids:
         errors.append(
@@ -308,14 +255,10 @@ def validate_submission(answer, citations, ledger: EvidenceLedger, max_answer_ch
 
 
 def number_citations(answer: str, citations: list, ledger: EvidenceLedger):
-    """
-    Replace the chunk IDs in the answer with [1], [2], ... for display.
+    """Replace chunk IDs with display numbers and return the cited ledger entries.
 
-    Numbers follow the order in which each ID first appears in the text. IDs
-    that only appear in the citations list are numbered after those.
-
-    Returns:
-        (display_answer, cited_entries) tuple.
+    Numbers follow each ID's first appearance in the answer.
+    IDs found only in the citation list are numbered afterward.
     """
     order = inline_citation_ids(answer)
     for chunk_id in citations:
@@ -333,12 +276,10 @@ def number_citations(answer: str, citations: list, ledger: EvidenceLedger):
 
 
 def validate_findings(findings, citations, ledger: EvidenceLedger) -> list:
-    """
-    Check a worker's findings and return a list of error messages.
+    """Validate worker findings and return any errors.
 
-    This is a lighter check than validate_submission. Findings are notes for
-    the orchestrator rather than the answer the user reads, so inline markers
-    are optional. Every cited ID must still be in this request's ledger.
+    This is lighter than final-answer validation because findings are notes for the orchestrator.
+    Inline markers are optional, but every listed citation must exist in the request ledger.
     """
     errors = []
     if not isinstance(findings, str) or not findings.strip():
@@ -353,12 +294,9 @@ def validate_findings(findings, citations, ledger: EvidenceLedger) -> list:
 
 
 def format_evidence(entries) -> str:
-    """
-    Render chunks as plain text for a prompt: id, title, page, and full text.
+    """Format chunk IDs, titles, pages and full text for another agent.
 
-    We use this whenever one agent hands evidence to another (escalation,
-    orchestrator, reviewer). The receiving agent reads the ORIGINAL chunk text
-    from the ledger instead of another agent's summary of it.
+    Escalated agents, orchestrators and reviewers receive the original ledger text rather than another agent's summary.
     """
     blocks = []
     for entry in entries:

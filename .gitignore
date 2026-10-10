@@ -43,6 +43,9 @@ Thumbs.db
 chroma_db/
 data/
 
+# SQLite checkpoints contain conversation text
+sessions/
+
 # Full eval results contain source-paper text; only the stripped copies in
 # eval/results/ are published
 eval/results/raw/

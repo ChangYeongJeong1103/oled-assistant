@@ -1,35 +1,21 @@
-"""
-Build src/source_registry.json, which maps every source file name to its paper
-title and, when we can verify it, a URL.
+"""Build `src/source_registry.json`, which maps every source file name to its paper title and, when verified, a URL.
 
-Why this script exists
-----------------------
-Retrieved chunks only carry a file name such as
-"[Baldo] Excitonic singlet-triplet ratio in a semiconducting organic thin film.pdf".
-In the UI we want to show the published paper title instead and, when we can
-prove it, a clickable DOI link. The model is never allowed to invent titles or
-URLs, so every link shown to users must come from this registry.
+Retrieved chunks only carry a file name such as "[Baldo] Excitonic singlet-triplet ratio in a semiconducting organic thin film.pdf".
+The UI should show the published paper title and a clickable DOI link when one can be verified.
+The model is never allowed to invent titles or URLs, so every link shown to users must come from this registry.
 
-How a link gets "verified"
---------------------------
-1. Collect DOI candidates from the PDF metadata stored with each chunk
-   (doi, prism:doi, wps-articledoi, or a "doi:10..." string in subject/title).
-2. Look up that DOI on Crossref and accept it only if Crossref's title matches
-   a title we already have (the PDF metadata title or the file name).
-3. If there is no usable DOI, search Crossref by title. We accept a hit only
-   when the file-name title is the start of Crossref's title, word for word
-   (file names are often truncated), and the hit is a journal or conference
-   paper. We skip reprints in books and abstract services, so the link points
-   to the original publication.
+A link is verified in three steps:
+1. Collect DOI candidates from the PDF metadata stored with each chunk (`doi`, `prism:doi`, `wps-articledoi`, or a `doi:10...` string in the subject or title).
+2. Look up the DOI on Crossref and accept it only if Crossref's title matches the PDF metadata title or file name.
+3. If there is no usable DOI, search Crossref by title and accept only a journal or conference paper whose title begins with the possibly truncated file-name title word for word.
+
+Book reprints and abstract services are skipped so the URL points to the original publication.
 Anything that fails these checks keeps its title but gets no URL.
 
-The script reads the persisted ChromaDB with the standard-library sqlite3
-module in read-only mode, so it needs no embedding model and never changes
-the DB.
+The script reads the persisted ChromaDB through the standard-library `sqlite3` module in read-only mode.
+It does not need an embedding model and never changes the database.
 
-Usage
------
-    python scripts/build_source_registry.py
+Usage: `python scripts/build_source_registry.py`
 """
 
 import json
@@ -58,12 +44,10 @@ DOI_PATTERN = re.compile(r"10\.\d{4,9}/[^\s;,\"<>]+", re.IGNORECASE)
 
 # Minimum share of our title words that must appear in Crossref's title.
 MIN_TITLE_COVERAGE = 0.8
-# Title search is riskier than a DOI lookup, so we only run it for titles
-# long enough that a word-for-word match cannot be a coincidence.
+# Title search is riskier than a DOI lookup, so it is used only for titles long enough to avoid an accidental word-for-word match.
 MIN_SEARCH_WORDS = 6
 SEARCH_ROWS = 5
-# Title search hits must have one of these types, so we only link original
-# publications.
+# Title-search hits must be journal or conference papers so links point to original publications.
 ACCEPTED_SEARCH_TYPES = {"journal-article", "proceedings-article"}
 # DOI prefixes of abstract services (ChemInform) that duplicate the original.
 SKIPPED_DOI_PREFIXES = ("10.1002/chin.",)
@@ -75,10 +59,9 @@ SUPPORTING_INFO_SUFFIX = re.compile(r"\.s\d{3}$")
 # Reading the vector store
 # ================================
 def load_source_metadata(db_file):
-    """
-    Return {file_name: {"titles": [...], "dois": [...]}} from the ChromaDB SQLite file.
+    """Return `{file_name: {"titles": [...], "dois": [...]}}` from the ChromaDB SQLite file.
 
-    Every chunk repeats its PDF's metadata, so we merge all chunks of a file.
+    Every chunk repeats its PDF metadata, so all chunks from the same file are merged.
     """
     connection = sqlite3.connect(f"file:{db_file}?mode=ro", uri=True)
     wanted_keys = ("source",) + DOI_KEYS + TEXT_KEYS
@@ -132,11 +115,9 @@ def clean_doi(raw):
 
 
 def looks_like_title(text):
-    """
-    Reject PDF "titles" that are really internal codes.
+    """Reject PDF titles that are actually internal codes.
 
-    Examples we skip: "doi:10.1016/...", "PII: 0022-0248(74)90173-0",
-    "c0jm00593b 10735..10746".
+    Examples include `doi:10.1016/...`, `PII: 0022-0248(74)90173-0`, and `c0jm00593b 10735..10746`.
     """
     text = text.strip()
     if len(text.split()) < 3:
@@ -152,16 +133,13 @@ def looks_like_title(text):
 # Title helpers
 # ================================
 def title_from_file_name(file_name):
-    """
-    Turn a file name into a readable fallback title.
+    """Turn a file name into a readable fallback title.
 
-    Removes the extension, personal reading tags such as "[Baldo - IMP!]" or
-    "!!! 중요 !!!", and list numbering such as "10." at the start.
+    This removes the extension, personal reading tags such as `[Baldo - IMP!]` or `!!! 중요 !!!`, and list numbering such as `10.` at the start.
     """
     title = re.sub(r"\.pdf$|\.docx$", "", file_name, flags=re.IGNORECASE)
 
-    # Keep stripping leading tags ("[..]", "!", "중요", "IMP") and spaces
-    # until nothing changes.
+    # Keep stripping leading tags and spaces until the title no longer changes.
     previous = None
     while previous != title:
         previous = title
@@ -175,15 +153,11 @@ def title_from_file_name(file_name):
 
 
 def title_words(text):
-    """
-    Return the lower-case alphanumeric words we use to compare two titles.
+    """Return normalized lowercase alphanumeric words for title comparison.
 
-    We normalize the text first so small formatting differences don't break
-    a match:
-    - NFKC turns ligatures such as "ﬁ" into "fi".
-    - HTML tags like "<i>pin</i>" are removed.
-    - Every kind of hyphen or dash is dropped, so "Light-Emitting",
-      "LightEmitting" and "Light‐Emitting" all become "lightemitting".
+    NFKC converts ligatures such as `ﬁ` to `fi`.
+    HTML tags such as `<i>pin</i>` are removed.
+    Hyphens and dashes are removed so `Light-Emitting`, `LightEmitting`, and `Light‐Emitting` all become `lightemitting`.
     """
     text = unicodedata.normalize("NFKC", text).lower()
     text = re.sub(r"<[^>]+>", " ", text)
@@ -192,13 +166,11 @@ def title_words(text):
 
 
 def is_word_prefix(file_title, crossref_title):
-    """
-    Return True when the file-name title is the start of Crossref's title, word for word.
+    """Return whether the file-name title matches the beginning of the Crossref title word for word.
 
-    File names are often cut off, so Crossref's title may have extra words at
-    the END. We also ignore a leading label such as "Review paper:". Extra
-    words anywhere else mean a different paper (e.g. "Doped organic ..." vs
-    "Organic ...").
+    File names are often truncated, so the Crossref title may contain extra words at the end.
+    A leading label such as `Review paper:` is ignored.
+    Extra words elsewhere indicate a different paper.
     """
     file_words = title_words(file_title)
     candidates = [crossref_title]
@@ -226,12 +198,10 @@ def coverage(reference, candidate):
 # Crossref lookups
 # ================================
 def crossref_get(url, attempts=3):
-    """
-    GET a Crossref URL and return the decoded JSON, or None on failure.
+    """Return decoded Crossref JSON or `None` on failure.
 
-    We retry transient network errors so that one flaky request doesn't
-    quietly downgrade a verifiable source to "title only". A 404 means
-    Crossref doesn't know the DOI. That is a real answer, so we don't retry it.
+    Transient network errors are retried so one failed request does not downgrade a verifiable source to title-only.
+    A 404 means Crossref does not know the DOI, so it is not retried.
     """
     request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
     for attempt in range(attempts):
@@ -283,21 +253,16 @@ def first_title(work):
 # Registry construction
 # ================================
 def resolve_source(file_name, record):
-    """
-    Decide the display title and (optional) verified URL for one source file.
+    """Decide the display title and optional verified URL for one source file.
 
-    Args:
-        file_name: Source file name as stored in the vector store
-        record: {"titles": [...], "dois": [...]} from load_source_metadata()
-
-    Returns:
-        dict: Registry entry with "title", "url", "doi", and "verified_by"
-            ("crossref_doi", "crossref_title_search", or None)
+    `file_name` is the source name stored in the vector database.
+    `record` contains the titles and DOIs returned by `load_source_metadata()`.
+    The returned registry entry contains `title`, `url`, `doi`, and `verified_by`.
     """
     fallback_title = title_from_file_name(file_name)
-    # PDF title metadata helps confirm a DOI, but it is too unreliable to show
-    # on its own (e.g. "Microsoft Word - Ch 6 outline.docx"), so unverified
-    # sources display the cleaned file name instead.
+    # PDF title metadata can confirm a DOI, but it is too unreliable to display by itself.
+    # For example, metadata may contain `Microsoft Word - Ch 6 outline.docx`.
+    # Unverified sources therefore display the cleaned file name.
     reference_titles = record["titles"] + [fallback_title]
 
     entry = {
@@ -326,8 +291,7 @@ def resolve_source(file_name, record):
             )
             return entry
 
-    # 2) No usable DOI, so fall back to a strict title search. We only do this
-    #    for specific (long) titles.
+    # If no usable DOI exists, use a strict title search only for specific, long titles.
     if len(title_words(fallback_title)) < MIN_SEARCH_WORDS:
         return entry
 
@@ -341,8 +305,7 @@ def resolve_source(file_name, record):
         if is_word_prefix(fallback_title, crossref_title):
             matches[doi] = crossref_title
 
-    # If two different papers share the title, we cannot tell which one the
-    # PDF is, so we keep the title and show no link.
+    # If two papers share the same title, keep the fallback title without a link because the PDF cannot be identified safely.
     if len(matches) == 1:
         doi, crossref_title = next(iter(matches.items()))
         entry.update(

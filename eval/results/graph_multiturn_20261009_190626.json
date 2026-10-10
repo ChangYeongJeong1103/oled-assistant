@@ -1,0 +1,3829 @@
+{
+  "engine": "graph",
+  "label": "multiturn",
+  "created_at": "2026-10-09T19:06:26.760876",
+  "manifest": {
+    "python": "3.12.14",
+    "packages": {
+      "langgraph": "1.2.12",
+      "langgraph-checkpoint-sqlite": "3.1.1",
+      "langchain-core": "1.6.9",
+      "langchain-community": "0.4.2",
+      "langchain-text-splitters": "1.1.3",
+      "chromadb": "1.5.9",
+      "sentence-transformers": "6.1.0",
+      "openai": "1.109.1"
+    },
+    "code_sha256": {
+      "__init__.py": "907e85f016122e5a4a34673ed7e63084ea3849e93439bd454212be137a82d676",
+      "agent_graph.py": "b1fc293dda423c05e4effcea83ce175cb925eff0e5837ea3cae9d5cb1040798f",
+      "agent_prompts.py": "30ca5f5b9deca760600af58ad0168a4ebfe3df57e01e320c294c75890d2d8771",
+      "agent_runtime.py": "a93d3dd211f62fc158fef62996dec94861816974a26e931c484e05412f63fce1",
+      "agent_team.py": "a663449c3766a2ab1c6de640214636e12d66222d83fa09f2570d1f0e783609b2",
+      "agent_tools.py": "d3fb4bf0b6329c2a7eca72f65d35d1a1f04afc67a28edbd1ff55d366b565bdef",
+      "app.py": "3a34e39f044e60078840f90468d91f298c1f3c548295f52e14aa3ee922caac63",
+      "config.py": "c411ced539de931589ea5dd662e8efed84906963bc13aeeb53913121095bdb1b",
+      "document_pipeline.py": "50d89cbc4b13c1abbce861be06289779e771f1d6d30021e9612b13401d9c7c7b",
+      "retrieval.py": "b27ed84e11c69951bca03da1047eb66fa04575fd9ada3001608a726557ee18cc",
+      "session_memory.py": "7bca9a02884c227e6f935d3423787f846b02169f8735dca86bf9bced206e4726",
+      "source_registry.py": "6234cca0dd43e91e194cd0dac035bbd3a3f0382e367e4d6ddc971e0cdf892b0e",
+      "utils.py": "26faba6eba41831b33cb2a3468a81c908c9b308712ba2975c9f70345cb37daa2"
+    },
+    "questions_sha256": "e53474037321500438ec7434134528efd3bae297220373817c4d63c45c543484",
+    "corpus_sqlite_sha256": "f4c1ab4964e7f2d569017f37e37566ee38a6ed521d36906c31c12ab09d0f9c31",
+    "judge_policy": "scoped_absence_v2",
+    "judge_model": "gpt-5",
+    "judge_reasoning_effort": "low",
+    "reasoning_effort": {
+      "gpt-6-luna": "low",
+      "gpt-6.1-sol": "low",
+      "gpt-5-mini": "minimal",
+      "gpt-5": "minimal"
+    },
+    "embedding": "BAAI/bge-m3",
+    "reranker": "BAAI/bge-reranker-base",
+    "reranker_enabled": true,
+    "sigmoid": [
+      0.6,
+      17.27
+    ]
+  },
+  "repeat": 1,
+  "config": {
+    "agent": {
+      "parallel_search": true,
+      "routing": true,
+      "workers": 2,
+      "reviewer": true,
+      "light_model": "gpt-6-luna",
+      "heavy_model": "gpt-6.1-sol",
+      "max_llm_calls": 19,
+      "max_searches": 4,
+      "orchestration": "langgraph",
+      "session_memory": true,
+      "history_turns": 5
+    },
+    "judge_model": "gpt-5",
+    "judge_policy": "scoped_absence_v2"
+  },
+  "grounding_judge_cost_usd": 0.2370075,
+  "interpretation_judge_cost_usd": 0.04770625,
+  "evaluation_note": "Both judge costs are separate from agent cost; this is development data.",
+  "summary": {
+    "runs": 21,
+    "mode_accuracy": 1.0,
+    "false_rejection_rate": 0.0,
+    "false_acceptance_rate": 0.0,
+    "error_count": 0,
+    "unsupported_claim_rate": 0.0,
+    "partial_claim_rate": 0.0312,
+    "answers_with_unsupported": 0,
+    "answered_count": 15,
+    "key_point_coverage": 0.4889,
+    "source_hit_rate": 0.9333,
+    "avg_searches": 1.5238,
+    "avg_llm_calls": 4.9048,
+    "latency_mean_s": 19.6933,
+    "latency_p50_s": 16.47,
+    "latency_p90_s": 38.01,
+    "avg_prompt_tokens": 10902.8571,
+    "avg_completion_tokens": 970.7619,
+    "total_cost_usd": 0.2271,
+    "avg_cost_usd": 0.0108,
+    "unpriced_runs": 0,
+    "tokens_by_model": {
+      "gpt-6-luna": {
+        "calls": 81,
+        "input_tokens": 182318,
+        "output_tokens": 8793,
+        "cached_tokens": 52545
+      },
+      "gpt-6.1-sol": {
+        "calls": 22,
+        "input_tokens": 46642,
+        "output_tokens": 11593,
+        "cached_tokens": 0
+      }
+    },
+    "variant_only_rejections": 0,
+    "stop_reasons": {
+      "answered": 15,
+      "out_of_domain": 2,
+      "insufficient_evidence": 2,
+      "clarification_needed": 2
+    },
+    "routes": {
+      "light": 13,
+      "team": 4,
+      "n/a": 4
+    },
+    "escalations": 0,
+    "runs_with_parallel_calls": 0,
+    "avg_review_rounds": 0.8571
+  },
+  "records": [
+    {
+      "id": "pronoun/1",
+      "category": "pronoun",
+      "pair_id": null,
+      "question": "How does thermally activated delayed fluorescence (TADF) work?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "In an OLED, electron–hole recombination forms singlet and triplet excitons in an approximate 1:3 ratio. After relaxation to the lowest excited states, thermal activation enables triplets accumulated in T1 to undergo reverse intersystem crossing (RISC) back to S1. Singlets at S1 return radiatively to S0, producing fluorescence: singlets formed initially give prompt fluorescence, while singlets repopulated from T1 give delayed fluorescence. [1]",
+      "latency_s": 25.63,
+      "cost_usd": 0.01446211,
+      "used_files": [
+        "[Review - Nat] All-organic thermally activated delayed fluorescence materials for organic light-emitting diodes.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "cdb478c94",
+          "title": "All-organic thermally activated delayed fluorescence materials for organic light-emitting diodes",
+          "url": null,
+          "file_name": "[Review - Nat] All-organic thermally activated delayed fluorescence materials for organic light-emitting diodes.pdf",
+          "page": 2
+        }
+      ],
+      "searches": 1,
+      "llm_calls": 6,
+      "prompt_tokens": 12791,
+      "completion_tokens": 1318,
+      "cached_tokens": 4231,
+      "reasoning_tokens": 58,
+      "usage_by_model": {
+        "gpt-6-luna": {
+          "calls": 4,
+          "input_tokens": 10294,
+          "output_tokens": 459,
+          "cached_tokens": 4231,
+          "reasoning_tokens": 58
+        },
+        "gpt-6.1-sol": {
+          "calls": 2,
+          "input_tokens": 2497,
+          "output_tokens": 859,
+          "cached_tokens": 0,
+          "reasoning_tokens": 0
+        }
+      },
+      "calls_by_role": {
+        "planner": 1,
+        "light": 3,
+        "reviewer": 2
+      },
+      "complexity": "simple",
+      "route": "light",
+      "escalated": false,
+      "review_rounds": 2,
+      "parallel_turns": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "plan",
+          "role": "planner",
+          "t": 2.13,
+          "model": "gpt-6-luna",
+          "domain": "in_domain",
+          "reason": "TADF is an OLED emitter mechanism involving thermally activated conversion of triplet excitons into fluorescent emission.",
+          "complexity": "simple",
+          "sequential": false,
+          "subquestions": [
+            "How does thermally activated delayed fluorescence (TADF) work in OLED emitters?"
+          ]
+        },
+        {
+          "step": 2,
+          "type": "route",
+          "role": "planner",
+          "t": 2.14,
+          "route": "light"
+        },
+        {
+          "step": 3,
+          "type": "search",
+          "role": "light",
+          "t": 5.23,
+          "query": "How thermally activated delayed fluorescence works in OLED emitters, including reverse intersystem crossing and singlet-triplet energy gap",
+          "status": "ok",
+          "max_relevance": 0.844,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 4,
+          "type": "review",
+          "role": "reviewer",
+          "t": 15.88,
+          "model": "gpt-6.1-sol",
+          "round": 1,
+          "claims": 6,
+          "unsupported": 1,
+          "core_question_answered": true,
+          "unsupported_claims": [
+            "A small singlet–triplet energy gap facilitates thermally activated triplet-to-singlet upconversion."
+          ]
+        },
+        {
+          "step": 5,
+          "type": "review",
+          "role": "reviewer",
+          "t": 25.63,
+          "model": "gpt-6.1-sol",
+          "round": 2,
+          "claims": 5,
+          "unsupported": 0,
+          "core_question_answered": true,
+          "unsupported_claims": []
+        },
+        {
+          "step": 6,
+          "type": "stop",
+          "role": null,
+          "t": 25.63,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "original_question": "How does thermally activated delayed fluorescence (TADF) work?",
+      "standalone_question": "How does thermally activated delayed fluorescence (TADF) work?",
+      "conversation_id": "pronoun",
+      "turn": 1,
+      "run": 0,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": true,
+      "claims": [
+        {
+          "claim": "In an OLED, electron–hole recombination forms singlet and triplet excitons in an approximate 1:3 ratio.",
+          "verdict": "supported",
+          "reason": "E1 states that singlet and triplet excitons are formed after electron–hole recombination in a singlet:triplet ratio of 1:3."
+        },
+        {
+          "claim": "After relaxation to the lowest excited states, thermal activation enables triplets accumulated in T1 to undergo reverse intersystem crossing (RISC) back to S1.",
+          "verdict": "supported",
+          "reason": "E1 explains that high exciton states transfer to S1 or T1 via internal conversion, and accumulated triplets at T1 are transferred back to S1 via RISC with the aid of thermal activation."
+        },
+        {
+          "claim": "Singlets at S1 return radiatively to S0, producing fluorescence.",
+          "verdict": "supported",
+          "reason": "E1 indicates singlet excitons at S1 are radiatively deactivated to S0 following prompt fluorescence and delayed fluorescence decay mechanisms."
+        },
+        {
+          "claim": "Singlets formed initially give prompt fluorescence.",
+          "verdict": "supported",
+          "reason": "E1 specifies that singlets formed initially after excitation undergo prompt fluorescence (PF)."
+        },
+        {
+          "claim": "Singlets repopulated from T1 give delayed fluorescence.",
+          "verdict": "supported",
+          "reason": "E1 states that singlets formed by back-transfer from T1 lead to delayed fluorescence (DF)."
+        }
+      ],
+      "claim_count": 5,
+      "unsupported_claims": 0,
+      "partial_claims": 0,
+      "key_points_covered": 0.3333333333333333,
+      "judge_cost_usd": 0.00870125,
+      "interpretation": {
+        "correct": true,
+        "reason": "The resolved question exactly matches the reference intent with no changes in meaning, scope, or details; no clarification was necessary and the mode matches.",
+        "judge_cost_usd": 0.00141
+      }
+    },
+    {
+      "id": "pronoun/2",
+      "category": "pronoun",
+      "pair_id": null,
+      "question": "Why must its ΔEST be small?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "A small ΔE_ST is needed so thermal energy can drive the otherwise endothermic reverse intersystem crossing (RISC) from T₁ to S₁. When the gap is comparable to or smaller than kBT, this upconversion can be highly efficient, allowing triplet excitons to become singlet excitons and then produce delayed fluorescence. [1]",
+      "latency_s": 21.8,
+      "cost_usd": 0.0052282000000000006,
+      "used_files": [
+        "Chapter 6 Organic Light Emitters.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "cce3c5245",
+          "title": "Chapter 6 Organic Light Emitters",
+          "url": null,
+          "file_name": "Chapter 6 Organic Light Emitters.pdf",
+          "page": 124
+        }
+      ],
+      "searches": 1,
+      "llm_calls": 4,
+      "prompt_tokens": 6228,
+      "completion_tokens": 638,
+      "cached_tokens": 0,
+      "reasoning_tokens": 86,
+      "usage_by_model": {
+        "gpt-6-luna": {
+          "calls": 3,
+          "input_tokens": 5347,
+          "output_tokens": 363,
+          "cached_tokens": 0,
+          "reasoning_tokens": 86
+        },
+        "gpt-6.1-sol": {
+          "calls": 1,
+          "input_tokens": 881,
+          "output_tokens": 275,
+          "cached_tokens": 0,
+          "reasoning_tokens": 0
+        }
+      },
+      "calls_by_role": {
+        "planner": 1,
+        "light": 2,
+        "reviewer": 1
+      },
+      "complexity": "simple",
+      "route": "light",
+      "escalated": false,
+      "review_rounds": 1,
+      "parallel_turns": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "interpretation",
+          "role": "planner",
+          "t": 7.46,
+          "original_question": "Why must its ΔEST be small?",
+          "standalone_question": "Why must a thermally activated delayed fluorescence (TADF) emitter have a small singlet–triplet energy gap (ΔE_ST)?",
+          "needs_clarification": false
+        },
+        {
+          "step": 2,
+          "type": "plan",
+          "role": "planner",
+          "t": 7.46,
+          "model": "gpt-6-luna",
+          "domain": "in_domain",
+          "reason": "The question concerns the singlet–triplet energy gap in thermally activated delayed fluorescence (TADF).",
+          "complexity": "simple",
+          "sequential": false,
+          "subquestions": [
+            "Why must a thermally activated delayed fluorescence (TADF) emitter have a small singlet–triplet energy gap (ΔE_ST)?"
+          ]
+        },
+        {
+          "step": 3,
+          "type": "route",
+          "role": "planner",
+          "t": 7.46,
+          "route": "light"
+        },
+        {
+          "step": 4,
+          "type": "search",
+          "role": "light",
+          "t": 11.23,
+          "query": "Why does TADF require a small singlet-triplet energy gap, and how does it enable reverse intersystem crossing?",
+          "status": "ok",
+          "max_relevance": 0.848,
+          "survivor_count": 11,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 5,
+          "type": "review",
+          "role": "reviewer",
+          "t": 21.8,
+          "model": "gpt-6.1-sol",
+          "round": 1,
+          "claims": 3,
+          "unsupported": 0,
+          "core_question_answered": true,
+          "unsupported_claims": []
+        },
+        {
+          "step": 6,
+          "type": "stop",
+          "role": null,
+          "t": 21.8,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "original_question": "Why must its ΔEST be small?",
+      "standalone_question": "Why must a thermally activated delayed fluorescence (TADF) emitter have a small singlet–triplet energy gap (ΔE_ST)?",
+      "conversation_id": "pronoun",
+      "turn": 2,
+      "run": 0,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": true,
+      "claims": [
+        {
+          "claim": "A small ΔEST is needed so thermal energy can drive the otherwise endothermic reverse intersystem crossing (RISC) from T1 to S1.",
+          "verdict": "supported",
+          "reason": "E1 states S1←T1 is an endothermic intersystem energy transfer and that small ΔEST (comparable to or less than kBT) enables efficient transfer, i.e., thermally assisted RISC."
+        },
+        {
+          "claim": "When the gap is comparable to or smaller than kBT, this upconversion can be highly efficient.",
+          "verdict": "supported",
+          "reason": "E1: TADF entails molecules whose ΔEST is comparable to or less than kBT; then S1←T1 can be nearly 100% efficient if non-radiative rates are lower."
+        },
+        {
+          "claim": "This allows triplet excitons to become singlet excitons and then produce delayed fluorescence.",
+          "verdict": "supported",
+          "reason": "E1: Efficient endothermic S1←T1 (triplet to singlet) leads to delayed fluorescence (TADF)."
+        }
+      ],
+      "claim_count": 3,
+      "unsupported_claims": 0,
+      "partial_claims": 0,
+      "key_points_covered": 0.5,
+      "judge_cost_usd": 0.009985,
+      "interpretation": {
+        "correct": true,
+        "reason": "The resolved question correctly interprets 'its' as referring to a TADF emitter and explicitly asks why the singlet–triplet energy gap (ΔE_ST) must be small, matching the reference intent and criteria without altering meaning or scope.",
+        "judge_cost_usd": 0.00293875
+      }
+    },
+    {
+      "id": "ellipsis/1",
+      "category": "ellipsis",
+      "pair_id": null,
+      "question": "What causes efficiency roll-off in phosphorescent OLEDs at high current density?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "Efficiency roll-off at high current density is primarily associated with **quenching of long-lived triplet excitons**, especially triplet–triplet annihilation and triplet–polaron quenching. The long lifetime of phosphorescent triplet states is identified as a main reason efficiency decreases as current density increases. [1]\n\n- **Triplet–triplet annihilation (TTA):** One excited triplet transfers energy to another, returning the first to the ground state and promoting the second to a higher triplet state that rapidly relaxes. Thus, two excited triplets become one, reducing the population available for emission. [2]\n- **Triplet–polaron quenching (TPQ):** Triplet excitation energy is transferred to charged molecules (polarons), quenching the excitons; both TPQ and TTA strongly influence OLED performance under typical operating conditions. [3]\n\nLonger phosphorescent lifetimes and narrower exciton-formation zones can worsen roll-off, as demonstrated in the compared devices. [3] Charge imbalance is also listed as a contributing factor. [2] Although field-induced exciton dissociation is a possible mechanism, it was very inefficient in the investigated systems and was not observed under typical operating conditions. [1][3]",
+      "latency_s": 32.0,
+      "cost_usd": 0.02540203,
+      "used_files": [
+        "Triplet-exciton quenching in organic phosphorescent light-emitting diodes with Ir-based emitters.pdf",
+        "[Yifan] Triplet diffusion leads to triplet–triplet annihilation in organic phosphorescent emitters.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "c59ca621b",
+          "title": "Triplet-exciton quenching in organic phosphorescent light-emitting diodes with Ir-based emitters",
+          "url": "https://doi.org/10.1103/physrevb.75.125328",
+          "file_name": "Triplet-exciton quenching in organic phosphorescent light-emitting diodes with Ir-based emitters.pdf",
+          "page": 1
+        },
+        {
+          "chunk_id": "c3e64159f",
+          "title": "Triplet diffusion leads to triplet–triplet annihilation in organic phosphorescent emitters",
+          "url": "https://doi.org/10.1016/j.cplett.2013.10.048",
+          "file_name": "[Yifan] Triplet diffusion leads to triplet–triplet annihilation in organic phosphorescent emitters.pdf",
+          "page": 1
+        },
+        {
+          "chunk_id": "c7c93bb78",
+          "title": "Triplet-exciton quenching in organic phosphorescent light-emitting diodes with Ir-based emitters",
+          "url": "https://doi.org/10.1103/physrevb.75.125328",
+          "file_name": "Triplet-exciton quenching in organic phosphorescent light-emitting diodes with Ir-based emitters.pdf",
+          "page": 1
+        }
+      ],
+      "searches": 3,
+      "llm_calls": 8,
+      "prompt_tokens": 22315,
+      "completion_tokens": 1803,
+      "cached_tokens": 3683,
+      "reasoning_tokens": 115,
+      "usage_by_model": {
+        "gpt-6-luna": {
+          "calls": 6,
+          "input_tokens": 15885,
+          "output_tokens": 710,
+          "cached_tokens": 3683,
+          "reasoning_tokens": 115
+        },
+        "gpt-6.1-sol": {
+          "calls": 2,
+          "input_tokens": 6430,
+          "output_tokens": 1093,
+          "cached_tokens": 0,
+          "reasoning_tokens": 0
+        }
+      },
+      "calls_by_role": {
+        "planner": 1,
+        "worker1": 3,
+        "worker2": 2,
+        "orchestrator": 1,
+        "reviewer": 1
+      },
+      "complexity": "complex",
+      "route": "team",
+      "escalated": false,
+      "review_rounds": 1,
+      "parallel_turns": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "plan",
+          "role": "planner",
+          "t": 3.21,
+          "model": "gpt-6-luna",
+          "domain": "in_domain",
+          "reason": "The question concerns efficiency roll-off mechanisms in phosphorescent OLEDs.",
+          "complexity": "complex",
+          "sequential": false,
+          "subquestions": [
+            "What processes occur in phosphorescent OLEDs at high current density?",
+            "How do these processes cause efficiency roll-off?"
+          ]
+        },
+        {
+          "step": 2,
+          "type": "route",
+          "role": "planner",
+          "t": 3.22,
+          "route": "team"
+        },
+        {
+          "step": 3,
+          "type": "worker_start",
+          "role": "worker1",
+          "t": 3.22,
+          "model": "gpt-6-luna",
+          "subquestions": [
+            "What processes occur in phosphorescent OLEDs at high current density?"
+          ]
+        },
+        {
+          "step": 4,
+          "type": "worker_start",
+          "role": "worker2",
+          "t": 3.22,
+          "model": "gpt-6-luna",
+          "subquestions": [
+            "How do these processes cause efficiency roll-off?"
+          ]
+        },
+        {
+          "step": 5,
+          "type": "search",
+          "role": "worker1",
+          "t": 6.35,
+          "query": "What processes occur in phosphorescent OLEDs at high current density?",
+          "status": "ok",
+          "max_relevance": 0.829,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 6,
+          "type": "search",
+          "role": "worker2",
+          "t": 7.26,
+          "query": "How do triplet-triplet annihilation and triplet-polaron quenching cause efficiency roll-off in phosphorescent OLEDs?",
+          "status": "ok",
+          "max_relevance": 0.931,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 7,
+          "type": "search",
+          "role": "worker1",
+          "t": 10.79,
+          "query": "High current density phosphorescent OLED efficiency roll-off triplet-triplet annihilation and triplet-polaron quenching processes",
+          "status": "ok",
+          "max_relevance": 0.94,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 3
+        },
+        {
+          "step": 8,
+          "type": "worker_done",
+          "role": "worker2",
+          "t": 11.72,
+          "status": "found",
+          "citations": 2
+        },
+        {
+          "step": 9,
+          "type": "worker_done",
+          "role": "worker1",
+          "t": 14.86,
+          "status": "found",
+          "citations": 2
+        },
+        {
+          "step": 10,
+          "type": "orchestrate",
+          "role": "orchestrator",
+          "t": 14.86,
+          "model": "gpt-6.1-sol",
+          "chunks": 3
+        },
+        {
+          "step": 11,
+          "type": "review",
+          "role": "reviewer",
+          "t": 31.98,
+          "model": "gpt-6.1-sol",
+          "round": 1,
+          "claims": 10,
+          "unsupported": 0,
+          "core_question_answered": true,
+          "unsupported_claims": []
+        },
+        {
+          "step": 12,
+          "type": "stop",
+          "role": null,
+          "t": 31.99,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "original_question": "What causes efficiency roll-off in phosphorescent OLEDs at high current density?",
+      "standalone_question": "What causes efficiency roll-off in phosphorescent OLEDs at high current density?",
+      "conversation_id": "ellipsis",
+      "turn": 1,
+      "run": 0,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": true,
+      "claims": [
+        {
+          "claim": "Efficiency roll-off at high current density in phosphorescent OLEDs is primarily associated with quenching of long-lived triplet excitons, especially triplet–triplet annihilation (TTA) and triplet–polaron quenching (TPQ).",
+          "verdict": "supported",
+          "reason": "E1/E3 state efficiency roll-off at higher current is linked to long triplet lifetimes and identify TTA and triplet–polaron quenching as key processes; both are observed under typical operation."
+        },
+        {
+          "claim": "The long lifetime of phosphorescent triplet states is a main reason efficiency decreases as current density increases.",
+          "verdict": "supported",
+          "reason": "E1 explicitly says the decrease in efficiency with increased current is mainly due to the longer lifetime of the emitting triplet state."
+        },
+        {
+          "claim": "In TTA, one excited triplet transfers energy to another, returning the first to the ground state and promoting the second to a higher triplet state that rapidly relaxes, so two triplets effectively become one.",
+          "verdict": "supported",
+          "reason": "E2 describes T* + T* -> S0 + T** (which relaxes back), indicating two triplets lead effectively to one, reducing the exciton population."
+        },
+        {
+          "claim": "In triplet–polaron quenching, triplet excitation energy is transferred to charged molecules (polarons), quenching the excitons.",
+          "verdict": "supported",
+          "reason": "E1/E3 refer to energy transfer to charged molecules (polarons) as a quenching process affecting efficiency."
+        },
+        {
+          "claim": "Both TPQ and TTA strongly influence OLED performance under typical operating conditions.",
+          "verdict": "supported",
+          "reason": "E3 concludes both TTA and TPQ strongly influence OLED performance, and E1 notes both are observed under typical operation conditions."
+        },
+        {
+          "claim": "Longer phosphorescent lifetimes and narrower exciton-formation zones can worsen efficiency roll-off, as shown by compared devices.",
+          "verdict": "supported",
+          "reason": "E3 reports the green device shows stronger roll-off mainly due to a longer phosphorescent lifetime and a thinner exciton formation zone."
+        },
+        {
+          "claim": "Charge imbalance is a contributing factor to efficiency roll-off.",
+          "verdict": "supported",
+          "reason": "E2 lists charge imbalance among factors causing PHOLED efficiency roll-off."
+        },
+        {
+          "claim": "Field-induced exciton dissociation is a possible mechanism but was very inefficient in the investigated systems and not observed under typical operating conditions.",
+          "verdict": "supported",
+          "reason": "E1/E3 state field-induced quenching is a possible process but is very inefficient and not observed under typical OLED operation conditions."
+        }
+      ],
+      "claim_count": 8,
+      "unsupported_claims": 0,
+      "partial_claims": 0,
+      "key_points_covered": 1.0,
+      "judge_cost_usd": 0.02030875,
+      "interpretation": {
+        "correct": true,
+        "reason": "The resolved question matches the reference intent exactly, with no changes in meaning, scope, or details. No clarification was needed, and the mode aligns with the expected mode.",
+        "judge_cost_usd": 0.00148125
+      }
+    },
+    {
+      "id": "ellipsis/2",
+      "category": "ellipsis",
+      "pair_id": null,
+      "question": "And TTA versus TPA?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "**TTA and TPA both quench triplet excitons and can contribute to efficiency roll-off in phosphorescent OLEDs, but their collision partners differ.** [1]\n\n| Aspect | Triplet–triplet annihilation (TTA) | Triplet–polaron annihilation (TPA) |\n|---|---|---|\n| Interaction | Two triplet excitons interact in a biexcitonic process. [2] | A triplet interacts with a free or trapped electron or hole. [3] |\n| Outcome | In the cited phosphorescent model, each event leaves one triplet, including rapid intersystem crossing of any generated singlet; thus there is a net loss of one triplet. [2] | The triplet returns to the ground state while the carrier is promoted to a higher excited state: \\(T_1+h^+\\rightarrow S_0+h^{+*}\\), or \\(T_1+e^-\\rightarrow S_0+e^{-*}\\). [3] |\n| Density dependence | The triplet-loss term is proportional to the square of triplet density, \\(\\tfrac12 k_{TT}[T_1]^2\\), in the cited model. [2] | Quenching involves the triplet population and available charge carriers, with distinct electron- and hole-annihilation rate constants. [3] |\n\n**Which is stronger is not a universal conclusion of the retrieved evidence.** In the reported Alq₃:PtOEP unipolar-device experiment with simultaneous optical excitation, excess-polaron quenching was orders of magnitude weaker than the impact of excess triplets; that comparison is specific to the reported system and conditions. [3] TTA in the studied Ir- and Pt-based phosphorescent emitters was diffusion-controlled through Dexter-type exchange, and reducing its rate was linked to suppressed high-brightness efficiency roll-off. [1]",
+      "latency_s": 42.56,
+      "cost_usd": 0.03337229,
+      "used_files": [
+        "Efficiency Roll-Off in Organic Light-Emitting Diodes.pdf",
+        "[Baldo] Transient analysis of organic electrophosphorescence. II. Transient analysis of triplet-triplet annihilation.pdf",
+        "[Yifan] Triplet diffusion leads to triplet–triplet annihilation in organic phosphorescent emitters.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "c4c01378c",
+          "title": "Triplet diffusion leads to triplet–triplet annihilation in organic phosphorescent emitters",
+          "url": "https://doi.org/10.1016/j.cplett.2013.10.048",
+          "file_name": "[Yifan] Triplet diffusion leads to triplet–triplet annihilation in organic phosphorescent emitters.pdf",
+          "page": 1
+        },
+        {
+          "chunk_id": "c707f8c92",
+          "title": "Transient analysis of organic electrophosphorescence. II. Transient analysis of triplet-triplet annihilation",
+          "url": "https://doi.org/10.1103/physrevb.62.10967",
+          "file_name": "[Baldo] Transient analysis of organic electrophosphorescence. II. Transient analysis of triplet-triplet annihilation.pdf",
+          "page": 2
+        },
+        {
+          "chunk_id": "c040bfbfa",
+          "title": "Efficiency Roll‐Off in Organic Light‐Emitting Diodes",
+          "url": "https://doi.org/10.1002/adma.201301603",
+          "file_name": "Efficiency Roll-Off in Organic Light-Emitting Diodes.pdf",
+          "page": 10
+        }
+      ],
+      "searches": 4,
+      "llm_calls": 10,
+      "prompt_tokens": 38856,
+      "completion_tokens": 2505,
+      "cached_tokens": 4009,
+      "reasoning_tokens": 188,
+      "usage_by_model": {
+        "gpt-6-luna": {
+          "calls": 8,
+          "input_tokens": 31076,
+          "output_tokens": 1051,
+          "cached_tokens": 4009,
+          "reasoning_tokens": 188
+        },
+        "gpt-6.1-sol": {
+          "calls": 2,
+          "input_tokens": 7780,
+          "output_tokens": 1454,
+          "cached_tokens": 0,
+          "reasoning_tokens": 0
+        }
+      },
+      "calls_by_role": {
+        "planner": 1,
+        "worker1": 4,
+        "worker2": 3,
+        "orchestrator": 1,
+        "reviewer": 1
+      },
+      "complexity": "complex",
+      "route": "team",
+      "escalated": false,
+      "review_rounds": 1,
+      "parallel_turns": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "interpretation",
+          "role": "planner",
+          "t": 7.91,
+          "original_question": "And TTA versus TPA?",
+          "standalone_question": "How does triplet–triplet annihilation (TTA) compare with triplet–polaron annihilation (TPA) in phosphorescent OLEDs?",
+          "needs_clarification": false
+        },
+        {
+          "step": 2,
+          "type": "plan",
+          "role": "planner",
+          "t": 7.91,
+          "model": "gpt-6-luna",
+          "domain": "in_domain",
+          "reason": "The question follows up on OLED efficiency-roll-off mechanisms and asks to compare exciton-quenching processes.",
+          "complexity": "complex",
+          "sequential": false,
+          "subquestions": [
+            "How does triplet–triplet annihilation (TTA) quench excitons in phosphorescent OLEDs?",
+            "How does triplet–polaron annihilation (TPA) quench excitons in phosphorescent OLEDs, and how does it differ from TTA?"
+          ]
+        },
+        {
+          "step": 3,
+          "type": "route",
+          "role": "planner",
+          "t": 7.92,
+          "route": "team"
+        },
+        {
+          "step": 4,
+          "type": "worker_start",
+          "role": "worker1",
+          "t": 7.92,
+          "model": "gpt-6-luna",
+          "subquestions": [
+            "How does triplet–triplet annihilation (TTA) quench excitons in phosphorescent OLEDs?"
+          ]
+        },
+        {
+          "step": 5,
+          "type": "worker_start",
+          "role": "worker2",
+          "t": 7.92,
+          "model": "gpt-6-luna",
+          "subquestions": [
+            "How does triplet–polaron annihilation (TPA) quench excitons in phosphorescent OLEDs, and how does it differ from TTA?"
+          ]
+        },
+        {
+          "step": 6,
+          "type": "search",
+          "role": "worker1",
+          "t": 10.72,
+          "query": "How does triplet-triplet annihilation quench excitons in phosphorescent OLEDs?",
+          "status": "ok",
+          "max_relevance": 0.899,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 7,
+          "type": "search",
+          "role": "worker2",
+          "t": 12.41,
+          "query": "How does triplet-polaron annihilation quench phosphorescent OLED excitons and differ mechanistically from triplet-triplet annihilation?",
+          "status": "ok",
+          "max_relevance": 0.858,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 2
+        },
+        {
+          "step": 8,
+          "type": "search",
+          "role": "worker1",
+          "t": 13.89,
+          "query": "What is the physical mechanism and rate law of triplet-triplet annihilation between phosphorescent excitons?",
+          "status": "ok",
+          "max_relevance": 0.731,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 9,
+          "type": "search",
+          "role": "worker2",
+          "t": 15.33,
+          "query": "In phosphorescent OLEDs, what are the reactions and dependencies of triplet-polaron quenching compared with triplet-triplet annihilation?",
+          "status": "ok",
+          "max_relevance": 0.864,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 1
+        },
+        {
+          "step": 10,
+          "type": "findings_rejected",
+          "role": "worker1",
+          "t": 17.42,
+          "errors": [
+            "Unknown chunk IDs: c4c01378."
+          ]
+        },
+        {
+          "step": 11,
+          "type": "worker_done",
+          "role": "worker2",
+          "t": 18.27,
+          "status": "found",
+          "citations": 1
+        },
+        {
+          "step": 12,
+          "type": "worker_done",
+          "role": "worker1",
+          "t": 20.69,
+          "status": "found",
+          "citations": 3
+        },
+        {
+          "step": 13,
+          "type": "orchestrate",
+          "role": "orchestrator",
+          "t": 20.69,
+          "model": "gpt-6.1-sol",
+          "chunks": 4
+        },
+        {
+          "step": 14,
+          "type": "review",
+          "role": "reviewer",
+          "t": 42.56,
+          "model": "gpt-6.1-sol",
+          "round": 1,
+          "claims": 13,
+          "unsupported": 0,
+          "core_question_answered": true,
+          "unsupported_claims": []
+        },
+        {
+          "step": 15,
+          "type": "stop",
+          "role": null,
+          "t": 42.56,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "original_question": "And TTA versus TPA?",
+      "standalone_question": "How does triplet–triplet annihilation (TTA) compare with triplet–polaron annihilation (TPA) in phosphorescent OLEDs?",
+      "conversation_id": "ellipsis",
+      "turn": 2,
+      "run": 0,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": true,
+      "claims": [
+        {
+          "claim": "TTA and TPA both quench triplet excitons and can contribute to efficiency roll-off in phosphorescent OLEDs, but their collision partners differ.",
+          "verdict": "supported",
+          "reason": "E1 lists TTA and triplet–polaron annihilation as causes of PHOLED efficiency roll-off. E2 and E3 describe their respective interaction partners (triplet–triplet vs. triplet–carrier)."
+        },
+        {
+          "claim": "In triplet–triplet annihilation, two triplet excitons interact in a biexcitonic process.",
+          "verdict": "supported",
+          "reason": "E2 shows the reaction 3M* + 3M* leading to annihilation products, i.e., interaction of two excitons (biexcitonic)."
+        },
+        {
+          "claim": "In triplet–polaron annihilation, a triplet interacts with a free or trapped electron or hole.",
+          "verdict": "supported",
+          "reason": "E3 explicitly states TPA involves excited triplets with free or trapped charge carriers and distinguishes electrons and holes."
+        },
+        {
+          "claim": "In the cited phosphorescent model of TTA, each event leaves one triplet due to rapid intersystem crossing of the generated singlet, yielding a net loss of one triplet.",
+          "verdict": "supported",
+          "reason": "E2 describes rapid ISC of generated singlet to triplet and states each annihilation event generates a single triplet; hence the rate of triplet loss is 1/2 kTT[3M*]^2."
+        },
+        {
+          "claim": "In TPA, the triplet returns to the ground state while the carrier is promoted to a higher excited state: T1+h+→S0+h+* or T1+e−→S0+e−*.",
+          "verdict": "supported",
+          "reason": "E3 provides exactly these reaction schemes."
+        },
+        {
+          "claim": "The TTA triplet-loss term is proportional to the square of the triplet density, 1/2 kTT [T1]^2, in the cited model.",
+          "verdict": "supported",
+          "reason": "E2 gives the rate equation with the triplet loss term 1/2 kTT [3M*]^2."
+        },
+        {
+          "claim": "TPA quenching involves the triplet population and available charge carriers, with distinct electron- and hole-annihilation rate constants.",
+          "verdict": "supported",
+          "reason": "E3 shows separate processes with kTP,h and kTP,e, implying dependence on both triplets and carrier densities."
+        },
+        {
+          "claim": "Which mechanism is stronger is not a universal conclusion of the retrieved evidence.",
+          "verdict": "supported",
+          "reason": "None of E1–E3 make a universal statement; E3 provides a specific system comparison only."
+        },
+        {
+          "claim": "In Alq3:PtOEP unipolar-device experiments with simultaneous optical excitation, excess-polaron quenching was orders of magnitude weaker than the impact of excess triplets, specific to that system and conditions.",
+          "verdict": "supported",
+          "reason": "E3 describes Baldo et al.'s unipolar Alq3:PtOEP study with simultaneous optical excitation and finds polarons much weaker than excess triplets."
+        },
+        {
+          "claim": "TTA in studied Ir- and Pt-based phosphorescent emitters was diffusion-controlled via Dexter-type exchange, and reducing PL/absorption overlap decreased TTA rate and suppressed high-brightness efficiency roll-off.",
+          "verdict": "supported",
+          "reason": "E1 states TTA is controlled by diffusion due to Dexter-type exchange and that minimizing PL/absorption overlap decreases TTA rate and suppresses roll-off."
+        }
+      ],
+      "claim_count": 10,
+      "unsupported_claims": 0,
+      "partial_claims": 0,
+      "key_points_covered": 0.6666666666666666,
+      "judge_cost_usd": 0.0267,
+      "interpretation": {
+        "correct": true,
+        "reason": "The resolved question explicitly asks to compare triplet–triplet annihilation and triplet–polaron annihilation within the context of phosphorescent OLEDs, matching the reference intent and criteria without adding or changing scope or details.",
+        "judge_cost_usd": 0.00228625
+      }
+    },
+    {
+      "id": "topic_switch/1",
+      "category": "topic_switch",
+      "pair_id": null,
+      "question": "How does thermally activated delayed fluorescence (TADF) work?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "In TADF, an excited emitter in the triplet state T₁ can thermally acquire enough energy to undergo reverse intersystem crossing (RISC) into the singlet state S₁ when the singlet–triplet energy splitting ΔE_ST is comparable to or smaller than thermal energy k_BT. The S₁ state then emits fluorescence; because the triplet-to-singlet conversion takes time, this fluorescence is delayed. Efficient harvesting requires this up-conversion to compete successfully with non-radiative losses, and fluorescence from S₁ to outpace competing decay pathways. [1]",
+      "latency_s": 14.64,
+      "cost_usd": 0.0064068,
+      "used_files": [
+        "Chapter 6 Organic Light Emitters.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "cce3c5245",
+          "title": "Chapter 6 Organic Light Emitters",
+          "url": null,
+          "file_name": "Chapter 6 Organic Light Emitters.pdf",
+          "page": 124
+        }
+      ],
+      "searches": 1,
+      "llm_calls": 4,
+      "prompt_tokens": 5440,
+      "completion_tokens": 679,
+      "cached_tokens": 0,
+      "reasoning_tokens": 30,
+      "usage_by_model": {
+        "gpt-6-luna": {
+          "calls": 3,
+          "input_tokens": 4528,
+          "output_tokens": 280,
+          "cached_tokens": 0,
+          "reasoning_tokens": 30
+        },
+        "gpt-6.1-sol": {
+          "calls": 1,
+          "input_tokens": 912,
+          "output_tokens": 399,
+          "cached_tokens": 0,
+          "reasoning_tokens": 0
+        }
+      },
+      "calls_by_role": {
+        "planner": 1,
+        "light": 2,
+        "reviewer": 1
+      },
+      "complexity": "simple",
+      "route": "light",
+      "escalated": false,
+      "review_rounds": 1,
+      "parallel_turns": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "plan",
+          "role": "planner",
+          "t": 2.1,
+          "model": "gpt-6-luna",
+          "domain": "in_domain",
+          "reason": "The question asks about the operating mechanism of a type of OLED emitter.",
+          "complexity": "simple",
+          "sequential": false,
+          "subquestions": [
+            "How does thermally activated delayed fluorescence (TADF) work?"
+          ]
+        },
+        {
+          "step": 2,
+          "type": "route",
+          "role": "planner",
+          "t": 2.1,
+          "route": "light"
+        },
+        {
+          "step": 3,
+          "type": "search",
+          "role": "light",
+          "t": 5.39,
+          "query": "How does thermally activated delayed fluorescence work, including reverse intersystem crossing and singlet triplet energy gap?",
+          "status": "ok",
+          "max_relevance": 0.889,
+          "survivor_count": 13,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 4,
+          "type": "review",
+          "role": "reviewer",
+          "t": 14.63,
+          "model": "gpt-6.1-sol",
+          "round": 1,
+          "claims": 5,
+          "unsupported": 0,
+          "core_question_answered": true,
+          "unsupported_claims": []
+        },
+        {
+          "step": 5,
+          "type": "stop",
+          "role": null,
+          "t": 14.64,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "original_question": "How does thermally activated delayed fluorescence (TADF) work?",
+      "standalone_question": "How does thermally activated delayed fluorescence (TADF) work?",
+      "conversation_id": "topic_switch",
+      "turn": 1,
+      "run": 0,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": true,
+      "claims": [
+        {
+          "claim": "In TADF, a triplet exciton in T1 can thermally undergo reverse intersystem crossing to the singlet S1 when the singlet–triplet energy gap ΔE_ST is comparable to or smaller than k_BT.",
+          "verdict": "supported",
+          "reason": "E1 states TADF uses molecules with ΔE_ST comparable to or less than k_BT, enabling endothermic S1←T1 intersystem transfer (sometimes called RISC)."
+        },
+        {
+          "claim": "The S1 state then emits fluorescence.",
+          "verdict": "supported",
+          "reason": "E1 discusses efficient radiative transitions from the singlet state and that the process leads to delayed fluorescence, implying emission from S1."
+        },
+        {
+          "claim": "Because the triplet-to-singlet conversion takes time, the fluorescence is delayed.",
+          "verdict": "partially_supported",
+          "reason": "E1 says the endothermic S1←T1 transfer leads to delayed fluorescence but does not explicitly attribute the delay to the finite time of conversion."
+        },
+        {
+          "claim": "Efficient TADF requires that the up-conversion compete successfully with non-radiative losses.",
+          "verdict": "supported",
+          "reason": "E1 notes the S1←T1 transfer can be nearly 100% efficient provided competing non-radiative rates are less than the intersystem crossing rate."
+        },
+        {
+          "claim": "Efficient fluorescence from S1 must outpace competing decay pathways (i.e., the fluorescence rate from S1 must exceed other rates).",
+          "verdict": "supported",
+          "reason": "E1 states efficient radiative transitions from the singlet require k_F exceed all other rates, specifically k_F >> k_ISC,S and k_ISC,T."
+        },
+        {
+          "claim": "This process is referred to as reverse intersystem crossing (RISC).",
+          "verdict": "partially_supported",
+          "reason": "E1 says it is sometimes referred to as RISC; stating it unqualifiedly as the name omits the qualifier \"sometimes.\""
+        }
+      ],
+      "claim_count": 6,
+      "unsupported_claims": 0,
+      "partial_claims": 2,
+      "key_points_covered": 0.3333333333333333,
+      "judge_cost_usd": 0.02342,
+      "interpretation": {
+        "correct": true,
+        "reason": "Resolved question exactly matches the reference intent without altering meaning, scope, or details; expected mode (RAG) aligns with actual mode; no clarification needed or provided.",
+        "judge_cost_usd": 0.00146
+      }
+    },
+    {
+      "id": "topic_switch/2",
+      "category": "topic_switch",
+      "pair_id": null,
+      "question": "Now explain the charge generation layer in tandem OLEDs.",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "A charge-generation layer (CGL), also called a connector layer, is the interconnector between vertically stacked emitting units in a tandem OLED. It must produce electrons and holes and inject them into adjacent emissive units, enabling photon generation in each unit. [1] [2]\n\nExamples include conducting materials such as ITO, or insulating materials such as V₂O₅ and F₄-TCNQ, which can form a charge-transfer complex with an adjacent aryl-amine material. [2] Another reported CGL construction is a bilayer of transition-metal oxide, such as MoO₃, and an n-type-doped organic electron-transport layer. [3]",
+      "latency_s": 40.9,
+      "cost_usd": 0.02241923,
+      "used_files": [
+        "OLED Display Fundamentals and Applications - 2017 - Tsujimura.pdf",
+        "The role of charge generation layers in the operational stability of tandem organic light-emitting diodes.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "c612e0954",
+          "title": "OLED Display Fundamentals and Applications - 2017 - Tsujimura",
+          "url": null,
+          "file_name": "OLED Display Fundamentals and Applications - 2017 - Tsujimura.pdf",
+          "page": 54
+        },
+        {
+          "chunk_id": "c07321876",
+          "title": "OLED Display Fundamentals and Applications - 2017 - Tsujimura",
+          "url": null,
+          "file_name": "OLED Display Fundamentals and Applications - 2017 - Tsujimura.pdf",
+          "page": 55
+        },
+        {
+          "chunk_id": "cb37c2072",
+          "title": "The role of charge generation layers in the operational stability of tandem organic light-emitting diodes",
+          "url": "https://doi.org/10.1039/c3tc32023e",
+          "file_name": "The role of charge generation layers in the operational stability of tandem organic light-emitting diodes.pdf",
+          "page": 1
+        }
+      ],
+      "searches": 2,
+      "llm_calls": 7,
+      "prompt_tokens": 19082,
+      "completion_tokens": 1870,
+      "cached_tokens": 7723,
+      "reasoning_tokens": 51,
+      "usage_by_model": {
+        "gpt-6-luna": {
+          "calls": 5,
+          "input_tokens": 14518,
+          "output_tokens": 649,
+          "cached_tokens": 7723,
+          "reasoning_tokens": 51
+        },
+        "gpt-6.1-sol": {
+          "calls": 2,
+          "input_tokens": 4564,
+          "output_tokens": 1221,
+          "cached_tokens": 0,
+          "reasoning_tokens": 0
+        }
+      },
+      "calls_by_role": {
+        "planner": 1,
+        "light": 4,
+        "reviewer": 2
+      },
+      "complexity": "simple",
+      "route": "light",
+      "escalated": false,
+      "review_rounds": 2,
+      "parallel_turns": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "interpretation",
+          "role": "planner",
+          "t": 6.94,
+          "original_question": "Now explain the charge generation layer in tandem OLEDs.",
+          "standalone_question": "Now explain the charge generation layer in tandem OLEDs.",
+          "needs_clarification": false
+        },
+        {
+          "step": 2,
+          "type": "plan",
+          "role": "planner",
+          "t": 6.94,
+          "model": "gpt-6-luna",
+          "domain": "in_domain",
+          "reason": "The question asks about a charge generation layer in tandem OLED devices.",
+          "complexity": "simple",
+          "sequential": false,
+          "subquestions": [
+            "What is the charge generation layer in tandem OLEDs, and how does it work?"
+          ]
+        },
+        {
+          "step": 3,
+          "type": "route",
+          "role": "planner",
+          "t": 6.94,
+          "route": "light"
+        },
+        {
+          "step": 4,
+          "type": "search",
+          "role": "light",
+          "t": 11.0,
+          "query": "What is the charge generation layer in tandem OLEDs and how does it generate and supply charges to adjacent emitting units?",
+          "status": "ok",
+          "max_relevance": 0.902,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 5,
+          "type": "search",
+          "role": "light",
+          "t": 13.86,
+          "query": "Physical mechanism of charge generation at tandem OLED charge generation layer interfaces, including electron and hole injection directions",
+          "status": "ok",
+          "max_relevance": 0.917,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 1
+        },
+        {
+          "step": 6,
+          "type": "review",
+          "role": "reviewer",
+          "t": 28.26,
+          "model": "gpt-6.1-sol",
+          "round": 1,
+          "claims": 10,
+          "unsupported": 1,
+          "core_question_answered": true,
+          "unsupported_claims": [
+            "A charge-generation layer is also called a charge-generation unit."
+          ]
+        },
+        {
+          "step": 7,
+          "type": "review",
+          "role": "reviewer",
+          "t": 40.89,
+          "model": "gpt-6.1-sol",
+          "round": 2,
+          "claims": 7,
+          "unsupported": 0,
+          "core_question_answered": true,
+          "unsupported_claims": []
+        },
+        {
+          "step": 8,
+          "type": "stop",
+          "role": null,
+          "t": 40.89,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "original_question": "Now explain the charge generation layer in tandem OLEDs.",
+      "standalone_question": "Now explain the charge generation layer in tandem OLEDs.",
+      "conversation_id": "topic_switch",
+      "turn": 2,
+      "run": 0,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": true,
+      "claims": [
+        {
+          "claim": "A charge-generation layer (CGL), also called a connector layer, is the interconnector between vertically stacked emitting units in a tandem OLED.",
+          "verdict": "supported",
+          "reason": "E1 and E2 describe the intermediate/connector layer (CGL) connecting stacked organic layer units in tandem OLEDs."
+        },
+        {
+          "claim": "It must produce electrons and holes and inject them into adjacent emissive units.",
+          "verdict": "supported",
+          "reason": "E2 explicitly states the CGL needs to produce electrons and holes and inject them into adjacent emissive units."
+        },
+        {
+          "claim": "This enables photon generation in each unit.",
+          "verdict": "supported",
+          "reason": "E2 explains that electrons and holes generated from the connector layer create photons in each organic layer unit."
+        },
+        {
+          "claim": "Examples include conducting materials such as ITO.",
+          "verdict": "supported",
+          "reason": "E2 lists conducting materials such as ITO as CGLs."
+        },
+        {
+          "claim": "Examples include insulating materials such as V2O5 and F4-TCNQ.",
+          "verdict": "supported",
+          "reason": "E2 lists insulating materials such as V2O5 and F4-TCNQ for CGLs."
+        },
+        {
+          "claim": "F4-TCNQ can form a charge-transfer complex with an adjacent aryl-amine material.",
+          "verdict": "supported",
+          "reason": "E2 states insulating materials such as V2O5 and F4-TCNQ form CT complexes with adjacent aryl amine compounds."
+        },
+        {
+          "claim": "Another reported CGL construction is a bilayer of transition-metal oxide, such as MoO3, and an n-type-doped organic electron-transport layer.",
+          "verdict": "supported",
+          "reason": "E3 describes CGLs consisting of a MoO3 film and an n-type doped organic ETL."
+        }
+      ],
+      "claim_count": 7,
+      "unsupported_claims": 0,
+      "partial_claims": 0,
+      "key_points_covered": 0.3333333333333333,
+      "judge_cost_usd": 0.015145,
+      "interpretation": {
+        "correct": true,
+        "reason": "The resolved question directly matches the reference intent by asking to explain the charge generation layer (CGL) in tandem OLEDs, focusing on its role. It appropriately shifts the topic to CGL and does not retain TADF. No material, number, polarity, or target is changed, and no clarification is needed.",
+        "judge_cost_usd": 0.00306
+      }
+    },
+    {
+      "id": "offtopic/1",
+      "category": "off_topic_switch",
+      "pair_id": null,
+      "question": "How does thermally activated delayed fluorescence (TADF) work?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "After electrical excitation, electron–hole recombination forms singlet and triplet excitons; the retrieved description gives a 1:3 singlet-to-triplet ratio. Excitons relax to the lowest excited states, S1 and T1. Thermal energy enables triplets in T1 to undergo reverse intersystem crossing (RISC) back to S1; the singlets then emit photons as fluorescence, producing delayed fluorescence alongside prompt fluorescence. [1]",
+      "latency_s": 24.44,
+      "cost_usd": 0.015065199999999999,
+      "used_files": [
+        "[Review - Nat] All-organic thermally activated delayed fluorescence materials for organic light-emitting diodes.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "cdb478c94",
+          "title": "All-organic thermally activated delayed fluorescence materials for organic light-emitting diodes",
+          "url": null,
+          "file_name": "[Review - Nat] All-organic thermally activated delayed fluorescence materials for organic light-emitting diodes.pdf",
+          "page": 2
+        }
+      ],
+      "searches": 1,
+      "llm_calls": 6,
+      "prompt_tokens": 11425,
+      "completion_tokens": 1356,
+      "cached_tokens": 3570,
+      "reasoning_tokens": 80,
+      "usage_by_model": {
+        "gpt-6-luna": {
+          "calls": 4,
+          "input_tokens": 8950,
+          "output_tokens": 423,
+          "cached_tokens": 3570,
+          "reasoning_tokens": 43
+        },
+        "gpt-6.1-sol": {
+          "calls": 2,
+          "input_tokens": 2475,
+          "output_tokens": 933,
+          "cached_tokens": 0,
+          "reasoning_tokens": 37
+        }
+      },
+      "calls_by_role": {
+        "planner": 1,
+        "light": 3,
+        "reviewer": 2
+      },
+      "complexity": "simple",
+      "route": "light",
+      "escalated": false,
+      "review_rounds": 2,
+      "parallel_turns": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "plan",
+          "role": "planner",
+          "t": 1.87,
+          "model": "gpt-6-luna",
+          "domain": "in_domain",
+          "reason": "TADF is an OLED emitter mechanism involving thermally activated conversion of triplet excitons to emissive singlet states.",
+          "complexity": "simple",
+          "sequential": false,
+          "subquestions": [
+            "How does thermally activated delayed fluorescence (TADF) work?"
+          ]
+        },
+        {
+          "step": 2,
+          "type": "route",
+          "role": "planner",
+          "t": 1.87,
+          "route": "light"
+        },
+        {
+          "step": 3,
+          "type": "search",
+          "role": "light",
+          "t": 5.19,
+          "query": "How thermally activated delayed fluorescence works, including singlet and triplet excitons, reverse intersystem crossing, and delayed light emission",
+          "status": "ok",
+          "max_relevance": 0.887,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 4,
+          "type": "review",
+          "role": "reviewer",
+          "t": 16.49,
+          "model": "gpt-6.1-sol",
+          "round": 1,
+          "claims": 7,
+          "unsupported": 1,
+          "core_question_answered": true,
+          "unsupported_claims": [
+            "The triplet excitations would otherwise be non-emissive."
+          ]
+        },
+        {
+          "step": 5,
+          "type": "review",
+          "role": "reviewer",
+          "t": 24.43,
+          "model": "gpt-6.1-sol",
+          "round": 2,
+          "claims": 5,
+          "unsupported": 0,
+          "core_question_answered": true,
+          "unsupported_claims": []
+        },
+        {
+          "step": 6,
+          "type": "stop",
+          "role": null,
+          "t": 24.43,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "original_question": "How does thermally activated delayed fluorescence (TADF) work?",
+      "standalone_question": "How does thermally activated delayed fluorescence (TADF) work?",
+      "conversation_id": "offtopic",
+      "turn": 1,
+      "run": 0,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": true,
+      "claims": [
+        {
+          "claim": "Electron–hole recombination after electrical excitation forms singlet and triplet excitons.",
+          "verdict": "supported",
+          "reason": "E1 describes electroluminescence where singlet and triplet excitons are formed after electron–hole recombination."
+        },
+        {
+          "claim": "The singlet-to-triplet exciton formation ratio is 1:3.",
+          "verdict": "supported",
+          "reason": "E1 explicitly states a 1:3 singlet:triplet ratio."
+        },
+        {
+          "claim": "Excitons relax to the lowest excited states S1 and T1.",
+          "verdict": "supported",
+          "reason": "E1 states high exciton states transfer to the lowest exciton states (S1 or T1) via internal conversion."
+        },
+        {
+          "claim": "Thermal energy enables triplets in T1 to undergo reverse intersystem crossing (RISC) back to S1.",
+          "verdict": "supported",
+          "reason": "E1 states accumulated T1 triplets are transferred back to S1 via RISC with the aid of thermal activation."
+        },
+        {
+          "claim": "Singlets at S1 emit photons as fluorescence by radiative decay to S0.",
+          "verdict": "supported",
+          "reason": "E1 says singlet excitons at S1 are radiatively deactivated to S0 following a prompt fluorescence decay mechanism."
+        },
+        {
+          "claim": "Delayed fluorescence is produced alongside prompt fluorescence in this process.",
+          "verdict": "supported",
+          "reason": "E1 mentions fluorescent emissions with different lifetimes of prompt fluorescence and delayed fluorescence decay."
+        }
+      ],
+      "claim_count": 6,
+      "unsupported_claims": 0,
+      "partial_claims": 0,
+      "key_points_covered": 0.3333333333333333,
+      "judge_cost_usd": 0.011365,
+      "interpretation": {
+        "correct": true,
+        "reason": "Resolved question matches the reference intent exactly; no changes to meaning, scope, or parameters. Expected mode (RAG) aligns with actual mode. No clarification needed.",
+        "judge_cost_usd": 0.00146
+      }
+    },
+    {
+      "id": "offtopic/2",
+      "category": "off_topic_switch",
+      "pair_id": null,
+      "question": "How do I bake a chocolate cake?",
+      "expected_mode": "OFF_TOPIC",
+      "mode": "OFF_TOPIC",
+      "answer": "No Answer: The question is not related to OLED display technology.",
+      "latency_s": 3.82,
+      "cost_usd": 0.0001392,
+      "used_files": [],
+      "evidence": [],
+      "searches": 0,
+      "llm_calls": 1,
+      "prompt_tokens": 1047,
+      "completion_tokens": 69,
+      "cached_tokens": 0,
+      "reasoning_tokens": 0,
+      "usage_by_model": {
+        "gpt-6-luna": {
+          "calls": 1,
+          "input_tokens": 1047,
+          "output_tokens": 69,
+          "cached_tokens": 0,
+          "reasoning_tokens": 0
+        }
+      },
+      "calls_by_role": {
+        "planner": 1
+      },
+      "complexity": "simple",
+      "route": null,
+      "escalated": false,
+      "review_rounds": 0,
+      "parallel_turns": 0,
+      "stop_reason": "out_of_domain",
+      "trace": [
+        {
+          "step": 1,
+          "type": "interpretation",
+          "role": "planner",
+          "t": 3.81,
+          "original_question": "How do I bake a chocolate cake?",
+          "standalone_question": "How do I bake a chocolate cake?",
+          "needs_clarification": false
+        },
+        {
+          "step": 2,
+          "type": "plan",
+          "role": "planner",
+          "t": 3.81,
+          "model": "gpt-6-luna",
+          "domain": "out_of_domain",
+          "reason": "This is a cooking question unrelated to OLEDs or displays.",
+          "complexity": "simple",
+          "sequential": false,
+          "subquestions": [
+            "How do I bake a chocolate cake?"
+          ]
+        },
+        {
+          "step": 3,
+          "type": "stop",
+          "role": null,
+          "t": 3.81,
+          "reason": "out_of_domain",
+          "detail": "This is a cooking question unrelated to OLEDs or displays."
+        }
+      ],
+      "original_question": "How do I bake a chocolate cake?",
+      "standalone_question": "How do I bake a chocolate cake?",
+      "conversation_id": "offtopic",
+      "turn": 2,
+      "run": 0,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": null,
+      "claims": [],
+      "claim_count": 0,
+      "unsupported_claims": 0,
+      "partial_claims": 0,
+      "key_points_covered": null,
+      "judge_cost_usd": 0.0,
+      "interpretation": {
+        "correct": true,
+        "reason": "The resolved question exactly matches the reference intent without changing content, numbers, or polarity. No clarification was needed, and the actual mode matches the expected OFF_TOPIC.",
+        "judge_cost_usd": 0.00207125
+      }
+    },
+    {
+      "id": "offtopic/3",
+      "category": "off_topic_switch",
+      "pair_id": null,
+      "question": "Back to OLEDs: what are typical electron mobilities of Alq3?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "A reported directly measured electron mobility for Alq₃ thin films is (5 ± 2) × 10⁻⁵ cm²·V⁻¹·s⁻¹. Another cited time-of-flight result is 8 × 10⁻⁵ cm²·V⁻¹·s⁻¹ at an electric field of 1 × 10⁶ V/cm, indicating that the value depends on measurement conditions. [1] [2]",
+      "latency_s": 16.47,
+      "cost_usd": 0.00756628,
+      "used_files": [
+        "[Baldo - IMP!] Interface-limited injection in amorphous organic semiconductors.pdf",
+        "[Theory abt transport] Relationship between electroluminescence and current transport in organic heterojunction light-emitting devices.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "c3aa7dcb4",
+          "title": "Relationship between electroluminescence and current transport in organic heterojunction light-emitting devices",
+          "url": "https://doi.org/10.1063/1.362350",
+          "file_name": "[Theory abt transport] Relationship between electroluminescence and current transport in organic heterojunction light-emitting devices.pdf",
+          "page": 10
+        },
+        {
+          "chunk_id": "c4620ea46",
+          "title": "Interface-limited injection in amorphous organic semiconductors",
+          "url": "https://doi.org/10.1103/physrevb.64.085201",
+          "file_name": "[Baldo - IMP!] Interface-limited injection in amorphous organic semiconductors.pdf",
+          "page": 14
+        }
+      ],
+      "searches": 2,
+      "llm_calls": 5,
+      "prompt_tokens": 12085,
+      "completion_tokens": 592,
+      "cached_tokens": 2398,
+      "reasoning_tokens": 0,
+      "usage_by_model": {
+        "gpt-6-luna": {
+          "calls": 4,
+          "input_tokens": 10086,
+          "output_tokens": 331,
+          "cached_tokens": 2398,
+          "reasoning_tokens": 0
+        },
+        "gpt-6.1-sol": {
+          "calls": 1,
+          "input_tokens": 1999,
+          "output_tokens": 261,
+          "cached_tokens": 0,
+          "reasoning_tokens": 0
+        }
+      },
+      "calls_by_role": {
+        "planner": 1,
+        "light": 3,
+        "reviewer": 1
+      },
+      "complexity": "simple",
+      "route": "light",
+      "escalated": false,
+      "review_rounds": 1,
+      "parallel_turns": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "interpretation",
+          "role": "planner",
+          "t": 4.38,
+          "original_question": "Back to OLEDs: what are typical electron mobilities of Alq3?",
+          "standalone_question": "Back to OLEDs: what are typical electron mobilities of Alq3?",
+          "needs_clarification": false
+        },
+        {
+          "step": 2,
+          "type": "plan",
+          "role": "planner",
+          "t": 4.38,
+          "model": "gpt-6-luna",
+          "domain": "in_domain",
+          "reason": "Alq3 is an OLED electron-transport material, and the question asks about its electron mobility.",
+          "complexity": "simple",
+          "sequential": false,
+          "subquestions": [
+            "What are typical electron mobilities of tris(8-hydroxyquinolinato)aluminum (Alq3)?"
+          ]
+        },
+        {
+          "step": 3,
+          "type": "route",
+          "role": "planner",
+          "t": 4.39,
+          "route": "light"
+        },
+        {
+          "step": 4,
+          "type": "search",
+          "role": "light",
+          "t": 6.23,
+          "query": "What are typical electron mobility values reported for tris(8-hydroxyquinolinato)aluminum (Alq3)?",
+          "status": "ok",
+          "max_relevance": 0.536,
+          "survivor_count": 2,
+          "result_count": 2,
+          "new_chunks": 2
+        },
+        {
+          "step": 5,
+          "type": "search",
+          "role": "light",
+          "t": 9.4,
+          "query": "Alq3 electron mobility measured values in thin films, field dependent mobility cm squared per volt second",
+          "status": "ok",
+          "max_relevance": 0.835,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 6,
+          "type": "review",
+          "role": "reviewer",
+          "t": 16.46,
+          "model": "gpt-6.1-sol",
+          "round": 1,
+          "claims": 3,
+          "unsupported": 0,
+          "core_question_answered": true,
+          "unsupported_claims": []
+        },
+        {
+          "step": 7,
+          "type": "stop",
+          "role": null,
+          "t": 16.47,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "original_question": "Back to OLEDs: what are typical electron mobilities of Alq3?",
+      "standalone_question": "Back to OLEDs: what are typical electron mobilities of Alq3?",
+      "conversation_id": "offtopic",
+      "turn": 3,
+      "run": 0,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": false,
+      "claims": [
+        {
+          "claim": "A directly measured electron mobility for Alq3 thin films is (5 ± 2) × 10^-5 cm^2·V^-1·s^-1.",
+          "verdict": "supported",
+          "reason": "E1 Table I lists electron mobility for Alq3 thin films as ~(5±2)×10^-5 cm^2/V·s."
+        },
+        {
+          "claim": "A time-of-flight result reports 8 × 10^-5 cm^2·V^-1·s^-1 at an electric field of 1 × 10^6 V/cm.",
+          "verdict": "supported",
+          "reason": "E2 states time-of-flight measurements give μ = 8×10^-5 cm^2/V·s at V/d = 1×10^6 V/cm."
+        },
+        {
+          "claim": "These values indicate the mobility depends on measurement conditions.",
+          "verdict": "supported",
+          "reason": "E2 notes mobility is clearly temperature and field dependent, consistent with dependence on measurement conditions."
+        }
+      ],
+      "claim_count": 3,
+      "unsupported_claims": 0,
+      "partial_claims": 0,
+      "key_points_covered": 0.0,
+      "judge_cost_usd": 0.00998875,
+      "interpretation": {
+        "correct": true,
+        "reason": "The resolved question directly asks for typical electron mobilities of Alq3, aligning with the reference intent about electron mobility in materials like Alq3. It also explicitly shifts back to OLEDs as required. No unnecessary clarification and mode matches RAG.",
+        "judge_cost_usd": 0.00294
+      }
+    },
+    {
+      "id": "after_no_answer/1",
+      "category": "after_no_answer",
+      "pair_id": null,
+      "question": "What was Samsung Display's OLED panel revenue in 2024?",
+      "expected_mode": "NO_ANSWER_IN_DOCS",
+      "mode": "NO_ANSWER_IN_DOCS",
+      "answer": "No Answer: I could not find enough evidence in the documents to answer this.\n\nMissing: The retrieved evidence does not provide Samsung Display's OLED panel revenue for 2024.",
+      "latency_s": 9.34,
+      "cost_usd": 0.00061104,
+      "used_files": [],
+      "evidence": [],
+      "searches": 3,
+      "llm_calls": 5,
+      "prompt_tokens": 10257,
+      "completion_tokens": 192,
+      "cached_tokens": 5674,
+      "reasoning_tokens": 20,
+      "usage_by_model": {
+        "gpt-6-luna": {
+          "calls": 5,
+          "input_tokens": 10257,
+          "output_tokens": 192,
+          "cached_tokens": 5674,
+          "reasoning_tokens": 20
+        }
+      },
+      "calls_by_role": {
+        "planner": 1,
+        "light": 4
+      },
+      "complexity": "simple",
+      "route": "light",
+      "escalated": false,
+      "review_rounds": 0,
+      "parallel_turns": 0,
+      "stop_reason": "insufficient_evidence",
+      "trace": [
+        {
+          "step": 1,
+          "type": "plan",
+          "role": "planner",
+          "t": 2.28,
+          "model": "gpt-6-luna",
+          "domain": "in_domain",
+          "reason": "This asks about the revenue of an OLED display company.",
+          "complexity": "simple",
+          "sequential": false,
+          "subquestions": [
+            "What was Samsung Display's OLED panel revenue in 2024?"
+          ]
+        },
+        {
+          "step": 2,
+          "type": "route",
+          "role": "planner",
+          "t": 2.28,
+          "route": "light"
+        },
+        {
+          "step": 3,
+          "type": "search",
+          "role": "light",
+          "t": 3.77,
+          "query": "Samsung Display OLED panel revenue in 2024",
+          "status": "ok",
+          "max_relevance": 0.586,
+          "survivor_count": 2,
+          "result_count": 2,
+          "new_chunks": 2
+        },
+        {
+          "step": 4,
+          "type": "search",
+          "role": "light",
+          "t": 5.19,
+          "query": "2024 Samsung Display OLED panel sales revenue dollars",
+          "status": "ok",
+          "max_relevance": 0.581,
+          "survivor_count": 1,
+          "result_count": 1,
+          "new_chunks": 0
+        },
+        {
+          "step": 5,
+          "type": "search",
+          "role": "light",
+          "t": 7.21,
+          "query": "Samsung Display annual 2024 revenue OLED panel business financial results",
+          "status": "no_relevant_documents",
+          "max_relevance": 0.422,
+          "survivor_count": 0,
+          "result_count": 0,
+          "new_chunks": 0
+        },
+        {
+          "step": 6,
+          "type": "stop",
+          "role": null,
+          "t": 9.33,
+          "reason": "insufficient_evidence",
+          "detail": "The retrieved evidence does not provide Samsung Display's OLED panel revenue for 2024."
+        }
+      ],
+      "original_question": "What was Samsung Display's OLED panel revenue in 2024?",
+      "standalone_question": "What was Samsung Display's OLED panel revenue in 2024?",
+      "conversation_id": "after_no_answer",
+      "turn": 1,
+      "run": 0,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": null,
+      "claims": [],
+      "claim_count": 0,
+      "unsupported_claims": 0,
+      "partial_claims": 0,
+      "key_points_covered": null,
+      "judge_cost_usd": 0.0,
+      "interpretation": {
+        "correct": true,
+        "reason": "The resolved question exactly matches the reference intent without changes to content or specifics, and no clarification was necessary.",
+        "judge_cost_usd": 0.00135
+      }
+    },
+    {
+      "id": "after_no_answer/2",
+      "category": "after_no_answer",
+      "pair_id": null,
+      "question": "And in 2023?",
+      "expected_mode": "NO_ANSWER_IN_DOCS",
+      "mode": "NO_ANSWER_IN_DOCS",
+      "answer": "No Answer: I could not find enough evidence in the documents to answer this.\n\nMissing: The retrieved evidence does not state Samsung Display's OLED panel revenue in 2023.",
+      "latency_s": 8.66,
+      "cost_usd": 0.00046172000000000004,
+      "used_files": [],
+      "evidence": [],
+      "searches": 2,
+      "llm_calls": 4,
+      "prompt_tokens": 5063,
+      "completion_tokens": 183,
+      "cached_tokens": 1512,
+      "reasoning_tokens": 0,
+      "usage_by_model": {
+        "gpt-6-luna": {
+          "calls": 4,
+          "input_tokens": 5063,
+          "output_tokens": 183,
+          "cached_tokens": 1512,
+          "reasoning_tokens": 0
+        }
+      },
+      "calls_by_role": {
+        "planner": 1,
+        "light": 3
+      },
+      "complexity": "simple",
+      "route": "light",
+      "escalated": false,
+      "review_rounds": 0,
+      "parallel_turns": 0,
+      "stop_reason": "insufficient_evidence",
+      "trace": [
+        {
+          "step": 1,
+          "type": "interpretation",
+          "role": "planner",
+          "t": 3.01,
+          "original_question": "And in 2023?",
+          "standalone_question": "What was Samsung Display's OLED panel revenue in 2023?",
+          "needs_clarification": false
+        },
+        {
+          "step": 2,
+          "type": "plan",
+          "role": "planner",
+          "t": 3.01,
+          "model": "gpt-6-luna",
+          "domain": "in_domain",
+          "reason": "This asks about OLED market revenue for a display company, with the year changed to 2023.",
+          "complexity": "simple",
+          "sequential": false,
+          "subquestions": [
+            "What was Samsung Display's OLED panel revenue in 2023?"
+          ]
+        },
+        {
+          "step": 3,
+          "type": "route",
+          "role": "planner",
+          "t": 3.02,
+          "route": "light"
+        },
+        {
+          "step": 4,
+          "type": "search",
+          "role": "light",
+          "t": 5.85,
+          "query": "Samsung Display OLED panel revenue in 2023",
+          "status": "ok",
+          "max_relevance": 0.566,
+          "survivor_count": 1,
+          "result_count": 1,
+          "new_chunks": 1
+        },
+        {
+          "step": 5,
+          "type": "search",
+          "role": "light",
+          "t": 7.32,
+          "query": "2023 Samsung Display OLED panel sales revenue amount dollars",
+          "status": "ok",
+          "max_relevance": 0.576,
+          "survivor_count": 1,
+          "result_count": 1,
+          "new_chunks": 0
+        },
+        {
+          "step": 6,
+          "type": "stop",
+          "role": null,
+          "t": 8.65,
+          "reason": "insufficient_evidence",
+          "detail": "The retrieved evidence does not state Samsung Display's OLED panel revenue in 2023."
+        }
+      ],
+      "original_question": "And in 2023?",
+      "standalone_question": "What was Samsung Display's OLED panel revenue in 2023?",
+      "conversation_id": "after_no_answer",
+      "turn": 2,
+      "run": 0,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": null,
+      "claims": [],
+      "claim_count": 0,
+      "unsupported_claims": 0,
+      "partial_claims": 0,
+      "key_points_covered": null,
+      "judge_cost_usd": 0.0,
+      "interpretation": {
+        "correct": true,
+        "reason": "The resolved question exactly preserves 'Samsung Display' and 'OLED panel revenue' and only specifies the year 2023, matching the reference intent and criteria. No unnecessary clarification was introduced, and the mode matches.",
+        "judge_cost_usd": 0.00285375
+      }
+    },
+    {
+      "id": "clarify/1",
+      "category": "clarification",
+      "pair_id": null,
+      "question": "How does thermally activated delayed fluorescence (TADF) work?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "TADF works by thermally promoting excited triplet states (T₁) back to the excited singlet state (S₁) through reverse intersystem crossing (RISC). This up-conversion is enabled when the singlet–triplet energy gap ΔE_ST is small, comparable to or below thermal energy; its rate is thermally activated. The resulting S₁ state can emit a fluorescence photon, producing delayed fluorescence. [1] The triplet-to-singlet transfer competes with non-radiative losses, and repeated S₁↔T₁ transfer can prolong the emission; a closer S₁–T₁ energy match and a longer triplet lifetime favor more efficient TADF. [2]",
+      "latency_s": 15.35,
+      "cost_usd": 0.0095,
+      "used_files": [
+        "Chapter 3 Optics.pdf",
+        "Chapter 6 Organic Light Emitters.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "cce3c5245",
+          "title": "Chapter 6 Organic Light Emitters",
+          "url": null,
+          "file_name": "Chapter 6 Organic Light Emitters.pdf",
+          "page": 124
+        },
+        {
+          "chunk_id": "c8b2e766c",
+          "title": "Chapter 3 Optics",
+          "url": null,
+          "file_name": "Chapter 3 Optics.pdf",
+          "page": 143
+        }
+      ],
+      "searches": 1,
+      "llm_calls": 4,
+      "prompt_tokens": 6091,
+      "completion_tokens": 925,
+      "cached_tokens": 0,
+      "reasoning_tokens": 30,
+      "usage_by_model": {
+        "gpt-6-luna": {
+          "calls": 3,
+          "input_tokens": 4675,
+          "output_tokens": 321,
+          "cached_tokens": 0,
+          "reasoning_tokens": 30
+        },
+        "gpt-6.1-sol": {
+          "calls": 1,
+          "input_tokens": 1416,
+          "output_tokens": 604,
+          "cached_tokens": 0,
+          "reasoning_tokens": 0
+        }
+      },
+      "calls_by_role": {
+        "planner": 1,
+        "light": 2,
+        "reviewer": 1
+      },
+      "complexity": "simple",
+      "route": "light",
+      "escalated": false,
+      "review_rounds": 1,
+      "parallel_turns": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "plan",
+          "role": "planner",
+          "t": 1.39,
+          "model": "gpt-6-luna",
+          "domain": "in_domain",
+          "reason": "Thermally activated delayed fluorescence is an OLED emitter mechanism.",
+          "complexity": "simple",
+          "sequential": false,
+          "subquestions": [
+            "How does thermally activated delayed fluorescence (TADF) work?"
+          ]
+        },
+        {
+          "step": 2,
+          "type": "route",
+          "role": "planner",
+          "t": 1.39,
+          "route": "light"
+        },
+        {
+          "step": 3,
+          "type": "search",
+          "role": "light",
+          "t": 3.84,
+          "query": "How does thermally activated delayed fluorescence work, including reverse intersystem crossing and singlet-triplet energy gap?",
+          "status": "ok",
+          "max_relevance": 0.892,
+          "survivor_count": 7,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 4,
+          "type": "review",
+          "role": "reviewer",
+          "t": 15.34,
+          "model": "gpt-6.1-sol",
+          "round": 1,
+          "claims": 8,
+          "unsupported": 0,
+          "core_question_answered": true,
+          "unsupported_claims": []
+        },
+        {
+          "step": 5,
+          "type": "stop",
+          "role": null,
+          "t": 15.35,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "original_question": "How does thermally activated delayed fluorescence (TADF) work?",
+      "standalone_question": "How does thermally activated delayed fluorescence (TADF) work?",
+      "conversation_id": "clarify",
+      "turn": 1,
+      "run": 0,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": true,
+      "claims": [
+        {
+          "claim": "TADF works by thermally promoting triplet states (T1) back to the singlet state (S1) via reverse intersystem crossing (RISC).",
+          "verdict": "supported",
+          "reason": "E1 describes TADF as endothermic S1←T1 intersystem transfer (often called RISC), enabled thermally."
+        },
+        {
+          "claim": "TADF requires a small singlet–triplet energy gap ΔEST comparable to or below kBT.",
+          "verdict": "supported",
+          "reason": "E1 states ΔEST is comparable to or less than thermal energy kBT for TADF."
+        },
+        {
+          "claim": "The RISC rate is thermally activated.",
+          "verdict": "supported",
+          "reason": "E2 gives kISC,T as thermally activated with an Arrhenius form."
+        },
+        {
+          "claim": "After RISC, the S1 state can emit fluorescence, producing delayed fluorescence.",
+          "verdict": "supported",
+          "reason": "E1 notes endothermic S1←T1 transfer can lead to delayed fluorescence; E2 explains repeated transfer until fluorescence is observed."
+        },
+        {
+          "claim": "Triplet-to-singlet transfer competes with non-radiative losses.",
+          "verdict": "supported",
+          "reason": "E1 says delayed fluorescence can be nearly 100% efficient provided competing non-radiative rates are less than kISC,T."
+        },
+        {
+          "claim": "Repeated S1↔T1 transfer can prolong the emission.",
+          "verdict": "supported",
+          "reason": "E2 states the T1→S1→T1 emission cycle persists for an extended period, approximately the phosphorescent lifetime."
+        },
+        {
+          "claim": "A closer S1–T1 energy match favors more efficient TADF.",
+          "verdict": "supported",
+          "reason": "E2 explicitly states a closer energy match of S1 to T1 leads to more efficient TADF."
+        },
+        {
+          "claim": "A longer triplet lifetime favors more efficient TADF.",
+          "verdict": "supported",
+          "reason": "E2 states a longer triplet lifetime leads to more efficient TADF."
+        }
+      ],
+      "claim_count": 8,
+      "unsupported_claims": 0,
+      "partial_claims": 0,
+      "key_points_covered": 0.3333333333333333,
+      "judge_cost_usd": 0.017085,
+      "interpretation": {
+        "correct": true,
+        "reason": "Resolved question matches the reference intent exactly with no changes in meaning or details; expected and actual modes align; no clarification needed.",
+        "judge_cost_usd": 0.00138
+      }
+    },
+    {
+      "id": "clarify/2",
+      "category": "clarification",
+      "pair_id": null,
+      "question": "Compare it with another mechanism.",
+      "expected_mode": "CLARIFICATION",
+      "mode": "CLARIFICATION",
+      "answer": "Which mechanism would you like to compare TADF with?",
+      "latency_s": 5.04,
+      "cost_usd": 0.00023119999999999998,
+      "used_files": [],
+      "evidence": [],
+      "searches": 0,
+      "llm_calls": 1,
+      "prompt_tokens": 1102,
+      "completion_tokens": 242,
+      "cached_tokens": 0,
+      "reasoning_tokens": 129,
+      "usage_by_model": {
+        "gpt-6-luna": {
+          "calls": 1,
+          "input_tokens": 1102,
+          "output_tokens": 242,
+          "cached_tokens": 0,
+          "reasoning_tokens": 129
+        }
+      },
+      "calls_by_role": {
+        "planner": 1
+      },
+      "complexity": "complex",
+      "route": null,
+      "escalated": false,
+      "review_rounds": 0,
+      "parallel_turns": 0,
+      "stop_reason": "clarification_needed",
+      "trace": [
+        {
+          "step": 1,
+          "type": "interpretation",
+          "role": "planner",
+          "t": 5.04,
+          "original_question": "Compare it with another mechanism.",
+          "standalone_question": "Compare thermally activated delayed fluorescence (TADF) with another mechanism.",
+          "needs_clarification": true
+        },
+        {
+          "step": 2,
+          "type": "plan",
+          "role": "planner",
+          "t": 5.04,
+          "model": "gpt-6-luna",
+          "domain": "in_domain",
+          "reason": "Thermally activated delayed fluorescence (TADF) is an OLED emitter mechanism, but the mechanism to compare it with is unspecified.",
+          "complexity": "complex",
+          "sequential": false,
+          "subquestions": [
+            "Compare thermally activated delayed fluorescence (TADF) with another mechanism."
+          ]
+        },
+        {
+          "step": 3,
+          "type": "stop",
+          "role": null,
+          "t": 5.04,
+          "reason": "clarification_needed",
+          "detail": "Which mechanism would you like to compare TADF with?"
+        }
+      ],
+      "original_question": "Compare it with another mechanism.",
+      "standalone_question": "Compare thermally activated delayed fluorescence (TADF) with another mechanism.",
+      "conversation_id": "clarify",
+      "turn": 2,
+      "run": 0,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": null,
+      "claims": [],
+      "claim_count": 0,
+      "unsupported_claims": 0,
+      "partial_claims": 0,
+      "key_points_covered": null,
+      "judge_cost_usd": 0.0,
+      "interpretation": {
+        "correct": true,
+        "reason": "The assistant requested the missing essential detail—specifying which mechanism to compare with TADF—without arbitrarily choosing one, matching the expected clarification mode and the reference intent.",
+        "judge_cost_usd": 0.00278
+      }
+    },
+    {
+      "id": "clarify/3",
+      "category": "clarification",
+      "pair_id": null,
+      "question": "Phosphorescence.",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "**The key difference is the state from which light is emitted:** TADF converts triplet excitations back into singlets before emission, whereas phosphorescence emits directly from the triplet state. [1]\n\n| Aspect | TADF | Phosphorescence |\n|---|---|---|\n| Emission pathway | Thermal energy drives reverse intersystem crossing (RISC), **T₁ → S₁**, followed by fluorescence **S₁ → S₀**. [2] [3] | Direct **T₁ → S₀** emission, a transition forbidden in an ordinary fluorescent system. [1] |\n| Key requirement | A small singlet–triplet energy gap, ΔE_ST, comparable to or smaller than thermal energy k_BT, enables efficient thermally assisted triplet-to-singlet transfer. [2] | Common OLED phosphorescent emitters are cyclometallated Ir(III) complexes dispersed in an organic host. [4] |\n| Role of heavy metals | Spin–orbit coupling is still required, but a heavy-metal atom is not necessary because near-resonance between S₁ and T₁ reduces reliance on strong spin–orbit coupling. [5] | Common emitters use Ir(III); the retrieved examples also include Au(III) and Pt(II) complexes. [4] |\n| Temperature dependence | Triplet-to-singlet transfer is thermally activated; cooling can reduce delayed emission, and minimizing ΔE_ST reduces this temperature dependence. [5] [1] | The emission pathway is direct triplet-to-ground-state emission rather than thermal upconversion to S₁. [1] |\n\n**“Delayed fluorescence” is not direct triplet emission:** the triplet acts as a reservoir, with repeated T₁ ↔ S₁ transfer possible before fluorescence occurs. The delayed light comes from the same S₁ → S₀ transition as prompt fluorescence. [5] [3]",
+      "latency_s": 38.01,
+      "cost_usd": 0.030985850000000002,
+      "used_files": [
+        "Chapter 3 Optics.pdf",
+        "Chapter 6 Organic Light Emitters.pdf",
+        "OLED Display Fundamentals and Applications - 2017 - Tsujimura.pdf",
+        "[Review - Nat] The role of chemical design in the performance of organic semiconductors.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "c99c4b00b",
+          "title": "OLED Display Fundamentals and Applications - 2017 - Tsujimura",
+          "url": null,
+          "file_name": "OLED Display Fundamentals and Applications - 2017 - Tsujimura.pdf",
+          "page": 52
+        },
+        {
+          "chunk_id": "cce3c5245",
+          "title": "Chapter 6 Organic Light Emitters",
+          "url": null,
+          "file_name": "Chapter 6 Organic Light Emitters.pdf",
+          "page": 124
+        },
+        {
+          "chunk_id": "c589b430f",
+          "title": "Chapter 6 Organic Light Emitters",
+          "url": null,
+          "file_name": "Chapter 6 Organic Light Emitters.pdf",
+          "page": 127
+        },
+        {
+          "chunk_id": "c951a28b6",
+          "title": "The role of chemical design in the performance of organic semiconductors",
+          "url": "https://doi.org/10.1038/s41570-019-0152-9",
+          "file_name": "[Review - Nat] The role of chemical design in the performance of organic semiconductors.pdf",
+          "page": 8
+        },
+        {
+          "chunk_id": "c8b2e766c",
+          "title": "Chapter 3 Optics",
+          "url": null,
+          "file_name": "Chapter 3 Optics.pdf",
+          "page": 143
+        }
+      ],
+      "searches": 3,
+      "llm_calls": 9,
+      "prompt_tokens": 26020,
+      "completion_tokens": 2296,
+      "cached_tokens": 6235,
+      "reasoning_tokens": 90,
+      "usage_by_model": {
+        "gpt-6-luna": {
+          "calls": 7,
+          "input_tokens": 18705,
+          "output_tokens": 833,
+          "cached_tokens": 6235,
+          "reasoning_tokens": 90
+        },
+        "gpt-6.1-sol": {
+          "calls": 2,
+          "input_tokens": 7315,
+          "output_tokens": 1463,
+          "cached_tokens": 0,
+          "reasoning_tokens": 0
+        }
+      },
+      "calls_by_role": {
+        "planner": 1,
+        "worker1": 3,
+        "worker2": 3,
+        "orchestrator": 1,
+        "reviewer": 1
+      },
+      "complexity": "complex",
+      "route": "team",
+      "escalated": false,
+      "review_rounds": 1,
+      "parallel_turns": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "interpretation",
+          "role": "planner",
+          "t": 3.71,
+          "original_question": "Phosphorescence.",
+          "standalone_question": "Compare thermally activated delayed fluorescence (TADF) with phosphorescence.",
+          "needs_clarification": false
+        },
+        {
+          "step": 2,
+          "type": "plan",
+          "role": "planner",
+          "t": 3.71,
+          "model": "gpt-6-luna",
+          "domain": "in_domain",
+          "reason": "The user is asking to compare two OLED-relevant emission mechanisms.",
+          "complexity": "complex",
+          "sequential": false,
+          "subquestions": [
+            "How does thermally activated delayed fluorescence (TADF) produce emission?",
+            "How does phosphorescence produce emission, and how does its emission pathway differ from TADF?"
+          ]
+        },
+        {
+          "step": 3,
+          "type": "route",
+          "role": "planner",
+          "t": 3.72,
+          "route": "team"
+        },
+        {
+          "step": 4,
+          "type": "worker_start",
+          "role": "worker1",
+          "t": 3.72,
+          "model": "gpt-6-luna",
+          "subquestions": [
+            "How does thermally activated delayed fluorescence (TADF) produce emission?"
+          ]
+        },
+        {
+          "step": 5,
+          "type": "worker_start",
+          "role": "worker2",
+          "t": 3.72,
+          "model": "gpt-6-luna",
+          "subquestions": [
+            "How does phosphorescence produce emission, and how does its emission pathway differ from TADF?"
+          ]
+        },
+        {
+          "step": 6,
+          "type": "search",
+          "role": "worker1",
+          "t": 6.43,
+          "query": "How does thermally activated delayed fluorescence produce emission through reverse intersystem crossing?",
+          "status": "ok",
+          "max_relevance": 0.791,
+          "survivor_count": 4,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 7,
+          "type": "search",
+          "role": "worker2",
+          "t": 7.83,
+          "query": "How does phosphorescence produce emission, and how does its pathway differ from thermally activated delayed fluorescence?",
+          "status": "ok",
+          "max_relevance": 0.625,
+          "survivor_count": 8,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 8,
+          "type": "findings_rejected",
+          "role": "worker1",
+          "t": 9.01,
+          "errors": [
+            "Unknown chunk IDs: c8d2b766c."
+          ]
+        },
+        {
+          "step": 9,
+          "type": "search",
+          "role": "worker2",
+          "t": 11.11,
+          "query": "Phosphorescence OLED radiative triplet-to-ground-state transition spin orbit coupling versus reverse intersystem crossing TADF",
+          "status": "ok",
+          "max_relevance": 0.766,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 10,
+          "type": "worker_done",
+          "role": "worker1",
+          "t": 11.47,
+          "status": "found",
+          "citations": 3
+        },
+        {
+          "step": 11,
+          "type": "worker_done",
+          "role": "worker2",
+          "t": 14.07,
+          "status": "found",
+          "citations": 2
+        },
+        {
+          "step": 12,
+          "type": "orchestrate",
+          "role": "orchestrator",
+          "t": 14.07,
+          "model": "gpt-6.1-sol",
+          "chunks": 5
+        },
+        {
+          "step": 13,
+          "type": "review",
+          "role": "reviewer",
+          "t": 38.0,
+          "model": "gpt-6.1-sol",
+          "round": 1,
+          "claims": 11,
+          "unsupported": 0,
+          "core_question_answered": true,
+          "unsupported_claims": []
+        },
+        {
+          "step": 14,
+          "type": "stop",
+          "role": null,
+          "t": 38.0,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "original_question": "Phosphorescence.",
+      "standalone_question": "Compare thermally activated delayed fluorescence (TADF) with phosphorescence.",
+      "conversation_id": "clarify",
+      "turn": 3,
+      "run": 0,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": true,
+      "claims": [
+        {
+          "claim": "TADF converts triplet excitations back into singlets before emission, whereas phosphorescence emits directly from the triplet state.",
+          "verdict": "supported",
+          "reason": "E1 describes TADF as upconversion from T1 to S1 by thermal energy and notes phosphorescent emission is T1→S0; E4 schematic shows ISC then phosphorescence."
+        },
+        {
+          "claim": "In TADF, thermal energy drives reverse intersystem crossing (T1 → S1), followed by fluorescence (S1 → S0).",
+          "verdict": "supported",
+          "reason": "E1 explains thermal upconversion T1→S1; E2 states ΔEST≈kBT enables S1←T1 (RISC) leading to delayed fluorescence; E5 shows T1→S1 with thermally activated kISC,T and emission via S1→S0."
+        },
+        {
+          "claim": "Phosphorescence is direct T1 → S0 emission, a transition forbidden in an ordinary fluorescent system.",
+          "verdict": "supported",
+          "reason": "E1: in fluorescent system, phosphorescent emission from T1 to S0 is forbidden; phosphorescence corresponds to T1→S0 emission."
+        },
+        {
+          "claim": "Efficient TADF requires a small singlet–triplet energy gap ΔEST comparable to or smaller than kBT.",
+          "verdict": "supported",
+          "reason": "E2: molecules whose ΔEST is comparable to or less than kBT enable efficient S1←T1; E1 and E5 emphasize minimizing ΔEST."
+        },
+        {
+          "claim": "Common OLED phosphorescent emitters are cyclometallated Ir(III) complexes dispersed in an organic host.",
+          "verdict": "supported",
+          "reason": "E4 explicitly states the most commonly used phosphorescent emitters are cyclometallated Ir(III) complexes dispersed within an organic host."
+        },
+        {
+          "claim": "For TADF, spin–orbit coupling is still required, but a heavy-metal atom is not necessary because near-resonance between S1 and T1 reduces reliance on strong spin–orbit coupling.",
+          "verdict": "supported",
+          "reason": "E5: spin–orbit coupling is required to mix spin states, but heavy metal is not required since near-resonance reduces reliance on magnitude of SO coupling."
+        },
+        {
+          "claim": "Common phosphorescent emitters use Ir(III); examples also include Au(III) and Pt(II) complexes.",
+          "verdict": "supported",
+          "reason": "E4 mentions Ir(III) as common; also cites Ir-free phosphorescent emitters including cyclometallated Au(III) and examples of Pt(II) complexes."
+        },
+        {
+          "claim": "TADF’s triplet-to-singlet transfer is thermally activated; cooling reduces delayed emission, and minimizing ΔEST reduces this temperature dependence.",
+          "verdict": "supported",
+          "reason": "E1: TADF emission decreases as temperature is decreased; minimizing ΔEST is needed to minimize temperature dependence. E3: delayed (TADF) signal decreases at low temperature."
+        },
+        {
+          "claim": "For phosphorescence, emission proceeds directly from triplet to ground state rather than thermal upconversion to S1.",
+          "verdict": "supported",
+          "reason": "E1 distinguishes phosphorescent emission T1→S0 from TADF upconversion T1→S1."
+        },
+        {
+          "claim": "In delayed fluorescence, the triplet acts as a reservoir with repeated T1 ↔ S1 transfer possible before fluorescence occurs.",
+          "verdict": "supported",
+          "reason": "E5 describes repeated T1→S1→T1 cycling until fluorescence is observed."
+        },
+        {
+          "claim": "The delayed light in TADF comes from the same S1 → S0 transition as prompt fluorescence.",
+          "verdict": "supported",
+          "reason": "E3: prompt and delayed fluorescence spectra peak at the same wavelength, indicating both arise from S1→S0."
+        }
+      ],
+      "claim_count": 11,
+      "unsupported_claims": 0,
+      "partial_claims": 0,
+      "key_points_covered": 0.3333333333333333,
+      "judge_cost_usd": 0.025315,
+      "interpretation": {
+        "correct": false,
+        "reason": "The resolved intent broadens to a general comparison between TADF and phosphorescence and omits the specific focus on how each harvests triplet excitons, which is essential per the reference intent and criteria.",
+        "judge_cost_usd": 0.00605
+      }
+    },
+    {
+      "id": "cancel_pending/1",
+      "category": "clarification_topic_switch",
+      "pair_id": null,
+      "question": "How does thermally activated delayed fluorescence (TADF) work?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "TADF uses molecules with a small singlet–triplet energy gap (ΔE_ST), comparable to or below thermal energy. Heat enables triplet excitons in T₁ to undergo endothermic reverse intersystem crossing (RISC) to S₁; from S₁ they emit fluorescence. Because triplets can be recycled through T₁→S₁→T₁ before non-radiative loss, the fluorescence is delayed. A closer S₁–T₁ energy match and a longer triplet lifetime favor more efficient TADF. [1] [2]",
+      "latency_s": 13.23,
+      "cost_usd": 0.00735411,
+      "used_files": [
+        "Chapter 3 Optics.pdf",
+        "Chapter 6 Organic Light Emitters.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "cce3c5245",
+          "title": "Chapter 6 Organic Light Emitters",
+          "url": null,
+          "file_name": "Chapter 6 Organic Light Emitters.pdf",
+          "page": 124
+        },
+        {
+          "chunk_id": "c8b2e766c",
+          "title": "Chapter 3 Optics",
+          "url": null,
+          "file_name": "Chapter 3 Optics.pdf",
+          "page": 143
+        }
+      ],
+      "searches": 1,
+      "llm_calls": 4,
+      "prompt_tokens": 6063,
+      "completion_tokens": 725,
+      "cached_tokens": 3321,
+      "reasoning_tokens": 31,
+      "usage_by_model": {
+        "gpt-6-luna": {
+          "calls": 3,
+          "input_tokens": 4675,
+          "output_tokens": 299,
+          "cached_tokens": 3321,
+          "reasoning_tokens": 31
+        },
+        "gpt-6.1-sol": {
+          "calls": 1,
+          "input_tokens": 1388,
+          "output_tokens": 426,
+          "cached_tokens": 0,
+          "reasoning_tokens": 0
+        }
+      },
+      "calls_by_role": {
+        "planner": 1,
+        "light": 2,
+        "reviewer": 1
+      },
+      "complexity": "simple",
+      "route": "light",
+      "escalated": false,
+      "review_rounds": 1,
+      "parallel_turns": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "plan",
+          "role": "planner",
+          "t": 1.77,
+          "model": "gpt-6-luna",
+          "domain": "in_domain",
+          "reason": "Thermally activated delayed fluorescence (TADF) is an OLED emitter mechanism.",
+          "complexity": "simple",
+          "sequential": false,
+          "subquestions": [
+            "How does thermally activated delayed fluorescence (TADF) work?"
+          ]
+        },
+        {
+          "step": 2,
+          "type": "route",
+          "role": "planner",
+          "t": 1.77,
+          "route": "light"
+        },
+        {
+          "step": 3,
+          "type": "search",
+          "role": "light",
+          "t": 3.38,
+          "query": "How does thermally activated delayed fluorescence work, including reverse intersystem crossing and singlet-triplet energy gap?",
+          "status": "ok",
+          "max_relevance": 0.892,
+          "survivor_count": 7,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 4,
+          "type": "review",
+          "role": "reviewer",
+          "t": 13.22,
+          "model": "gpt-6.1-sol",
+          "round": 1,
+          "claims": 5,
+          "unsupported": 0,
+          "core_question_answered": true,
+          "unsupported_claims": []
+        },
+        {
+          "step": 5,
+          "type": "stop",
+          "role": null,
+          "t": 13.22,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "original_question": "How does thermally activated delayed fluorescence (TADF) work?",
+      "standalone_question": "How does thermally activated delayed fluorescence (TADF) work?",
+      "conversation_id": "cancel_pending",
+      "turn": 1,
+      "run": 0,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": true,
+      "claims": [
+        {
+          "claim": "TADF uses molecules with a small singlet–triplet energy gap (ΔE_ST), comparable to or below thermal energy.",
+          "verdict": "supported",
+          "reason": "E1 states TADF uses molecules whose ΔE_ST is comparable to or less than kBT."
+        },
+        {
+          "claim": "Heat enables triplet excitons in T1 to undergo endothermic reverse intersystem crossing (RISC) to S1, from which they emit fluorescence.",
+          "verdict": "supported",
+          "reason": "E1 describes endothermic S1←T1 transfer (sometimes referred to as RISC) leading to delayed fluorescence; E2 notes T1→S1 is thermally activated."
+        },
+        {
+          "claim": "Triplets can be recycled through T1→S1→T1 before non-radiative loss, causing delayed fluorescence.",
+          "verdict": "supported",
+          "reason": "E2 describes the emission cycle T1→S1→T1 persisting and leading to delayed fluorescence, contingent on non-radiative rates."
+        },
+        {
+          "claim": "A closer S1–T1 energy match and a longer triplet lifetime favor more efficient TADF.",
+          "verdict": "supported",
+          "reason": "E2 explicitly states closer S1–T1 match and longer triplet lifetime lead to more efficient TADF."
+        }
+      ],
+      "claim_count": 4,
+      "unsupported_claims": 0,
+      "partial_claims": 0,
+      "key_points_covered": 0.3333333333333333,
+      "judge_cost_usd": 0.01182,
+      "interpretation": {
+        "correct": true,
+        "reason": "Resolved question matches the reference intent exactly with no changes to meaning or details; mode aligns (RAG) and no clarification was necessary.",
+        "judge_cost_usd": 0.0014
+      }
+    },
+    {
+      "id": "cancel_pending/2",
+      "category": "clarification_topic_switch",
+      "pair_id": null,
+      "question": "Compare it with another mechanism.",
+      "expected_mode": "CLARIFICATION",
+      "mode": "CLARIFICATION",
+      "answer": "Which mechanism would you like to compare with TADF, such as phosphorescence or triplet–triplet annihilation?",
+      "latency_s": 3.43,
+      "cost_usd": 0.0001949,
+      "used_files": [],
+      "evidence": [],
+      "searches": 0,
+      "llm_calls": 1,
+      "prompt_tokens": 1074,
+      "completion_tokens": 175,
+      "cached_tokens": 0,
+      "reasoning_tokens": 67,
+      "usage_by_model": {
+        "gpt-6-luna": {
+          "calls": 1,
+          "input_tokens": 1074,
+          "output_tokens": 175,
+          "cached_tokens": 0,
+          "reasoning_tokens": 67
+        }
+      },
+      "calls_by_role": {
+        "planner": 1
+      },
+      "complexity": "complex",
+      "route": null,
+      "escalated": false,
+      "review_rounds": 0,
+      "parallel_turns": 0,
+      "stop_reason": "clarification_needed",
+      "trace": [
+        {
+          "step": 1,
+          "type": "interpretation",
+          "role": "planner",
+          "t": 3.42,
+          "original_question": "Compare it with another mechanism.",
+          "standalone_question": "Compare thermally activated delayed fluorescence (TADF) with another mechanism.",
+          "needs_clarification": true
+        },
+        {
+          "step": 2,
+          "type": "plan",
+          "role": "planner",
+          "t": 3.42,
+          "model": "gpt-6-luna",
+          "domain": "in_domain",
+          "reason": "The question refers to comparing OLED emission mechanisms, but does not specify the mechanism to compare with TADF.",
+          "complexity": "complex",
+          "sequential": false,
+          "subquestions": [
+            "Compare thermally activated delayed fluorescence (TADF) with another mechanism."
+          ]
+        },
+        {
+          "step": 3,
+          "type": "stop",
+          "role": null,
+          "t": 3.42,
+          "reason": "clarification_needed",
+          "detail": "Which mechanism would you like to compare with TADF, such as phosphorescence or triplet–triplet annihilation?"
+        }
+      ],
+      "original_question": "Compare it with another mechanism.",
+      "standalone_question": "Compare thermally activated delayed fluorescence (TADF) with another mechanism.",
+      "conversation_id": "cancel_pending",
+      "turn": 2,
+      "run": 0,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": null,
+      "claims": [],
+      "claim_count": 0,
+      "unsupported_claims": 0,
+      "partial_claims": 0,
+      "key_points_covered": null,
+      "judge_cost_usd": 0.0,
+      "interpretation": {
+        "correct": true,
+        "reason": "Resolved question preserves TADF as the subject and requests the missing comparison target, matching the reference intent. Mode is clarification as expected, and the clarification asks which mechanism to compare with TADF without arbitrarily selecting one; examples are acceptable.",
+        "judge_cost_usd": 0.00355125
+      }
+    },
+    {
+      "id": "cancel_pending/3",
+      "category": "clarification_topic_switch",
+      "pair_id": null,
+      "question": "Never mind. How do I bake a chocolate cake?",
+      "expected_mode": "OFF_TOPIC",
+      "mode": "OFF_TOPIC",
+      "answer": "No Answer: The question is not related to OLED display technology.",
+      "latency_s": 2.28,
+      "cost_usd": 0.0001782,
+      "used_files": [],
+      "evidence": [],
+      "searches": 0,
+      "llm_calls": 1,
+      "prompt_tokens": 1192,
+      "completion_tokens": 118,
+      "cached_tokens": 0,
+      "reasoning_tokens": 44,
+      "usage_by_model": {
+        "gpt-6-luna": {
+          "calls": 1,
+          "input_tokens": 1192,
+          "output_tokens": 118,
+          "cached_tokens": 0,
+          "reasoning_tokens": 44
+        }
+      },
+      "calls_by_role": {
+        "planner": 1
+      },
+      "complexity": "simple",
+      "route": null,
+      "escalated": false,
+      "review_rounds": 0,
+      "parallel_turns": 0,
+      "stop_reason": "out_of_domain",
+      "trace": [
+        {
+          "step": 1,
+          "type": "interpretation",
+          "role": "planner",
+          "t": 2.27,
+          "original_question": "Never mind. How do I bake a chocolate cake?",
+          "standalone_question": "How do I bake a chocolate cake?",
+          "needs_clarification": false
+        },
+        {
+          "step": 2,
+          "type": "plan",
+          "role": "planner",
+          "t": 2.27,
+          "model": "gpt-6-luna",
+          "domain": "out_of_domain",
+          "reason": "The user asks about baking, which is unrelated to OLEDs and displays.",
+          "complexity": "simple",
+          "sequential": false,
+          "subquestions": [
+            "How do I bake a chocolate cake?"
+          ]
+        },
+        {
+          "step": 3,
+          "type": "stop",
+          "role": null,
+          "t": 2.28,
+          "reason": "out_of_domain",
+          "detail": "The user asks about baking, which is unrelated to OLEDs and displays."
+        }
+      ],
+      "original_question": "Never mind. How do I bake a chocolate cake?",
+      "standalone_question": "How do I bake a chocolate cake?",
+      "conversation_id": "cancel_pending",
+      "turn": 3,
+      "run": 0,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": null,
+      "claims": [],
+      "claim_count": 0,
+      "unsupported_claims": 0,
+      "partial_claims": 0,
+      "key_points_covered": null,
+      "judge_cost_usd": 0.0,
+      "interpretation": {
+        "correct": true,
+        "reason": "The interpretation correctly drops the prior topic and resolves the new question as “How do I bake a chocolate cake?” matching the reference intent. The mode is set to OFF_TOPIC as expected, and no unnecessary clarification was requested.",
+        "judge_cost_usd": 0.00221
+      }
+    },
+    {
+      "id": "no_overclarify/1",
+      "category": "unnecessary_clarification",
+      "pair_id": null,
+      "question": "Why do electrically doped (p-i-n) transport layers lower the operating voltage of OLEDs?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "Electrically doped p–i–n OLEDs lower operating voltage by reducing **both bulk transport losses and contact-injection barriers**. [1][2]\n\n- **Smaller voltage drops in the transport layers:** p-doping the hole-transport layer with an electron acceptor and n-doping the electron-transport layer with an electron donor greatly increase their conductivity. Consequently, the electric fields—and therefore voltage drops—across these layers are small, even when the layers are relatively thick. [1]\n- **Easier injection at the electrodes:** a highly doped region at the contact produces a thin space-charge barrier through which carriers can tunnel. This enables ohmic injection despite a substantial mismatch between the metal work function and organic transport level; in an undoped device, carriers instead have to overcome the barrier. [2]\n\nThus, less applied voltage is wasted on injection and transport, reducing internal electrical losses and bringing the drive voltage toward the energy scale of the emitted light plus the exciton binding energy. [3]",
+      "latency_s": 26.75,
+      "cost_usd": 0.01981613,
+      "used_files": [
+        "Highly efficient organic light emitting diodes (OLED) for displays and lighting.pdf",
+        "[Franky So] Organic Electronics Materials, Processing, Devices and Applications.pdf",
+        "[p-i-n review] Highly Efficient Organic Devices Based on Electrically Doped Transport Layers.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "c7363f20f",
+          "title": "Organic Electronics Materials, Processing, Devices and Applications",
+          "url": null,
+          "file_name": "[Franky So] Organic Electronics Materials, Processing, Devices and Applications.pdf",
+          "page": 440
+        },
+        {
+          "chunk_id": "cb1b83a12",
+          "title": "Highly efficient organic light emitting diodes (OLED) for displays and lighting",
+          "url": null,
+          "file_name": "Highly efficient organic light emitting diodes (OLED) for displays and lighting.pdf",
+          "page": 5
+        },
+        {
+          "chunk_id": "c1fa5d44b",
+          "title": "Highly Efficient Organic Devices Based on Electrically Doped Transport Layers",
+          "url": "https://doi.org/10.1021/cr050156n",
+          "file_name": "[p-i-n review] Highly Efficient Organic Devices Based on Electrically Doped Transport Layers.pdf",
+          "page": 19
+        }
+      ],
+      "searches": 3,
+      "llm_calls": 9,
+      "prompt_tokens": 20455,
+      "completion_tokens": 1573,
+      "cached_tokens": 5763,
+      "reasoning_tokens": 54,
+      "usage_by_model": {
+        "gpt-6-luna": {
+          "calls": 7,
+          "input_tokens": 15678,
+          "output_tokens": 686,
+          "cached_tokens": 5763,
+          "reasoning_tokens": 54
+        },
+        "gpt-6.1-sol": {
+          "calls": 2,
+          "input_tokens": 4777,
+          "output_tokens": 887,
+          "cached_tokens": 0,
+          "reasoning_tokens": 0
+        }
+      },
+      "calls_by_role": {
+        "planner": 1,
+        "worker1": 3,
+        "worker2": 3,
+        "orchestrator": 1,
+        "reviewer": 1
+      },
+      "complexity": "complex",
+      "route": "team",
+      "escalated": false,
+      "review_rounds": 1,
+      "parallel_turns": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "plan",
+          "role": "planner",
+          "t": 2.11,
+          "model": "gpt-6-luna",
+          "domain": "in_domain",
+          "reason": "The question concerns charge transport and operating voltage in OLED devices.",
+          "complexity": "complex",
+          "sequential": false,
+          "subquestions": [
+            "What mechanisms do electrical dopants change in p-i-n OLED transport layers?",
+            "How do those changes lower the OLED operating voltage?"
+          ]
+        },
+        {
+          "step": 2,
+          "type": "route",
+          "role": "planner",
+          "t": 2.11,
+          "route": "team"
+        },
+        {
+          "step": 3,
+          "type": "worker_start",
+          "role": "worker1",
+          "t": 2.12,
+          "model": "gpt-6-luna",
+          "subquestions": [
+            "What mechanisms do electrical dopants change in p-i-n OLED transport layers?"
+          ]
+        },
+        {
+          "step": 4,
+          "type": "worker_start",
+          "role": "worker2",
+          "t": 2.12,
+          "model": "gpt-6-luna",
+          "subquestions": [
+            "How do those changes lower the OLED operating voltage?"
+          ]
+        },
+        {
+          "step": 5,
+          "type": "search",
+          "role": "worker2",
+          "t": 4.7,
+          "query": "How does electrical doping of p-i-n OLED transport layers reduce operating voltage?",
+          "status": "ok",
+          "max_relevance": 0.894,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 6,
+          "type": "search",
+          "role": "worker1",
+          "t": 5.64,
+          "query": "What physical mechanisms do electrical dopants change in p-i-n OLED transport layers?",
+          "status": "ok",
+          "max_relevance": 0.79,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 3
+        },
+        {
+          "step": 7,
+          "type": "findings_rejected",
+          "role": "worker2",
+          "t": 6.99,
+          "errors": [
+            "Unknown chunk IDs: c1fa5d44, c7363f20."
+          ]
+        },
+        {
+          "step": 8,
+          "type": "search",
+          "role": "worker1",
+          "t": 8.69,
+          "query": "How do p-type and n-type dopants alter conductivity, carrier density, contact injection barriers and electric fields in OLED transport layers?",
+          "status": "ok",
+          "max_relevance": 0.907,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 2
+        },
+        {
+          "step": 9,
+          "type": "worker_done",
+          "role": "worker2",
+          "t": 9.07,
+          "status": "found",
+          "citations": 3
+        },
+        {
+          "step": 10,
+          "type": "worker_done",
+          "role": "worker1",
+          "t": 12.19,
+          "status": "found",
+          "citations": 2
+        },
+        {
+          "step": 11,
+          "type": "orchestrate",
+          "role": "orchestrator",
+          "t": 12.19,
+          "model": "gpt-6.1-sol",
+          "chunks": 4
+        },
+        {
+          "step": 12,
+          "type": "review",
+          "role": "reviewer",
+          "t": 26.74,
+          "model": "gpt-6.1-sol",
+          "round": 1,
+          "claims": 8,
+          "unsupported": 0,
+          "core_question_answered": true,
+          "unsupported_claims": []
+        },
+        {
+          "step": 13,
+          "type": "stop",
+          "role": null,
+          "t": 26.74,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "original_question": "Why do electrically doped (p-i-n) transport layers lower the operating voltage of OLEDs?",
+      "standalone_question": "Why do electrically doped (p-i-n) transport layers lower the operating voltage of OLEDs?",
+      "conversation_id": "no_overclarify",
+      "turn": 1,
+      "run": 0,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": true,
+      "claims": [
+        {
+          "claim": "Electrically doped p–i–n OLEDs lower operating voltage by reducing both bulk transport losses and contact-injection barriers.",
+          "verdict": "supported",
+          "reason": "E3 states that doping the charge transport layers reduces their internal electrical losses, and E2 explains improved ohmic contact formation (reduced injection barriers)."
+        },
+        {
+          "claim": "p-doping the hole-transport layer and n-doping the electron-transport layer greatly increase their conductivity.",
+          "verdict": "supported",
+          "reason": "E1 explicitly states that p-type and n-type doping greatly increase conductivity in both transporting layers."
+        },
+        {
+          "claim": "As a result of the increased conductivity, electric fields and voltage drops across the transport layers are small, even for relatively thick layers.",
+          "verdict": "supported",
+          "reason": "E1 states that electric field strengths are low and voltage drops are small across even relatively thick layers."
+        },
+        {
+          "claim": "A highly doped region at the contact produces a thin space-charge barrier that enables tunneling and ohmic injection despite a mismatch between metal work function and transport levels.",
+          "verdict": "supported",
+          "reason": "E2 states that highly doped layers form thin barriers enabling tunneling and ohmic injection despite considerable energy barriers between transport levels and metal work functions."
+        },
+        {
+          "claim": "In undoped devices, carriers have to overcome the injection barrier at the contacts.",
+          "verdict": "supported",
+          "reason": "E2 contrasts undoped devices where carriers need to overcome the barrier."
+        },
+        {
+          "claim": "Doping reduces the applied voltage wasted on injection and transport by lowering internal electrical losses.",
+          "verdict": "supported",
+          "reason": "E3 states that doping reduces internal electrical losses in transport layers; combined with E2’s improved injection, less voltage is wasted on these processes."
+        },
+        {
+          "claim": "The drive voltage approaches the energy of the emitted light plus the exciton binding energy in doped devices.",
+          "verdict": "supported",
+          "reason": "E3 explicitly states drive voltages in the range of the energy of the emitted light plus the exciton binding energy."
+        },
+        {
+          "claim": "Undoped devices exhibit high fields and require excessive operating voltage to achieve high brightness, leading to additional heat dissipation.",
+          "verdict": "supported",
+          "reason": "E2 states undoped devices have high fields, require excessive operating voltage, and that excessive voltage is dissipated causing additional heat."
+        }
+      ],
+      "claim_count": 8,
+      "unsupported_claims": 0,
+      "partial_claims": 0,
+      "key_points_covered": 1.0,
+      "judge_cost_usd": 0.01245375,
+      "interpretation": {
+        "correct": true,
+        "reason": "The resolved question exactly matches the reference intent in wording and meaning, with no changes to content, scope, or details; no clarification was needed.",
+        "judge_cost_usd": 0.00144625
+      }
+    },
+    {
+      "id": "no_overclarify/2",
+      "category": "unnecessary_clarification",
+      "pair_id": null,
+      "question": "Why does that lower the operating voltage?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "Electrically doped p-i-n transport layers are highly conductive, so the electric field and voltage drop within them are small, reducing internal electrical losses. This lets the drive voltage approach the energy of the emitted light plus the exciton binding energy. [1] Doping also forms thin space-charge barriers at contacts that carriers can tunnel through, allowing ohmic injection despite contact energy barriers and reducing the injection-related voltage penalty. [2]",
+      "latency_s": 30.75,
+      "cost_usd": 0.00898375,
+      "used_files": [
+        "Highly efficient organic light emitting diodes (OLED) for displays and lighting.pdf",
+        "[p-i-n review] Highly Efficient Organic Devices Based on Electrically Doped Transport Layers.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "c1fa5d44b",
+          "title": "Highly Efficient Organic Devices Based on Electrically Doped Transport Layers",
+          "url": "https://doi.org/10.1021/cr050156n",
+          "file_name": "[p-i-n review] Highly Efficient Organic Devices Based on Electrically Doped Transport Layers.pdf",
+          "page": 19
+        },
+        {
+          "chunk_id": "cb1b83a12",
+          "title": "Highly efficient organic light emitting diodes (OLED) for displays and lighting",
+          "url": null,
+          "file_name": "Highly efficient organic light emitting diodes (OLED) for displays and lighting.pdf",
+          "page": 5
+        }
+      ],
+      "searches": 1,
+      "llm_calls": 5,
+      "prompt_tokens": 9657,
+      "completion_tokens": 928,
+      "cached_tokens": 2875,
+      "reasoning_tokens": 0,
+      "usage_by_model": {
+        "gpt-6-luna": {
+          "calls": 4,
+          "input_tokens": 8130,
+          "output_tokens": 411,
+          "cached_tokens": 2875,
+          "reasoning_tokens": 0
+        },
+        "gpt-6.1-sol": {
+          "calls": 1,
+          "input_tokens": 1527,
+          "output_tokens": 517,
+          "cached_tokens": 0,
+          "reasoning_tokens": 0
+        }
+      },
+      "calls_by_role": {
+        "planner": 1,
+        "light": 3,
+        "reviewer": 1
+      },
+      "complexity": "simple",
+      "route": "light",
+      "escalated": false,
+      "review_rounds": 1,
+      "parallel_turns": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "interpretation",
+          "role": "planner",
+          "t": 14.57,
+          "original_question": "Why does that lower the operating voltage?",
+          "standalone_question": "Why do electrically doped (p-i-n) transport layers lower the operating voltage of OLEDs?",
+          "needs_clarification": false
+        },
+        {
+          "step": 2,
+          "type": "plan",
+          "role": "planner",
+          "t": 14.57,
+          "model": "gpt-6-luna",
+          "domain": "in_domain",
+          "reason": "The question asks about the operating-voltage mechanism in electrically doped OLED transport layers.",
+          "complexity": "simple",
+          "sequential": false,
+          "subquestions": [
+            "Why do electrically doped p-i-n transport layers lower the operating voltage of OLEDs?"
+          ]
+        },
+        {
+          "step": 3,
+          "type": "route",
+          "role": "planner",
+          "t": 14.57,
+          "route": "light"
+        },
+        {
+          "step": 4,
+          "type": "search",
+          "role": "light",
+          "t": 17.59,
+          "query": "Why do electrically doped p-i-n OLED transport layers reduce operating voltage?",
+          "status": "ok",
+          "max_relevance": 0.915,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 5,
+          "type": "answer_rejected",
+          "role": "light",
+          "t": 19.92,
+          "errors": [
+            "Unknown chunk IDs: c1fa5d44. Only cite chunk_id values returned by search_documents in this conversation.",
+            "Chunk IDs must appear only inside square brackets, e.g. [c1fa5d44]."
+          ],
+          "revision": 1
+        },
+        {
+          "step": 6,
+          "type": "review",
+          "role": "reviewer",
+          "t": 30.75,
+          "model": "gpt-6.1-sol",
+          "round": 1,
+          "claims": 7,
+          "unsupported": 0,
+          "core_question_answered": true,
+          "unsupported_claims": []
+        },
+        {
+          "step": 7,
+          "type": "stop",
+          "role": null,
+          "t": 30.75,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "original_question": "Why does that lower the operating voltage?",
+      "standalone_question": "Why do electrically doped (p-i-n) transport layers lower the operating voltage of OLEDs?",
+      "conversation_id": "no_overclarify",
+      "turn": 2,
+      "run": 0,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": true,
+      "claims": [
+        {
+          "claim": "Electrically doped p-i-n transport layers are highly conductive.",
+          "verdict": "supported",
+          "reason": "E2 states that highly doped transport layers have high conductivity."
+        },
+        {
+          "claim": "Therefore the electric field and voltage drop within the doped transport layers are small.",
+          "verdict": "supported",
+          "reason": "E2 says the electric field in doped transport layers is quite low, implying a small voltage drop."
+        },
+        {
+          "claim": "This reduces internal electrical losses.",
+          "verdict": "supported",
+          "reason": "E1 explicitly states that doping the charge transport layers reduces their internal electrical losses."
+        },
+        {
+          "claim": "This lets the drive voltage approach the energy of the emitted light plus the exciton binding energy.",
+          "verdict": "supported",
+          "reason": "E1 says drive voltages are in the range of the energy of the emitted light plus the exciton binding energy."
+        },
+        {
+          "claim": "Doping forms thin space-charge barriers at contacts that carriers can tunnel through.",
+          "verdict": "supported",
+          "reason": "E2 explains that a thin barrier formed by the space charge layer allows carriers to tunnel through."
+        },
+        {
+          "claim": "This allows ohmic injection despite contact energy barriers.",
+          "verdict": "supported",
+          "reason": "E2 states the thin barrier allows ohmic injection despite considerable energy barriers."
+        },
+        {
+          "claim": "This reduces the injection-related voltage penalty.",
+          "verdict": "partially_supported",
+          "reason": "E2 implies improved injection (ohmic despite barriers), which would lower extra voltage needed, but it does not explicitly state a reduction in an 'injection-related voltage penalty.'"
+        }
+      ],
+      "claim_count": 7,
+      "unsupported_claims": 0,
+      "partial_claims": 1,
+      "key_points_covered": 1.0,
+      "judge_cost_usd": 0.01434625,
+      "interpretation": {
+        "correct": true,
+        "reason": "The ambiguous 'that' is correctly resolved to 'electrically doped (p-i-n) transport layers' in the context of OLEDs, matching the reference intent without altering meaning and without asking unnecessary clarification. The mode also matches the expected RAG.",
+        "judge_cost_usd": 0.001685
+      }
+    },
+    {
+      "id": "korean/1",
+      "category": "multilingual",
+      "pair_id": null,
+      "question": "TADF는 어떻게 작동하나요?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "TADF에서는 전자–정공 재결합으로 생긴 여기자가 보통 단일항과 삼중항 상태에 분포합니다. 삼중항 여기자(T1)는 열에너지를 받아 단일항 상태(S1)로 역계간 전이(RISC)하고, S1에서 바닥상태(S0)로 복사 전이하면서 지연 형광을 냅니다. [1] 이 과정이 효율적이려면 단일항–삼중항 에너지 차이 ΔE_ST가 열에너지 kBT와 비슷하거나 더 작아야 하며, 삼중항에서 S1으로의 전이가 경쟁 비복사 손실보다 빨라야 합니다. [2]",
+      "latency_s": 15.57,
+      "cost_usd": 0.0089167,
+      "used_files": [
+        "Chapter 6 Organic Light Emitters.pdf",
+        "[Review - Nat] All-organic thermally activated delayed fluorescence materials for organic light-emitting diodes.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "cdb478c94",
+          "title": "All-organic thermally activated delayed fluorescence materials for organic light-emitting diodes",
+          "url": null,
+          "file_name": "[Review - Nat] All-organic thermally activated delayed fluorescence materials for organic light-emitting diodes.pdf",
+          "page": 2
+        },
+        {
+          "chunk_id": "cce3c5245",
+          "title": "Chapter 6 Organic Light Emitters",
+          "url": null,
+          "file_name": "Chapter 6 Organic Light Emitters.pdf",
+          "page": 124
+        }
+      ],
+      "searches": 1,
+      "llm_calls": 4,
+      "prompt_tokens": 5602,
+      "completion_tokens": 867,
+      "cached_tokens": 0,
+      "reasoning_tokens": 50,
+      "usage_by_model": {
+        "gpt-6-luna": {
+          "calls": 3,
+          "input_tokens": 3952,
+          "output_tokens": 363,
+          "cached_tokens": 0,
+          "reasoning_tokens": 50
+        },
+        "gpt-6.1-sol": {
+          "calls": 1,
+          "input_tokens": 1650,
+          "output_tokens": 504,
+          "cached_tokens": 0,
+          "reasoning_tokens": 0
+        }
+      },
+      "calls_by_role": {
+        "planner": 1,
+        "light": 2,
+        "reviewer": 1
+      },
+      "complexity": "simple",
+      "route": "light",
+      "escalated": false,
+      "review_rounds": 1,
+      "parallel_turns": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "plan",
+          "role": "planner",
+          "t": 2.03,
+          "model": "gpt-6-luna",
+          "domain": "in_domain",
+          "reason": "TADF는 OLED 발광 재료와 작동 원리에 관한 질문입니다.",
+          "complexity": "simple",
+          "sequential": false,
+          "subquestions": [
+            "열활성화 지연 형광(TADF)은 어떻게 작동하나요?"
+          ]
+        },
+        {
+          "step": 2,
+          "type": "route",
+          "role": "planner",
+          "t": 2.03,
+          "route": "light"
+        },
+        {
+          "step": 3,
+          "type": "search",
+          "role": "light",
+          "t": 3.99,
+          "query": "열활성화 지연 형광(TADF)의 작동 원리와 역계간 전이, 삼중항 여기 상태의 역할은 무엇인가요?",
+          "status": "ok",
+          "max_relevance": 0.632,
+          "survivor_count": 3,
+          "result_count": 3,
+          "new_chunks": 3
+        },
+        {
+          "step": 4,
+          "type": "review",
+          "role": "reviewer",
+          "t": 15.57,
+          "model": "gpt-6.1-sol",
+          "round": 1,
+          "claims": 5,
+          "unsupported": 0,
+          "core_question_answered": true,
+          "unsupported_claims": []
+        },
+        {
+          "step": 5,
+          "type": "stop",
+          "role": null,
+          "t": 15.57,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "original_question": "TADF는 어떻게 작동하나요?",
+      "standalone_question": "TADF는 어떻게 작동하나요?",
+      "conversation_id": "korean",
+      "turn": 1,
+      "run": 0,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": true,
+      "claims": [
+        {
+          "claim": "In TADF, excitons formed by electron–hole recombination are distributed between singlet and triplet states.",
+          "verdict": "supported",
+          "reason": "E1 states that after electron–hole recombination, singlet and triplet excitons are formed (in a 1:3 ratio)."
+        },
+        {
+          "claim": "Triplet excitons (T1) undergo reverse intersystem crossing (RISC) to singlet S1 aided by thermal activation.",
+          "verdict": "supported",
+          "reason": "E1 describes triplet excitons at T1 transferred back to S1 via RISC with the aid of thermal activation; E2 also describes endothermic S1←T1 transfer (RISC)."
+        },
+        {
+          "claim": "From S1, radiative transition to S0 produces delayed fluorescence.",
+          "verdict": "supported",
+          "reason": "E1 states that singlet excitons at S1 are radiatively deactivated to S0 with prompt fluorescence and delayed fluorescence decays; delayed fluorescence arises from back-transfer from T1 to S1."
+        },
+        {
+          "claim": "For efficient TADF, the singlet–triplet energy gap ΔE_ST should be comparable to or smaller than thermal energy kBT.",
+          "verdict": "supported",
+          "reason": "E2 explicitly states TADF entails molecules whose ΔEST is comparable to or less than kBT."
+        },
+        {
+          "claim": "For efficiency, the transition from T1 to S1 must outcompete competing nonradiative losses.",
+          "verdict": "supported",
+          "reason": "E2 notes S1←T1 can be nearly 100% efficient provided competing non-radiative rates are less than the intersystem crossing rate kISC,T."
+        }
+      ],
+      "claim_count": 5,
+      "unsupported_claims": 0,
+      "partial_claims": 0,
+      "key_points_covered": 0.3333333333333333,
+      "judge_cost_usd": 0.0154575,
+      "interpretation": {
+        "correct": true,
+        "reason": "The resolved question exactly matches the original query in Korean and aligns with the reference intent of asking how thermally activated delayed fluorescence (TADF) works. No details were altered, and no clarification was necessary.",
+        "judge_cost_usd": 0.00153
+      }
+    },
+    {
+      "id": "korean/2",
+      "category": "multilingual",
+      "pair_id": null,
+      "question": "그럼 에너지 차이가 왜 작아야 하나요?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "TADF에서는 삼중항 여기 상태(T₁)가 열에너지를 받아 단일항 상태(S₁)로 되돌아가는 역계간전이(RISC)가 지연 형광을 만들어 냅니다. ΔE_ST가 작으면 이 상향 전이에 필요한 에너지 장벽이 낮아져, ΔE_ST가 열에너지 kBT와 비슷하거나 그보다 작을 때 RISC가 효율적으로 일어날 수 있습니다. 또한 제시된 섭동론 식에서 T₁→S₁ 계간전이 속도는 ΔE_ST²에 반비례하므로, 작은 ΔE_ST는 RISC를 돕습니다. [1]\n\n따라서 ΔE_ST를 작게 하는 핵심 이유는 삼중항을 단일항으로 회수해 형광에 활용하기 위함입니다. 다만 효율적인 지연 형광을 얻으려면 이 전이가 다른 비복사 소멸 경로보다 충분히 빨라야 합니다. [1]",
+      "latency_s": 22.89,
+      "cost_usd": 0.00981831,
+      "used_files": [
+        "Chapter 6 Organic Light Emitters.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "cce3c5245",
+          "title": "Chapter 6 Organic Light Emitters",
+          "url": null,
+          "file_name": "Chapter 6 Organic Light Emitters.pdf",
+          "page": 124
+        }
+      ],
+      "searches": 2,
+      "llm_calls": 5,
+      "prompt_tokens": 7115,
+      "completion_tokens": 1332,
+      "cached_tokens": 1551,
+      "reasoning_tokens": 148,
+      "usage_by_model": {
+        "gpt-6-luna": {
+          "calls": 4,
+          "input_tokens": 6084,
+          "output_tokens": 635,
+          "cached_tokens": 1551,
+          "reasoning_tokens": 148
+        },
+        "gpt-6.1-sol": {
+          "calls": 1,
+          "input_tokens": 1031,
+          "output_tokens": 697,
+          "cached_tokens": 0,
+          "reasoning_tokens": 0
+        }
+      },
+      "calls_by_role": {
+        "planner": 1,
+        "light": 3,
+        "reviewer": 1
+      },
+      "complexity": "simple",
+      "route": "light",
+      "escalated": false,
+      "review_rounds": 1,
+      "parallel_turns": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "interpretation",
+          "role": "planner",
+          "t": 4.7,
+          "original_question": "그럼 에너지 차이가 왜 작아야 하나요?",
+          "standalone_question": "그럼 TADF에서 단일항–삼중항 에너지 차이(ΔE_ST)가 왜 작아야 하나요?",
+          "needs_clarification": false
+        },
+        {
+          "step": 2,
+          "type": "plan",
+          "role": "planner",
+          "t": 4.7,
+          "model": "gpt-6-luna",
+          "domain": "in_domain",
+          "reason": "TADF의 단일항–삼중항 에너지 차이와 역계간 전이에 관한 질문입니다.",
+          "complexity": "simple",
+          "sequential": false,
+          "subquestions": [
+            "열활성화 지연 형광(TADF)에서 단일항–삼중항 에너지 차이(ΔE_ST)가 왜 작아야 하나요?"
+          ]
+        },
+        {
+          "step": 3,
+          "type": "route",
+          "role": "planner",
+          "t": 4.7,
+          "route": "light"
+        },
+        {
+          "step": 4,
+          "type": "search",
+          "role": "light",
+          "t": 6.4,
+          "query": "TADF에서 작은 단일항 삼중항 에너지 차이 ΔE_ST가 필요한 이유와 역계간전이 열활성화 설명",
+          "status": "ok",
+          "max_relevance": 0.53,
+          "survivor_count": 1,
+          "result_count": 1,
+          "new_chunks": 1
+        },
+        {
+          "step": 5,
+          "type": "search",
+          "role": "light",
+          "t": 8.24,
+          "query": "작은 ΔEST가 역계간전이 RISC 속도와 열에너지 장벽에 미치는 영향 TADF",
+          "status": "ok",
+          "max_relevance": 0.596,
+          "survivor_count": 3,
+          "result_count": 3,
+          "new_chunks": 2
+        },
+        {
+          "step": 6,
+          "type": "review",
+          "role": "reviewer",
+          "t": 22.88,
+          "model": "gpt-6.1-sol",
+          "round": 1,
+          "claims": 6,
+          "unsupported": 0,
+          "core_question_answered": true,
+          "unsupported_claims": []
+        },
+        {
+          "step": 7,
+          "type": "stop",
+          "role": null,
+          "t": 22.89,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "original_question": "그럼 에너지 차이가 왜 작아야 하나요?",
+      "standalone_question": "그럼 TADF에서 단일항–삼중항 에너지 차이(ΔE_ST)가 왜 작아야 하나요?",
+      "conversation_id": "korean",
+      "turn": 2,
+      "run": 0,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": true,
+      "claims": [
+        {
+          "claim": "In TADF, thermally activated reverse intersystem crossing from T1 to S1 produces delayed fluorescence.",
+          "verdict": "supported",
+          "reason": "E1 states that TADF involves endothermic S1←T1 transfer (sometimes called RISC) leading to delayed fluorescence."
+        },
+        {
+          "claim": "A small ΔEST lowers the energy barrier; when ΔEST is comparable to or less than kBT, RISC can occur efficiently.",
+          "verdict": "supported",
+          "reason": "E1 says ΔEST should be comparable to or less than kBT and that S1←T1 can be nearly 100% efficient under suitable rate conditions."
+        },
+        {
+          "claim": "From perturbation theory, the S1←T1 intersystem crossing rate is inversely proportional to ΔEST^2.",
+          "verdict": "supported",
+          "reason": "E1 explicitly gives kISC,T~S ∝ 1/ΔEST^2."
+        },
+        {
+          "claim": "Making ΔEST small enables harvesting triplets by converting them to singlets for fluorescence.",
+          "verdict": "supported",
+          "reason": "E1 links efficient endothermic S1←T1 transfer to delayed fluorescence, implying triplet harvesting to singlet emission."
+        },
+        {
+          "claim": "For efficient delayed fluorescence, the RISC rate must exceed competing non-radiative decay rates.",
+          "verdict": "supported",
+          "reason": "E1 states S1←T1 can be nearly 100% efficient provided competing non-radiative rates are less than kISC,T; also notes radiative rate should exceed other rates."
+        }
+      ],
+      "claim_count": 5,
+      "unsupported_claims": 0,
+      "partial_claims": 0,
+      "key_points_covered": 0.5,
+      "judge_cost_usd": 0.01491625,
+      "interpretation": {
+        "correct": true,
+        "reason": "The interpretation explicitly specifies TADF and the singlet–triplet energy gap (ΔE_ST) in Korean, aligning with the reference intent to focus on why ΔE_ST must be small in TADF emitters. It preserves language and does not alter scope or details.",
+        "judge_cost_usd": 0.0023625
+      }
+    }
+  ],
+  "conversation_metrics": {
+    "interpretation_accuracy": 0.9523809523809523,
+    "unnecessary_clarification_rate": 0.0,
+    "clarification_recall": 1.0,
+    "correct_interpretation_but_wrong_mode": 0
+  },
+  "chunk_text_removed": true
+}

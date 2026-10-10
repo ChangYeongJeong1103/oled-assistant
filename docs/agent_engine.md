@@ -4,6 +4,14 @@ The OLED Assistant answers every question with an agent. It plans, searches the 
 
 On top of the single agent we added three patterns that can be switched on or off with environment variables: **model routing** (a light and a heavy model, with one escalation), **orchestrator-worker**, and a **reviewer**. Each one was measured against the single agent. Based on those results, parallel tool calling, routing, workers, and the reviewer are all on by default.
 
+## LangGraph and memory upgrade
+
+The application now uses `GraphAgentAssistant`. LangGraph owns coarse workflow nodes, route/escalation conditional edges, progress streaming and SQLite checkpoints. The shared research tool loop, reviewer, worker implementation, budgets and citation validation retain their previous semantics.
+
+Only the planner receives the last five bounded conversation pairs. It returns a standalone question for all downstream roles. Ambiguous contextual follow-ups return `CLARIFICATION` with zero searches; an unresolved question is preserved until the next reply or a topic change. History never becomes evidence. Each request gets new ledger, cache, counters, deadline and trace. API errors do not replace useful history. Empty-history requests use the original planner schema and prompt; contextual clarification is the initial scope.
+
+See [Architecture](architecture.md), [System design](system_design.md), and [Upgrade validation](upgrade_validation.md). Historical model-quality metrics later in this document were measured before this upgrade. The current legacy, stateless graph, empty-history graph and multi-turn evaluations are complete; the measured migration gate passed with the limitations documented in the validation report.
+
 ## Why an agent
 
 A single retrieval of the user's literal question is fragile. A typo ("how does thermaly activted delayed florescence work") or a short, informal question ("why do blue OLEDs die so fast?") can score below the document filter even though the documents cover it, and a question with two parts may need two different searches.
@@ -14,9 +22,11 @@ Lowering the threshold would only let weaker documents through, so we kept the r
 
 | File | Role |
 | :-- | :-- |
+| `src/agent_graph.py` | LangGraph nodes/edges, SQLite persistence, streaming |
+| `src/session_memory.py` | Bounded conversation context and standalone-question planner |
 | `src/agent_runtime.py` | Per-request state and budgets, planner, routing and escalation, the shared tool loop, result format |
 | `src/agent_team.py` | Orchestrator-worker and reviewer |
-| `src/agent_prompts.py` | All prompts and tool schemas |
+| `src/agent_prompts.py` | Research, baseline planning and review prompts/tool schemas |
 | `src/agent_tools.py` | `search_documents`, evidence ledger, citation and findings checks |
 | `src/retrieval.py` | The retrieval stack behind `search_documents`: ChromaDB, relevance filter, reranker ([Retrieval](retrieval.md)) |
 
@@ -26,43 +36,18 @@ All model calls go through the OpenAI **Responses API**. GPT-6 models do not acc
 
 ```mermaid
 flowchart TD
-    Q["1. User Query"] --> UI["2. Streamlit"]
-    UI --> Runtime["3. AgentAssistant.query()"]
-    Runtime --> Planner["4. Planner (GPT-6-Luna)<br/>original query + PLAN_INSTRUCTIONS"]
-    Planner --> Plan["Plan JSON<br/>domain · complexity · subquestions · sequential"]
-    Plan -->|out_of_domain| Off["🔴 OFF_TOPIC"]
-    Plan -->|in_domain / uncertain| Route{"5. Python Route Selector"}
-
-    Route -->|"routing off"| Single["Single Agent<br/>AGENT_MODEL"]
-    Route -->|"simple"| Light["Light Research Agent<br/>GPT-6-Luna"]
-    Route -->|"complex"| Heavy["Heavy Research Agent<br/>GPT-6.1-Sol"]
-    Route -->|"workers on +<br/>2 or more subquestions"| Team
-
-    subgraph Team["Orchestrator-worker"]
-        W1["Luna Worker 1<br/>own context + tool loop"] -->|"findings + citations"| O
-        W2["Luna Worker 2<br/>own context + tool loop"] -->|"findings + citations"| O
-        O["Sol Orchestrator<br/>findings + original cited chunks"]
-    end
-
-    Single & Light & Heavy & O --> Loop["6. Tool-calling Research Loop"]
-    Loop -->|"search_documents"| Search["Shared retrieval stack"]
-    Search --> Ledger["Evidence ledger"]
-    Ledger --> Loop
-    Loop -->|"declare_insufficient"| NA["🟠 NO_ANSWER_IN_DOCS"]
-    Loop -->|"submit_answer"| V{"7. Citations valid?"}
-    V -->|No, revisions left| Loop
-    V -->|"No, revision limit reached"| NA
-    V -->|Yes| R{"8. Reviewer enabled?"}
-    R -->|No| RAG["🟢 RAG + numbered sources"]
-    R -->|"Sol review passes"| RAG
-    R -->|"Revise or research"| Loop
-    R -->|"Final failure"| NA
-
-    Light -->|"Fixable failure<br/>at most once"| Esc["Sol escalation<br/>fresh context + collected evidence"]
-    Esc --> Loop
+    I["Initialize request"] --> P["Plan / interpret"]
+    P -->|"OFF_TOPIC or CLARIFICATION"| F["Finish"]
+    P -->|"continue"| R{"Route"}
+    R -->|"single / light / heavy"| A["Research"]
+    R -->|"team"| T["Workers and orchestrator"]
+    A -->|"complete / terminal failure"| F
+    A -->|"eligible failure"| E["Escalate once"]
+    E --> A
+    T --> F
 ```
 
-The plan is created inside the application; the user does not provide it. `AgentAssistant.query()` passes the original user query and the planner instructions to `self.light_model`. Under the current defaults, that model is GPT-6-Luna. Luna returns the structured JSON plan, Python validates and normalizes it, and `_choose_route()` selects the next role. The planner does not retrieve documents and does not write the answer.
+`GraphAgentAssistant.stream()` runs the graph. `_choose_route()` and `_should_escalate()` remain Python policy functions; graph conditional edges apply their results. Review and revision stay inside research, including the orchestrator's writer loop. Feedback goes to the same writer conversation and does not restart workers. `AgentAssistant.query()` remains available as the legacy evaluation baseline.
 
 **Answer policy.** We return `RAG` only when the cited evidence answers the **core** of the question, meaning the specific fact, figure, comparison, or mechanism that was asked for. If the evidence only touches related topics, the writer has to call `declare_insufficient`, which ends as `NO_ANSWER_IN_DOCS`. There is no partial-answer mode. A missing secondary detail can still be mentioned inside a `RAG` answer. Also, an agent only ever sees what its own searches returned, so it is not allowed to say that "the documents" lack something. It may only say that the retrieved evidence does not state it.
 
@@ -72,11 +57,12 @@ Every agent in the diagram runs the same tool loop (`AgentAssistant.research`). 
 
 Planning is the first LLM call of every request:
 
-1. Streamlit passes the user's original text to `AgentAssistant.query(question)`.
-2. `query()` creates a new per-request `AgentRun`, then calls `_plan(run)`.
-3. `_plan()` calls the light model with two inputs: `PLAN_INSTRUCTIONS` as the developer message and the untouched user query as the user message. With the current defaults, the light model is GPT-6-Luna.
-4. Luna fixes search-oriented wording such as typos and abbreviations, decides whether the question belongs to the OLED domain, estimates its complexity, and returns one to three search-ready subquestions. It does not search yet.
-5. Python parses the JSON, limits it to three subquestions, supplies safe defaults if fields are missing, and stores the result in `run.plan`.
+1. Streamlit passes the original question and its generated `thread_id` to the graph.
+2. `initialize` creates a fresh `AgentRun`, preserving only bounded history and pending clarification.
+3. With history, the planner interprets the current question and plans the resolved intent in one call. Without history, it uses the original `_plan()` unchanged.
+4. The planner classifies domain/complexity, returns search-ready subquestions and their dependency order; it never searches or answers.
+5. Contextual output also includes `standalone_question`, `needs_clarification` and `clarification_question`. Invalid contextual output fails closed as `ERROR`.
+6. All subsequent roles use the standalone question, and graph edges select the route.
 
 The structured output has this shape:
 
@@ -198,15 +184,17 @@ All limits apply per user question and are shared by every agent working on it.
 
 ## Output
 
-`AgentAssistant.query()` returns `answer`, `mode`, `relevance_score` (the best relevance seen in any search), and `retrieval_metadata`, plus:
+`GraphAgentAssistant.query()` returns `answer`, `mode`, `relevance_score` (the best relevance seen in any search), and `retrieval_metadata`, plus:
 
 - `sources`: a numbered list of the cited chunks with registry title, URL, and page
-- `agent`: features, plan, route, escalation, worker reports, review rounds, trace (every event tagged with its role), stop reason, usage per model and per role, cost, and the cited evidence
+- `agent`: features, plan, route, escalation, worker reports, review rounds, trace, stop reason, usage, cited evidence, and all retrieved evidence for private failure analysis
+- `original_question` and `standalone_question`: the input and interpreted intent; also recorded in `agent`
 
 | Stop reason | User-facing mode |
 | :-- | :-- |
 | `answered` | `RAG` |
 | `out_of_domain` | `OFF_TOPIC` |
+| `clarification_needed` | `CLARIFICATION` |
 | `insufficient_evidence`, `llm_budget_exhausted`, `deadline_exceeded`, `revision_limit`, `review_failed` | `NO_ANSWER_IN_DOCS` |
 | `api_error`, `api_timeout` | `ERROR` |
 
@@ -214,7 +202,7 @@ In the UI, the sidebar shows the active models and features, `st.status` shows l
 
 ## Evaluation
 
-`scripts/evaluate_agent.py` runs the agent on `eval/questions.json` (50 questions: normal, typo, paraphrase, abbreviation, ambiguous, easy, multi-hop, sequential, no-answer, and off-topic). An independent judge model splits each answer into claims and grades every claim against the chunks the agent cited. The feature flags are read from the environment, so the same command measures any configuration.
+`scripts/evaluate_agent.py` runs the agent on `eval/questions.json` (50 questions: normal, typo, paraphrase, abbreviation, ambiguous, easy, multi-hop, sequential, no-answer, and off-topic). One independent judge call extracts answer claims and grades them against cited chunks; a separate call measures expected-point coverage. The grounding judge never sees the expected points, and every extracted claim must include an exact quote from the answer. The feature flags are read from the environment, so the same command measures any configuration.
 
 ```bash
 # inside the container, with the repo's src/scripts/eval mounted
@@ -226,7 +214,11 @@ python scripts/evaluate_agent.py --rejudge eval/results/raw/A.json
 
 `scripts/probe_corpus.py "query" ...` prints what the search tool returns. We used it to check every expected point in the eval set against real chunks.
 
-Each run is saved twice. `eval/results/raw/` keeps the full result, including the text of every evidence chunk. That folder is git-ignored, because the source papers are not ours to republish. `eval/results/` gets the same result without the chunk text, and every citation can still be traced through its chunk ID, paper title, URL, and page. `--make-public FILE ...` converts older result files the same way and is safe to run more than once. `--rejudge FILE` applies the current judge policy to a saved raw result without running the agent again.
+Each run is saved twice. `eval/results/raw/` keeps cited evidence and the complete retrieved ledger, including chunk text, so refusals can be diagnosed. That folder is git-ignored because the source papers are not ours to republish. `eval/results/` removes chunk text from both evidence fields while retaining IDs and metadata. `--make-public FILE ...` converts older result files the same way and is safe to run more than once.
+
+`--rejudge FILE` grades saved single-turn or multi-turn answers without rerunning the agent. Multi-turn rejudging refreshes interpretation metrics as well as grounding. Its conversation rubric defaults to the saved hash; `--dataset eval/conversations_v2.json` explicitly selects the corrected rubric. New multi-turn agent runs default to v2, while v1 and its measured results are retained. Rejudged files separate `engine_manifest` (original execution) from `judge_manifest` (current grader and rubric); original result files remain unchanged.
+
+Invalid or missing v3 answer quotes are recorded as extraction errors rather than model hallucinations. Empty or invalid extraction also makes `grounding_evaluation_complete=false`; an unsupported rate of zero alone is not sufficient to pass the evaluation-validity gate. Live results reported below and in the upgrade report retain their original judge policy.
 
 ## Results: model routing and multi-agent patterns
 

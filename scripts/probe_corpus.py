@@ -1,14 +1,11 @@
-"""
-Print what the retrieval pipeline returns for a few queries.
+"""Print the chunks returned by the production retrieval pipeline.
 
-Why we need this:
-We use it to ground new evaluation questions. A question only goes into
-eval/questions.json once we can see its expected points in real chunks.
+This script is used to ground new evaluation questions.
+A question is added to `eval/questions.json` only after its expected points are confirmed in retrieved chunks.
 
-Usage (from the project root, e.g. inside the Docker image)
------
-    python scripts/probe_corpus.py "what is an exciton" "TADF roll-off"
-    python scripts/probe_corpus.py --chars 900 "exciplex co-host red phosphorescent"
+Usage:
+`python scripts/probe_corpus.py "what is an exciton" "TADF roll-off"`
+`python scripts/probe_corpus.py --chars 900 "exciplex co-host red phosphorescent"`
 """
 
 import argparse
@@ -28,8 +25,7 @@ def main():
     parser.add_argument("--chars", type=int, default=500, help="Characters of chunk text to print")
     args = parser.parse_args()
 
-    # Use the same search tool as the agent, so the probe shows exactly what
-    # the agent would see.
+    # Use the production search tool so the probe matches agent retrieval.
     search_tool = SearchTool(build_retriever())
 
     for query in args.queries:

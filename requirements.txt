@@ -1,7 +1,12 @@
 # Core Framework
 streamlit>=1.28.0
-langchain>=0.1.0,<0.3.0
-langchain-community>=0.0.10,<0.3.0
+# LangGraph 1.x requires langchain-core 1.x.
+# Keep the existing community retrieval integrations; only the text splitter import moves packages.
+langchain-core>=1.4.7,<2.0.0
+langchain-community==0.4.2
+langchain-text-splitters==1.1.3
+langgraph==1.2.12
+langgraph-checkpoint-sqlite==3.1.1
 # The agent and the evaluator call the Responses API directly (tested on 1.109.1)
 openai>=1.109.1,<2.0.0
 

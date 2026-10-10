@@ -1,25 +1,14 @@
-"""
-Measure the relevance score distribution produced by the retrieval stage.
+"""Measure retrieval relevance distributions for representative queries.
 
-Why this script exists
-----------------------
-Every search the agent runs goes through the document filter
-(MIN_DOC_RELEVANCE): only documents above it reach the reranker and the agent.
+Every agent search goes through `MIN_DOC_RELEVANCE`, and only documents above that filter reach the reranker and the agent.
+The document filter uses `relevance = sigmoid(cosine similarity)`, not raw cosine similarity.
+Raw scores in scientific corpora cluster tightly, such as 0.75 versus 0.82, which makes them a poor decision axis.
+This script reports candidate scores and the separation between on-topic and off-topic queries so `MIN_DOC_RELEVANCE` can be selected from measured data.
+It prints the relevance distribution for every retrieved candidate and shows how far the on-topic and off-topic queries are separated.
 
-The threshold must be expressed as RELEVANCE = sigmoid(cosine similarity),
-never as raw cosine similarity. Raw scores in scientific corpora cluster very
-tightly (0.75 vs 0.82), which makes them useless as a decision axis.
+The script is read-only and never rebuilds or writes to ChromaDB.
 
-This script runs a set of representative queries against the existing ChromaDB
-and prints the relevance distribution for every retrieved candidate, so the
-threshold can be chosen from measured data instead of guesswork. It also shows
-how far on-topic and off-topic queries are apart.
-
-The script is READ-ONLY: it never rebuilds or writes to the vector store.
-
-Usage
------
-    python scripts/measure_relevance_distribution.py
+Usage: `python scripts/measure_relevance_distribution.py`
 """
 
 import math
@@ -37,12 +26,8 @@ import config  # noqa: E402
 
 
 # ---------------------------------------------------------------------------
-# Representative queries, grouped by the answer mode we EXPECT.
-#
-# These mirror the example queries shown on the app's welcome screen, plus a
-# few "narrow" questions. Narrow questions are the interesting case: they are
-# clearly on-topic but usually match only one or two strong chunks, which is
-# exactly the situation where a top-4 average unfairly rejects them.
+# Representative queries mirror the welcome-screen examples and add narrow cases.
+# Narrow questions often match only one or two strong chunks, which shows why a top-four average can reject valid queries unfairly.
 # ---------------------------------------------------------------------------
 QUERY_GROUPS = {
     "ON_TOPIC (broad)": [
@@ -68,37 +53,29 @@ QUERY_GROUPS = {
 
 
 def distance_to_similarity(distance):
-    """
-    Convert a ChromaDB L2 distance into a raw cosine similarity.
+    """Convert ChromaDB's squared L2 distance into raw cosine similarity.
 
-    NOTE: Chroma's "l2" space returns the SQUARED Euclidean distance. The
-    BGE embeddings are stored normalized, so for unit vectors:
-        d = ||q - e||^2 = 2 - 2*cos  ->  cos = 1 - d / 2
-    The result is clamped to [0, 1] to absorb small numerical drift.
+    BGE embeddings are normalized, so unit vectors follow `d = ||q - e||² = 2 - 2*cos` and therefore `cos = 1 - d / 2`.
+    The result is clamped to `[0, 1]` to absorb small numerical drift.
     """
     similarity = 1.0 - float(distance) / 2.0
     return max(0.0, min(1.0, similarity))
 
 
 def similarity_to_relevance(similarity):
-    """
-    Apply the sigmoid transformation that turns similarity into RELEVANCE.
+    """Apply the sigmoid transformation that converts similarity to relevance.
 
-    This is the only score the pipeline should ever compare against a
-    threshold. The midpoint/steepness come from config so this script always
-    reflects the app's live settings.
+    Relevance is the only score compared with thresholds.
+    The midpoint and steepness come from config so this script uses the application's live settings.
     """
     exponent = -config.SIGMOID_STEEPNESS * (similarity - config.SIGMOID_MIDPOINT)
     return 1.0 / (1.0 + math.exp(exponent))
 
 
 def load_vectorstore():
-    """
-    Open the persisted ChromaDB read-only.
+    """Open the persisted ChromaDB directly.
 
-    We deliberately do NOT call get_or_create_vectorstore(): that helper
-    rebuilds from `data/` when the DB looks incompatible, and the public repo
-    has no `data/` folder. Failing loudly is safer for a measurement run.
+    `get_or_create_vectorstore()` is intentionally not used because a measurement run should fail when the database is missing instead of creating one from `data/`.
     """
     if not os.path.isdir(config.DB_PATH) or not os.listdir(config.DB_PATH):
         raise SystemExit(f"No ChromaDB found at {config.DB_PATH}")
@@ -117,11 +94,7 @@ def load_vectorstore():
 
 
 def score_query(vectorstore, query):
-    """
-    Retrieve the candidate pool for one query and return relevance scores.
-
-    Returns a list of relevance values sorted high -> low, one per candidate.
-    """
+    """Retrieve one candidate pool and return one relevance value per candidate in descending order."""
     hits = vectorstore.similarity_search_with_score(query, k=config.CANDIDATE_TOP_K)
 
     relevances = []
@@ -129,8 +102,7 @@ def score_query(vectorstore, query):
         similarity = distance_to_similarity(distance)
         relevances.append(similarity_to_relevance(similarity))
 
-    # Chroma returns nearest-first, but sort explicitly so the statistics below
-    # never depend on backend ordering.
+    # Sort explicitly so the report does not depend on backend ordering.
     relevances.sort(reverse=True)
     return relevances
 
@@ -152,7 +124,7 @@ def summarize(relevances):
 def main():
     vectorstore = load_vectorstore()
 
-    # Collected per group so we can look for a clean on-topic / off-topic split.
+    # Keep each group for the final on-topic/off-topic comparison.
     results = []
 
     for group_name, queries in QUERY_GROUPS.items():
@@ -190,12 +162,10 @@ def main():
 
 
 def predict_search_status(relevances):
-    """
-    Replay what search_documents returns using the thresholds in config.
+    """Replay `search_documents` using the live thresholds.
 
-    Kept in sync with Retriever + SearchTool: documents above the filter are
-    reranked when there are more than FINAL_TOP_N of them. With no survivors,
-    the agent gets "no_relevant_documents" and decides whether to search again.
+    Documents above the filter are reranked when more than `FINAL_TOP_N` survive.
+    With no survivors, the agent receives `no_relevant_documents` and decides whether to search again.
     """
     survivors = [value for value in relevances if value >= config.MIN_DOC_RELEVANCE]
     if not survivors:
@@ -206,12 +176,10 @@ def predict_search_status(relevances):
 
 
 def print_separation_report(results):
-    """
-    Show how well each statistic separates on-topic from off-topic queries.
+    """Show how well each statistic separates on-topic from off-topic queries.
 
-    A statistic separates well when the WORST on-topic query still scores
-    higher than the BEST off-topic query. The gap between those two numbers is
-    the safety margin for a threshold.
+    Separation exists when the worst on-topic query still scores above the best off-topic query.
+    The difference is the safety margin available for a threshold.
     """
     print("=" * 78)
     print("ON-TOPIC / OFF-TOPIC SEPARATION")

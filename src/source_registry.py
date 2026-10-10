@@ -1,12 +1,8 @@
-"""
-Source registry lookup: maps a source file name to its paper title and a
-verified URL.
+"""Map source file names to offline-verified publication titles and DOI links.
 
-The registry file (src/source_registry.json) is generated offline by
-scripts/build_source_registry.py, which only stores DOI links it could confirm
-through Crossref. Titles and URLs shown to users always come from this
-registry, and the model never writes them. Since we look them up by file name
-at runtime, attaching this metadata doesn't require a ChromaDB rebuild.
+`scripts/build_source_registry.py` generates the registry and stores only DOI links confirmed through Crossref.
+The model never generates source titles or URLs.
+Runtime lookup uses the file name, so attaching this metadata does not require rebuilding ChromaDB.
 """
 
 import json
@@ -19,12 +15,10 @@ from utils import logger
 
 @lru_cache(maxsize=1)
 def load_registry(path: str = config.SOURCE_REGISTRY_PATH) -> dict:
-    """
-    Load the registry once per process.
+    """Load the registry once per process.
 
-    NOTE: If the file is missing or broken we only log a warning. Sources then
-    fall back to their file names, which is how the app behaved before the
-    registry existed.
+    A missing or invalid registry produces a warning and falls back to source file names.
+    This preserves the application's behavior before the registry was added.
     """
     try:
         with open(path, "r", encoding="utf-8") as handle:
@@ -35,16 +29,11 @@ def load_registry(path: str = config.SOURCE_REGISTRY_PATH) -> dict:
 
 
 def describe_source(metadata: dict) -> dict:
-    """
-    Build the display information for one retrieved chunk.
+    """Return display information for one retrieved chunk.
 
-    Args:
-        metadata: The chunk's metadata, with "source" (file path) and an
-            optional 0-indexed "page" set by PyPDFLoader.
-
-    Returns:
-        dict with file_name, title, url (or None), and a 1-indexed page (or None).
-        When the file has no registry entry, the title is just the file name.
+    Metadata contains the source path and may contain a zero-indexed page from `PyPDFLoader`.
+    The result contains the file name, display title, optional verified URL and optional one-indexed page.
+    Sources without a registry entry use the file name as the title.
     """
     file_name = os.path.basename(metadata.get("source", "") or "") or "Unknown source"
     entry = load_registry().get(file_name, {})

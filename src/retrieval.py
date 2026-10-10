@@ -1,13 +1,7 @@
-"""
-Retrieval stack for the OLED Assistant.
+"""Retrieval stack for the OLED Assistant.
 
-This is the "R" in RAG. The agent's search_documents tool (agent_tools.py) is
-the only caller, and every search runs the same three steps:
-
-    retrieve a wide candidate pool -> relevance filter -> cross-encoder rerank
-
-All thresholds live here and in config, so the agent only chooses the query
-text and has no way to lower a threshold or skip the filter.
+Every `search_documents` call retrieves a wide candidate pool, applies the relevance filter, and reranks the survivors with a cross-encoder.
+All thresholds live in Python, so the agent chooses only the query and cannot lower a threshold or skip filtering.
 """
 import math
 
@@ -28,9 +22,9 @@ def create_embeddings():
 
 
 def get_vectorstore(embeddings):
-    """
-    Open the persisted ChromaDB. document_pipeline rebuilds it from data/ only
-    when it is missing or incompatible.
+    """Reuse an existing ChromaDB or build one from source documents when it is missing.
+
+    An existing database that cannot be opened is preserved and raises an error instead of being rebuilt automatically.
     """
     return get_or_create_vectorstore(
         embeddings=embeddings,
@@ -40,11 +34,9 @@ def get_vectorstore(embeddings):
 
 
 def build_retriever():
-    """
-    Create the Retriever with the settings in config.
+    """Create the `Retriever` with settings from config.
 
-    The app, the evaluator, and probe_corpus.py all build it through this
-    function, so they always search exactly the same way.
+    The application, evaluator and corpus probe all use this function so they search in the same way.
     """
     return Retriever(
         vectorstore=get_vectorstore(create_embeddings()),
@@ -59,10 +51,9 @@ def build_retriever():
 
 
 class Retriever:
-    """
-    Wide vector search, relevance filtering, and cross-encoder reranking.
+    """Perform wide vector search, relevance filtering and cross-encoder reranking.
 
-    It owns the vector store, the reranker, and every retrieval threshold.
+    The instance owns the vector store, reranker and every retrieval threshold.
     """
 
     def __init__(
@@ -76,9 +67,7 @@ class Retriever:
         sigmoid_midpoint,
         sigmoid_steepness,
     ):
-        """
-        Initialize the retrieval and reranking components.
-        """
+        """Initialize retrieval and optional reranking."""
         self.vectorstore = vectorstore
         self.candidate_top_k = candidate_top_k
         self.min_doc_relevance = min_doc_relevance
@@ -86,9 +75,8 @@ class Retriever:
         self.sigmoid_midpoint = sigmoid_midpoint
         self.sigmoid_steepness = sigmoid_steepness
 
-        # Cross-encoder reranker scores each (query, document) pair more
-        # precisely than embedding similarity. It runs only when enough
-        # documents pass the similarity filter.
+        # The cross-encoder scores each query-document pair more precisely than embedding similarity.
+        # It runs only when enough documents survive to require a top-N choice.
         self.reranker = None
         if reranker_enabled:
             try:
@@ -102,22 +90,13 @@ class Retriever:
                 )
 
     def distance_to_relevance(self, distance) -> float:
-        """
-        Convert Chroma's L2 distance into a RELEVANCE score.
+        """Convert Chroma's squared L2 distance into relevance.
 
-        Two steps happen here, and the intermediate value never leaves this
-        method on purpose:
-
-        1. distance -> cosine similarity. Chroma's "l2" space gives us the
-           SQUARED Euclidean distance d = ||q - e||^2. Our BGE embeddings are
-           stored with normalize_embeddings=True, so for unit vectors
-           d = 2 - 2*cos, which rearranges to cos = 1 - d / 2.
-        2. cosine similarity -> relevance, via the sigmoid. Raw similarities in
-           a scientific corpus sit in a narrow band and are useless as a
-           decision axis; the sigmoid spreads that band out.
-
-        Every threshold in this project compares against the value returned
-        here, never against the raw similarity.
+        Chroma's `l2` space returns squared Euclidean distance.
+        BGE embeddings are normalized, so `d = ||q - e||² = 2 - 2*cos` and therefore `cos = 1 - d / 2`.
+        The raw cosine similarity is then converted to relevance with the configured sigmoid.
+        Scientific-document similarities occupy a narrow range, so the sigmoid provides a more useful threshold scale.
+        Every retrieval threshold compares against the returned relevance rather than raw similarity.
         """
         similarity = 1.0 - float(distance) / 2.0
         similarity = max(0.0, min(1.0, similarity))
@@ -126,13 +105,10 @@ class Retriever:
         return 1.0 / (1.0 + math.exp(exponent))
 
     def retrieve_candidates(self, query):
-        """
-        Retrieve a wide candidate pool and attach relevance scores.
+        """Retrieve a wide candidate pool and attach relevance scores.
 
-        Chroma searches its index on L2 distance, which we cannot change. That
-        is fine: the sigmoid is monotonic in similarity and similarity is
-        monotonic in distance, so the top-k by distance is exactly the top-k by
-        relevance.
+        Chroma searches by L2 distance.
+        Because the similarity and sigmoid transformations are monotonic, top-k by distance is also top-k by relevance.
         """
         docs_with_scores = self.vectorstore.similarity_search_with_score(
             query,
@@ -145,11 +121,10 @@ class Retriever:
         ]
 
     def filter_candidates_by_relevance(self, candidates):
-        """
-        Keep only documents good enough to be worth reranking.
+        """Keep only candidates that clear the document relevance threshold.
 
-        This is the single knob that controls context quality. Documents below
-        the bar never reach the cross-encoder or the LLM.
+        This threshold controls context quality.
+        Documents below it never reach the cross-encoder or the LLM.
         """
         return [
             candidate
@@ -158,11 +133,9 @@ class Retriever:
         ]
 
     def rerank_candidates(self, query, candidates):
-        """
-        Rerank candidate documents with a cross-encoder.
+        """Rerank surviving documents with the cross-encoder.
 
-        If there are only FINAL_TOP_N or fewer candidates, reranking is skipped
-        because all surviving documents will be returned anyway.
+        Reranking is skipped when `final_top_n` or fewer candidates survive because all of them will be returned.
         """
         if len(candidates) <= self.final_top_n:
             return candidates, False

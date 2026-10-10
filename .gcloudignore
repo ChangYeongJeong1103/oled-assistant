@@ -32,4 +32,7 @@ notebooks/
 logs/
 screenshot/
 data/
+
+# SQLite checkpoints contain conversation text
+sessions/
 .ipynb_checkpoints/

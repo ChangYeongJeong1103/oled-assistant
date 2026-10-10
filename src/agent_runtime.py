@@ -1,41 +1,15 @@
-"""
-Agent Runtime for OLED Assistant
+"""Agent runtime for the OLED Assistant.
 
-The agent plans the question, researches it in a tool-calling loop, and then
-answers. Every step runs inside hard limits that we enforce in Python.
+The agent plans the question, researches it in a tool-calling loop and answers within hard limits enforced in Python.
 
 How one request flows:
 
-  1. PLAN (1 LLM call, structured output)
-     The planner labels the question in_domain / out_of_domain / uncertain,
-     rates its complexity, and splits it into sub-questions only when it
-     needs to. A clearly out-of-domain question stops here as OFF_TOPIC.
+1. PLAN: The planner labels the question `in_domain`, `out_of_domain` or `uncertain`, rates its complexity and creates sub-questions when needed. A clearly out-of-domain question stops as `OFF_TOPIC`.
+2. ROUTE: Python selects the single model, the light or heavy model, or the orchestrator-worker team.
+3. RESEARCH LOOP: The model uses `search_documents`, `submit_answer` and `declare_insufficient`. Search, filtering, reranking and citation validation run in Python. One turn can issue several searches.
+4. ESCALATION: A recoverable light-model failure can restart once on the heavy model with the evidence already collected.
 
-  2. ROUTE (no LLM call)
-     - single model:  AGENT_MODEL does everything
-     - routing on:    simple questions go to the light model, complex ones
-                      to the heavy model
-     - workers on:    2+ sub-questions go to orchestrator-worker (agent_team.py)
-
-  3. RESEARCH LOOP (Responses API, tool calling)
-     search_documents(query)        retrieve, filter, and rerank in Python
-     submit_answer(answer, cites)   citations are checked against the ledger,
-                                    then optionally reviewed claim by claim
-     declare_insufficient(missing)  stop with NO_ANSWER_IN_DOCS
-     With parallel search on, one turn may issue several searches.
-
-  4. ESCALATION (routing only, at most once)
-     If the light model fails in a way we recognise, the heavy model starts
-     over in a fresh context with the evidence we already collected.
-
-  We keep every limit in Python so the model can't ignore it: total LLM
-  calls, calls per loop, searches, answer revisions, review rounds, a
-  wall-clock deadline, and per-call API timeouts. Every agent working on the
-  same question shares these limits. We check the deadline before every API
-  attempt (and cap that attempt's timeout by the time left), before and after
-  every search, and before the final answer is accepted. When a limit is hit,
-  the run stops instead of forcing out an answer we could not verify, and the
-  trace records which limit it was.
+Every agent working on a question shares the same LLM-call, search, revision, review and time budgets. The deadline is checked around model calls and searches and before final acceptance. When a limit is reached, the run stops rather than returning an answer that could not be verified, and the trace records the reason.
 """
 
 import json
@@ -69,9 +43,7 @@ from utils import estimate_cost_usd, logger
 # ================================
 # Stop reasons -> user-facing mode
 # ================================
-# The UI only knows three answer modes plus ERROR, so several stop reasons
-# share the same mode. We still keep the detailed stop reason in the trace
-# so the evaluation can tell them apart.
+# The UI exposes four answer modes plus ERROR, while the trace keeps each detailed stop reason for evaluation.
 STOP_REASON_TO_MODE = {
     "answered": "RAG",
     "out_of_domain": "OFF_TOPIC",
@@ -82,6 +54,7 @@ STOP_REASON_TO_MODE = {
     "review_failed": "NO_ANSWER_IN_DOCS",
     "api_timeout": "ERROR",
     "api_error": "ERROR",
+    "clarification_needed": "CLARIFICATION",
 }
 
 STOP_MESSAGES = {
@@ -97,6 +70,7 @@ STOP_MESSAGES = {
     ),
     "api_timeout": "The language model timed out. Please try again.",
     "api_error": "The language model request failed. Please try again.",
+    "clarification_needed": "Could you clarify what you would like to know?",
 }
 
 
@@ -104,14 +78,10 @@ STOP_MESSAGES = {
 # Per-request state
 # ================================
 class AgentRun:
-    """
-    All the state for ONE question, shared by every agent that works on it.
+    """Hold the state shared by every agent working on one question.
 
-    Why we need this:
-    - Workers run in their own threads, so we update the counters and the
-      trace under a lock.
-    - Nothing in here is shared between different user requests. Each call
-      to AgentAssistant.query() starts with a fresh AgentRun.
+    Workers update counters and trace events under a lock because they run in separate threads.
+    Nothing is shared between user requests, and every `AgentAssistant.query()` starts with a fresh `AgentRun`.
     """
 
     def __init__(self, question, on_event):
@@ -135,12 +105,36 @@ class AgentRun:
         self.usage_by_model = {}
         self.calls_by_role = {}
         self._lock = threading.RLock()
-        # IMPORTANT: Only the thread that created the run may call on_event.
-        # The Streamlit callback fails when it is called from a worker
-        # thread, so worker events wait in a queue until the main thread
-        # flushes them.
+        # Only the thread that created the run may call `on_event`.
+        # Streamlit rejects worker-thread callbacks, so worker events stay queued until the main thread flushes them.
         self._owner_thread = threading.get_ident()
         self._pending_events = []
+
+    def snapshot(self):
+        """JSON-safe request state for graph boundaries; never persist locks or clients.
+
+        This snapshot resumes coarse nodes within one invocation.
+        Public APIs start a fresh request instead of replaying a partly completed paid API call.
+        """
+        fields = (
+            "question", "started_at", "search_cache", "plan", "route", "trace",
+            "searches", "llm_calls", "revisions", "review_rounds", "invalid_turns",
+            "parallel_turns", "escalated", "worker_reports", "max_relevance",
+            "usage_by_model", "calls_by_role",
+        )
+        data = {key: getattr(self, key) for key in fields}
+        data["ledger"] = [{k: v for k, v in e.items() if k != "doc"} for e in self.ledger.entries()]
+        return json.loads(json.dumps(data))
+
+    @classmethod
+    def restore(cls, data, on_event=None):
+        run = cls(data["question"], on_event)
+        for key, value in data.items():
+            if key != "ledger":
+                setattr(run, key, value)
+        for entry in data["ledger"]:
+            run.ledger.add(entry["chunk_id"], entry)
+        return run
 
     def elapsed(self):
         return time.monotonic() - self.started_at
@@ -218,11 +212,9 @@ class AgentRun:
 
     # ---------- trace ----------
     def record(self, event_type, role=None, **fields):
-        """
-        Append a step to the trace and forward it to the UI callback.
+        """Append a trace event and forward it to the UI callback.
 
-        Events recorded on a worker thread are only queued here. The main
-        thread sends them later through flush_events().
+        Worker-thread events are queued here and sent later by the main thread through `flush_events()`.
         """
         with self._lock:
             event = {
@@ -255,22 +247,16 @@ class AgentRun:
 # Agent
 # ================================
 class AgentAssistant:
-    """
-    The OLED agent: plan, route, research with tools, review, and answer.
+    """Plan, route, research with tools, review and answer OLED questions.
 
-    It searches through one shared Retriever, so the embedding model, the
-    vector store, and the reranker are only loaded once.
+    One shared `Retriever` keeps the embedding model, vector store and reranker loaded once.
     """
 
-    def __init__(self, retriever):
+    def __init__(self, retriever, client=None):
         self.retriever = retriever
         self.search_tool = SearchTool(retriever)
-        # max_retries=0 turns off the OpenAI client's own retries. respond()
-        # retries transient errors itself, because that way we can cap every
-        # attempt's timeout by the time left in the request. The client's
-        # built-in retries don't know about our deadline and could quietly
-        # use it all up.
-        self.client = OpenAI(timeout=config.AGENT_API_TIMEOUT_SECONDS, max_retries=0)
+        # Disable SDK retries so `respond()` can keep every retry inside the request deadline.
+        self.client = client if client is not None else OpenAI(timeout=config.AGENT_API_TIMEOUT_SECONDS, max_retries=0)
         self.parallel = config.AGENT_PARALLEL_SEARCH
         if config.AGENT_ROUTING:
             self.light_model = config.AGENT_LIGHT_MODEL
@@ -294,31 +280,14 @@ class AgentAssistant:
 
     # ---------- one LLM call: budget, deadline, usage ----------
     def respond(self, run, role, model, input_items, tools=None, text_format=None):
-        """
-        Make one Responses API call on behalf of `role`.
+        """Make one Responses API call for `role`.
 
-        Why we need this:
-        Every LLM call in the agent goes through this method, so this is the
-        one place where we count the call against the budget, check the
-        deadline, retry transient errors, and record token usage.
-
-        Args:
-            run: The AgentRun for the current question.
-            role: Who is calling (e.g., "planner", "worker1", "reviewer").
-                Used for the per-role call counts and the trace.
-            model: OpenAI model name to call.
-            input_items: Conversation items sent as the request `input`.
-            tools: Optional tool schemas. When given, the model must call a tool.
-            text_format: Optional structured output format (JSON schema).
-
-        Returns:
-            The Responses API response object.
-
-        Note:
-            store=False keeps our requests out of OpenAI's response storage.
-            Instead, we pass the encrypted reasoning items back to the model
-            in the next turn. Budget, deadline, and API problems are raised
-            as AgentStop.
+        Every agent LLM call passes through this method for budget accounting, deadline checks, transient-error retries and token usage.
+        `run` is the current `AgentRun`, `model` is the OpenAI model name, and `input_items` becomes the request input.
+        Optional `tools` require a tool call, while `text_format` defines structured output.
+        The method returns the Responses API response object.
+        `store=False` prevents OpenAI response storage, and encrypted reasoning items are passed back explicitly on the next turn.
+        Budget, deadline and API failures raise `AgentStop`.
         """
         run.reserve_llm_call(role)
         kwargs = {"model": model, "input": input_items, "store": False}
@@ -333,8 +302,7 @@ class AgentAssistant:
         if text_format:
             kwargs["text"] = {"format": text_format}
 
-        # We retry transient errors, but every attempt (and the pause before
-        # it) has to fit in the time left in the request.
+        # Every retry and its pause must fit inside the remaining request time.
         retry_pause = 1.0
         for attempt in range(config.AGENT_API_RETRIES + 1):
             run.check_deadline(f"{role} call")
@@ -343,8 +311,7 @@ class AgentAssistant:
                 response = self.client.responses.create(**kwargs)
                 break
             except APITimeoutError as exc:
-                # If the timeout only happened because we capped it to the
-                # deadline, we report it as a deadline stop.
+                # A timeout caused by the remaining-time cap is reported as a deadline stop.
                 reason = "deadline_exceeded" if run.time_left() <= 1 else "api_timeout"
                 stop = AgentStop(reason, f"{role}: {exc}")
             except APIConnectionError as exc:
@@ -379,8 +346,8 @@ class AgentAssistant:
         try:
             plan = json.loads(response.output_text or "")
         except json.JSONDecodeError:
-            # A broken plan shouldn't block the question, so we fall back to
-            # an "uncertain" plan and search the question as it was asked.
+            # A malformed plan should not block the question.
+            # Fall back to an `"uncertain"` plan and search the original question.
             plan = {"domain": "uncertain", "reason": "plan output unreadable"}
 
         subquestions = [s.strip() for s in plan.get("subquestions", []) if s and s.strip()]
@@ -402,11 +369,9 @@ class AgentAssistant:
 
     # ---------- search tool handler (shared by every role) ----------
     def handle_search(self, run, role, args, seen_chunk_ids):
-        """
-        Run one search_documents call for `role` and return the tool output.
+        """Run one `search_documents` call for `role`.
 
-        seen_chunk_ids holds the chunks this context has already received in
-        full (see search_result_for_model), so we don't send their text twice.
+        `seen_chunk_ids` tracks chunks already sent in full to this model context so their text is not repeated.
         """
         query = args.get("query")
         if not isinstance(query, str) or not query.strip():
@@ -415,9 +380,8 @@ class AgentAssistant:
         if len(query) > config.AGENT_MAX_QUERY_CHARS:
             return {"status": "error", "message": f"query is longer than {config.AGENT_MAX_QUERY_CHARS} characters."}
 
-        # A repeated query would return the same results, so we answer it from
-        # the cache without spending a search. If another agent ran the query,
-        # this context still gets the chunk text it hasn't seen yet.
+        # Repeated queries use the request cache without spending another search.
+        # A different agent context still receives any chunk text it has not seen.
         key = normalize_query(query)
         cached = run.search_cache.get(key)
         if cached is not None:
@@ -442,8 +406,7 @@ class AgentAssistant:
             }
 
         response = self.search_tool.search(query, run.ledger)
-        # Searches can wait for each other on the shared CPU lock, so we check
-        # the deadline again once the search is done.
+        # Searches can wait on the shared CPU lock, so check the deadline again afterward.
         run.check_deadline(f"{role} after search")
         with run._lock:
             run.max_relevance = max(run.max_relevance, response["max_relevance"])
@@ -469,39 +432,23 @@ class AgentAssistant:
 
     # ---------- Step 3: generic research loop ----------
     def research(self, run, role, model, instructions, user_content, finish_tools, handle_finish, given_chunk_ids=()):
-        """
-        Tool-calling loop shared by the single agent, the workers, the
-        orchestrator, and an escalated heavy run.
+        """Run the tool loop shared by single agents, workers, orchestrators and escalated heavy agents.
 
-        Each turn we call the model with the tools it may use right now, run
-        the tool calls it makes, and send the results back. The loop ends
-        when a finish tool handler says we are done.
-
-        Args:
-            run: The AgentRun for the current question.
-            role: Who is running the loop (used for budgets and the trace).
-            model: OpenAI model name for this loop.
-            instructions: Developer prompt for this loop.
-            user_content: The first user message (question, plan, evidence).
-            finish_tools: The tools that can end this loop (submit / declare).
-            handle_finish: Called as handle_finish(name, args). It returns
-                ("done", value) to end the loop with value, or
-                ("continue", tool_output) to send feedback to the model.
-                It may also raise AgentStop to end the whole run.
-            given_chunk_ids: Chunks whose text is already in user_content.
-                If there are none, the loop has to search before it is
-                allowed to finish.
-
-        Returns:
-            The value that handle_finish returned together with "done".
+        Each turn calls the model with its currently available tools, executes the returned tool calls and sends their results back.
+        The loop ends when `handle_finish` returns `("done", value)` or raises `AgentStop`.
+        `role` identifies the caller for budgets and trace events.
+        `model`, `instructions` and `user_content` define its initial context.
+        `finish_tools` lists the tools that may end the loop.
+        `given_chunk_ids` identifies evidence already included in `user_content`.
+        Without given evidence, the loop must search before it can finish.
+        The return value is the payload returned with `"done"`.
         """
         input_items = [
             {"role": "developer", "content": instructions},
             {"role": "user", "content": user_content},
         ]
         finish_names = {tool["name"] for tool in finish_tools}
-        # Chunks whose full text this context has received. These are also
-        # the ids it is allowed to cite.
+        # This context may cite only chunks whose full text it has received.
         seen_chunk_ids = set(given_chunk_ids)
         require_search = not seen_chunk_ids
         calls_used = 0
@@ -511,9 +458,8 @@ class AgentAssistant:
             if calls_used >= config.AGENT_MAX_CALLS_PER_LOOP:
                 raise AgentStop("llm_budget_exhausted", f"{role} used its {calls_used} calls")
 
-            # On the last call this loop may make, we take the search tool
-            # away so the model has to finish with what it has. Its answer is
-            # still validated as usual.
+            # Remove search on the loop's final call so the model must finish with existing evidence.
+            # The final submission is still validated normally.
             last_call = calls_used >= config.AGENT_MAX_CALLS_PER_LOOP - 1 or run.llm_calls_left() <= 1
             tools = []
             if run.searches_left() > 0 and not last_call:
@@ -525,14 +471,11 @@ class AgentAssistant:
 
             response = self.respond(run, role, model, input_items, tools=tools)
             calls_used += 1
-            # We keep the model's own output (including the encrypted
-            # reasoning) in the context, so the next turn picks up the same
-            # line of thought.
+            # Keep model output and encrypted reasoning so the next turn continues the same context.
             input_items.extend(item.model_dump(exclude_none=True) for item in response.output)
             calls = [item for item in response.output if item.type == "function_call"]
 
-            # The model replied in plain text without calling a tool, so we
-            # count it as an invalid turn and remind it to use a tool.
+            # Plain-text output is an invalid turn because this loop requires tool calls.
             if not calls:
                 with run._lock:
                     run.invalid_turns += 1
@@ -567,8 +510,7 @@ class AgentAssistant:
                         result = self.handle_search(run, role, args, seen_chunk_ids)
                         searched_here = True
                     elif call.name in finish_names and len(calls) > 1:
-                        # If the model finished in the same turn as it
-                        # searched, it would never read the new results.
+                        # A finish call cannot share a turn with search because the model has not read the new results.
                         result = {"status": "error", "message": f"{call.name} must be called alone, after reading the search results."}
                     else:
                         outcome, payload = handle_finish(call.name, args)
@@ -576,8 +518,7 @@ class AgentAssistant:
                             return payload
                         result = payload
                         if result.get("status") == "rejected":
-                            # Models sometimes miscopy an 8-character hex id.
-                            # Showing the valid ids lets them fix it in one turn.
+                            # Return valid IDs so a miscopied chunk hash can be corrected in one turn.
                             result["citable_chunk_ids"] = sorted(seen_chunk_ids)
                 input_items.append(
                     {
@@ -589,12 +530,10 @@ class AgentAssistant:
 
     # ---------- finish handler for anyone writing the final answer ----------
     def answer_handler(self, run, role):
-        """
-        Build the submit_answer / declare_insufficient handler for `role`.
+        """Build the `submit_answer` and `declare_insufficient` handlers for `role`.
 
-        For submit_answer we run the citation checks first. If they pass and
-        the reviewer is on, the answer is reviewed claim by claim before we
-        accept it. declare_insufficient ends the run with insufficient_evidence.
+        Citation checks run before optional claim-level review.
+        `declare_insufficient` ends the run with `insufficient_evidence`.
         """
         state = {"revisions": 0}
 
@@ -605,8 +544,7 @@ class AgentAssistant:
 
             answer = args.get("answer")
             citations = args.get("citations")
-            # 1) Citation checks. A rejected answer goes back to the writer
-            #    until it runs out of revisions.
+            # A citation rejection returns to the writer until its revision budget is exhausted.
             errors = validate_submission(answer, citations, run.ledger, config.AGENT_MAX_ANSWER_CHARS)
             if errors:
                 state["revisions"] += 1
@@ -627,8 +565,7 @@ class AgentAssistant:
                 feedback = review_answer(self, run, answer, citations)
                 if feedback is not None:
                     return "continue", feedback
-            # 3) The deadline covers the whole request, including the moment
-            #    we accept the final answer.
+            # The deadline covers the whole request, including final acceptance.
             run.check_deadline(f"{role} final answer")
             return "done", (answer, citations)
 
@@ -636,12 +573,10 @@ class AgentAssistant:
 
     # ---------- single agent (light, heavy, or the only model) ----------
     def answer_alone(self, run, role, model, prior_evidence=None):
-        """
-        Let one agent research and answer the whole question.
+        """Let one agent research and answer the complete question.
 
-        prior_evidence holds the chunks an earlier agent already collected in
-        this request (we use it on escalation). We pass them in as original
-        text, so the loop is allowed to finish without searching again.
+        On escalation, `prior_evidence` contains original chunks already collected in this request.
+        Supplying that text allows the new loop to finish without repeating a search.
         """
         plan_lines = "\n".join(f"{i}. {s}" for i, s in enumerate(run.plan["subquestions"], 1))
         content = (
@@ -674,15 +609,10 @@ class AgentAssistant:
         return "heavy" if plan["complexity"] == "complex" else "light"
 
     def _should_escalate(self, run, stop):
-        """
-        Decide whether a failed light run should be retried on the heavy model.
+        """Decide whether a failed light run should retry once on the heavy model.
 
-        We escalate at most once, and only for failures that a stronger model
-        could plausibly fix: citations the light model could not get right, a
-        loop that ran out of turns, or "insufficient evidence" even though
-        retrieval scored high (the evidence was probably there, but the light
-        model misread it). Out-of-domain questions, API errors, and the global
-        deadline never escalate.
+        Escalation is limited to failures a stronger model could plausibly fix: citation revisions, exhausted loop turns, reviewer failure, or insufficient evidence despite strong retrieval.
+        Out-of-domain questions, API failures and the global deadline never escalate.
         """
         if not config.AGENT_ROUTING or run.escalated or run.route != "light":
             return False
@@ -720,25 +650,14 @@ class AgentAssistant:
                 reason=stop.reason,
                 detail=stop.detail[:200],
             )
-            # The heavy model starts in a fresh context. It gets the question,
-            # the plan, and the original chunk text, but none of the light
-            # model's conversation.
+            # The heavy model receives the question, plan and original chunks in a fresh context without the light model's conversation.
             return self.answer_alone(run, "heavy", self.heavy_model, prior_evidence=run.ledger.entries())
 
     # ---------- Public entry point ----------
     def query(self, question, on_event=None):
-        """
-        Answer one question with the agent.
+        """Answer one question and return the answer, mode, retrieval metadata, sources and agent trace.
 
-        Args:
-            question: The user's question.
-            on_event: Optional callback that receives each trace event as it
-                happens (e.g., the Streamlit UI). It is only ever called from
-                the main thread.
-
-        Returns:
-            dict: "answer", "mode", "relevance_score", "retrieval_metadata",
-            "sources", and "agent" (plan, trace, usage, evidence).
+        Optional `on_event` receives live trace events on the main thread for interfaces such as Streamlit.
         """
         run = AgentRun(question, on_event)
         answer, citations = None, []
@@ -755,6 +674,11 @@ class AgentAssistant:
             logger.exception("Agent run failed")
             stop_reason, detail = "api_error", f"{type(exc).__name__}: {exc}"
 
+        return self.result_from_run(run, answer, citations, stop_reason, detail)
+
+    def result_from_run(self, run, answer=None, citations=None, stop_reason="answered", detail=""):
+        """Shared response formatting for the legacy baseline and graph runtime."""
+        citations = citations or []
         run.record("stop", reason=stop_reason, detail=detail[:300])
         run.flush_events()
         mode = STOP_REASON_TO_MODE[stop_reason]
@@ -766,6 +690,13 @@ class AgentAssistant:
             display_answer = STOP_MESSAGES[stop_reason]
             if stop_reason == "insufficient_evidence" and detail:
                 display_answer += f"\n\nMissing: {detail}"
+
+        # Keep all retrieved chunks for private failure analysis.
+        # `evidence` remains limited to final citations, and public exports remove text from both fields.
+        retrieved_entries = [
+            {key: value for key, value in entry.items() if key != "doc"}
+            for entry in run.ledger.entries()
+        ]
 
         sources = [
             {
@@ -801,7 +732,7 @@ class AgentAssistant:
             },
             "sources": sources,
             "agent": {
-                "question": question,
+                "question": run.question,
                 "features": self.features(),
                 "plan": run.plan,
                 "route": run.route,
@@ -821,6 +752,7 @@ class AgentAssistant:
                     {key: entry[key] for key in ("chunk_id", "title", "url", "file_name", "page", "text")}
                     for entry in cited_entries
                 ],
+                "retrieved_evidence": retrieved_entries,
             },
         }
 

@@ -1,0 +1,2403 @@
+{
+  "engine": "graph",
+  "label": "upgrade_targeted_repeat3",
+  "created_at": "2026-10-09T19:11:49",
+  "manifest": {
+    "python": "3.12.14",
+    "packages": {
+      "langgraph": "1.2.12",
+      "langgraph-checkpoint-sqlite": "3.1.1",
+      "langchain-core": "1.6.9",
+      "langchain-community": "0.4.2",
+      "langchain-text-splitters": "1.1.3",
+      "chromadb": "1.5.9",
+      "sentence-transformers": "6.1.0",
+      "openai": "1.109.1"
+    },
+    "code_sha256": {
+      "__init__.py": "907e85f016122e5a4a34673ed7e63084ea3849e93439bd454212be137a82d676",
+      "agent_graph.py": "b1fc293dda423c05e4effcea83ce175cb925eff0e5837ea3cae9d5cb1040798f",
+      "agent_prompts.py": "30ca5f5b9deca760600af58ad0168a4ebfe3df57e01e320c294c75890d2d8771",
+      "agent_runtime.py": "a93d3dd211f62fc158fef62996dec94861816974a26e931c484e05412f63fce1",
+      "agent_team.py": "a663449c3766a2ab1c6de640214636e12d66222d83fa09f2570d1f0e783609b2",
+      "agent_tools.py": "d3fb4bf0b6329c2a7eca72f65d35d1a1f04afc67a28edbd1ff55d366b565bdef",
+      "app.py": "3a34e39f044e60078840f90468d91f298c1f3c548295f52e14aa3ee922caac63",
+      "config.py": "c411ced539de931589ea5dd662e8efed84906963bc13aeeb53913121095bdb1b",
+      "document_pipeline.py": "50d89cbc4b13c1abbce861be06289779e771f1d6d30021e9612b13401d9c7c7b",
+      "retrieval.py": "b27ed84e11c69951bca03da1047eb66fa04575fd9ada3001608a726557ee18cc",
+      "session_memory.py": "7bca9a02884c227e6f935d3423787f846b02169f8735dca86bf9bced206e4726",
+      "source_registry.py": "6234cca0dd43e91e194cd0dac035bbd3a3f0382e367e4d6ddc971e0cdf892b0e",
+      "utils.py": "26faba6eba41831b33cb2a3468a81c908c9b308712ba2975c9f70345cb37daa2"
+    },
+    "questions_sha256": "3353e88c7f6b25c1b4ca343b9447b7aa4ae86d81da121c31307dd989831bf9e3",
+    "corpus_sqlite_sha256": "8ee876896e6998dc57542009af1dd8e8216411c2cb21c672aeff006995bbc2b8",
+    "judge_policy": "scoped_absence_v2",
+    "judge_model": "gpt-5",
+    "judge_reasoning_effort": "low",
+    "reasoning_effort": {
+      "gpt-6-luna": "low",
+      "gpt-6.1-sol": "low",
+      "gpt-5-mini": "minimal",
+      "gpt-5": "minimal"
+    },
+    "embedding": "BAAI/bge-m3",
+    "reranker": "BAAI/bge-reranker-base",
+    "reranker_enabled": true,
+    "sigmoid": [
+      0.6,
+      17.27
+    ]
+  },
+  "repeat": 3,
+  "history_policy": "stateless",
+  "config": {
+    "judge_model": "gpt-5",
+    "judge_policy": "scoped_absence_v2",
+    "candidate_top_k": 20,
+    "final_top_n": 4,
+    "min_doc_relevance": 0.5,
+    "agent": {
+      "parallel_search": true,
+      "routing": true,
+      "workers": 2,
+      "reviewer": true,
+      "light_model": "gpt-6-luna",
+      "heavy_model": "gpt-6.1-sol",
+      "max_llm_calls": 19,
+      "max_searches": 4,
+      "orchestration": "langgraph",
+      "session_memory": true,
+      "history_turns": 5
+    }
+  },
+  "summary": {
+    "runs": 9,
+    "mode_accuracy": 1.0,
+    "false_rejection_rate": 0.0,
+    "false_acceptance_rate": null,
+    "error_count": 0,
+    "unsupported_claim_rate": 0.0,
+    "partial_claim_rate": 0.0,
+    "answers_with_unsupported": 0,
+    "answered_count": 9,
+    "key_point_coverage": 0.6111,
+    "source_hit_rate": 0.7778,
+    "avg_searches": 3,
+    "avg_llm_calls": 8.2222,
+    "latency_mean_s": 24.4989,
+    "latency_p50_s": 25.86,
+    "latency_p90_s": 30.8,
+    "avg_prompt_tokens": 21912.2222,
+    "avg_completion_tokens": 1303.5556,
+    "total_cost_usd": 0.1653,
+    "avg_cost_usd": 0.0184,
+    "unpriced_runs": 0,
+    "tokens_by_model": {
+      "gpt-6-luna": {
+        "calls": 55,
+        "input_tokens": 153606,
+        "output_tokens": 5267,
+        "cached_tokens": 50354
+      },
+      "gpt-6.1-sol": {
+        "calls": 19,
+        "input_tokens": 43604,
+        "output_tokens": 6465,
+        "cached_tokens": 0
+      }
+    },
+    "variant_only_rejections": 0,
+    "stop_reasons": {
+      "answered": 9
+    },
+    "routes": {
+      "team": 7,
+      "light": 2
+    },
+    "escalations": 0,
+    "runs_with_parallel_calls": 0,
+    "avg_review_rounds": 1.1111
+  },
+  "by_category": {
+    "easy": {
+      "runs": 3,
+      "mode_accuracy": 1.0,
+      "false_rejection_rate": 0.0,
+      "false_acceptance_rate": null,
+      "error_count": 0,
+      "unsupported_claim_rate": 0.0,
+      "partial_claim_rate": 0.0,
+      "answers_with_unsupported": 0,
+      "answered_count": 3,
+      "key_point_coverage": 0.3333,
+      "source_hit_rate": 0.6667,
+      "avg_searches": 1.6667,
+      "avg_llm_calls": 6.3333,
+      "latency_mean_s": 17.6167,
+      "latency_p50_s": 19.51,
+      "latency_p90_s": 21.15,
+      "avg_prompt_tokens": 14246.6667,
+      "avg_completion_tokens": 848.6667,
+      "total_cost_usd": 0.0334,
+      "avg_cost_usd": 0.0111,
+      "unpriced_runs": 0,
+      "tokens_by_model": {
+        "gpt-6-luna": {
+          "calls": 14,
+          "input_tokens": 34224,
+          "output_tokens": 1210,
+          "cached_tokens": 11730
+        },
+        "gpt-6.1-sol": {
+          "calls": 5,
+          "input_tokens": 8516,
+          "output_tokens": 1336,
+          "cached_tokens": 0
+        }
+      },
+      "variant_only_rejections": 0,
+      "stop_reasons": {
+        "answered": 3
+      },
+      "routes": {
+        "light": 2,
+        "team": 1
+      },
+      "escalations": 0,
+      "runs_with_parallel_calls": 0,
+      "avg_review_rounds": 1.3333
+    },
+    "normal": {
+      "runs": 3,
+      "mode_accuracy": 1.0,
+      "false_rejection_rate": 0.0,
+      "false_acceptance_rate": null,
+      "error_count": 0,
+      "unsupported_claim_rate": 0.0,
+      "partial_claim_rate": 0.0,
+      "answers_with_unsupported": 0,
+      "answered_count": 3,
+      "key_point_coverage": 0.6667,
+      "source_hit_rate": 0.6667,
+      "avg_searches": 3.3333,
+      "avg_llm_calls": 9,
+      "latency_mean_s": 25.5267,
+      "latency_p50_s": 25.86,
+      "latency_p90_s": 26.68,
+      "avg_prompt_tokens": 22479.3333,
+      "avg_completion_tokens": 1735.6667,
+      "total_cost_usd": 0.0585,
+      "avg_cost_usd": 0.0195,
+      "unpriced_runs": 0,
+      "tokens_by_model": {
+        "gpt-6-luna": {
+          "calls": 21,
+          "input_tokens": 54941,
+          "output_tokens": 2400,
+          "cached_tokens": 13952
+        },
+        "gpt-6.1-sol": {
+          "calls": 6,
+          "input_tokens": 12497,
+          "output_tokens": 2807,
+          "cached_tokens": 0
+        }
+      },
+      "variant_only_rejections": 0,
+      "stop_reasons": {
+        "answered": 3
+      },
+      "routes": {
+        "team": 3
+      },
+      "escalations": 0,
+      "runs_with_parallel_calls": 0,
+      "avg_review_rounds": 1
+    },
+    "sequential": {
+      "runs": 3,
+      "mode_accuracy": 1.0,
+      "false_rejection_rate": 0.0,
+      "false_acceptance_rate": null,
+      "error_count": 0,
+      "unsupported_claim_rate": 0.0,
+      "partial_claim_rate": 0.0,
+      "answers_with_unsupported": 0,
+      "answered_count": 3,
+      "key_point_coverage": 0.8333,
+      "source_hit_rate": 1.0,
+      "avg_searches": 4,
+      "avg_llm_calls": 9.3333,
+      "latency_mean_s": 30.3533,
+      "latency_p50_s": 30.8,
+      "latency_p90_s": 31.63,
+      "avg_prompt_tokens": 29010.6667,
+      "avg_completion_tokens": 1326.3333,
+      "total_cost_usd": 0.0735,
+      "avg_cost_usd": 0.0245,
+      "unpriced_runs": 0,
+      "tokens_by_model": {
+        "gpt-6-luna": {
+          "calls": 20,
+          "input_tokens": 64441,
+          "output_tokens": 1657,
+          "cached_tokens": 24672
+        },
+        "gpt-6.1-sol": {
+          "calls": 8,
+          "input_tokens": 22591,
+          "output_tokens": 2322,
+          "cached_tokens": 0
+        }
+      },
+      "variant_only_rejections": 0,
+      "stop_reasons": {
+        "answered": 3
+      },
+      "routes": {
+        "team": 3
+      },
+      "escalations": 0,
+      "runs_with_parallel_calls": 0,
+      "avg_review_rounds": 1
+    }
+  },
+  "pairs": {
+    "blue_lifetime": {
+      "normal_answered": true,
+      "variant_modes": {},
+      "variant_only_rejections": 0
+    }
+  },
+  "judge_cost_usd": 0.1255,
+  "records": [
+    {
+      "id": "n05",
+      "category": "normal",
+      "pair_id": "blue_lifetime",
+      "question": "How was the lifetime of blue phosphorescent OLEDs improved by reducing triplet-polaron annihilation?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "The lifetime was improved by using a **broadened emissive layer with a graded dopant-concentration profile**. This lowered the exciton density relative to a conventional device, suppressing triplet–polaron annihilation and the resulting long-term luminescent degradation. The design alone produced a **more than threefold lifetime improvement**. [1]\n\nThe mechanism is reduced destructive quenching: when a triplet exciton encounters a nearby polaron, it can transfer energy to the polaron, creating a high-energy state capable of bond cleavage and degradation of emissive molecules. Suppressing these encounters therefore limits this degradation pathway. [2]\n\nApplying the same strategy to a **two-unit stacked device** achieved **616 ± 10 hours to 80% of the initial luminance of 1,000 cd/m²**, a **tenfold lifetime improvement** over a conventional blue electrophosphorescent OLED. [1]",
+      "latency_s": 25.86,
+      "cost_usd": 0.0198831,
+      "used_files": [
+        "[Review] Approaches to high performance white organic light-emitting diodes for general lighting.pdf",
+        "[Yifan] Tenfold increase in the lifetime of blue phosphorescent organic light-emitting diodes.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "c41f07193",
+          "title": "Tenfold increase in the lifetime of blue phosphorescent organic light-emitting diodes",
+          "url": "https://doi.org/10.1038/ncomms6008",
+          "file_name": "[Yifan] Tenfold increase in the lifetime of blue phosphorescent organic light-emitting diodes.pdf",
+          "page": 1
+        },
+        {
+          "chunk_id": "c3eaca76a",
+          "title": "Approaches to high performance white organic light-emitting diodes for general lighting",
+          "url": "https://doi.org/10.1039/c6qm00365f",
+          "file_name": "[Review] Approaches to high performance white organic light-emitting diodes for general lighting.pdf",
+          "page": 6
+        }
+      ],
+      "searches": 4,
+      "llm_calls": 9,
+      "prompt_tokens": 21758,
+      "completion_tokens": 1682,
+      "cached_tokens": 0,
+      "reasoning_tokens": 119,
+      "usage_by_model": {
+        "gpt-6-luna": {
+          "calls": 7,
+          "input_tokens": 17381,
+          "output_tokens": 782,
+          "cached_tokens": 0,
+          "reasoning_tokens": 119
+        },
+        "gpt-6.1-sol": {
+          "calls": 2,
+          "input_tokens": 4377,
+          "output_tokens": 900,
+          "cached_tokens": 0,
+          "reasoning_tokens": 0
+        }
+      },
+      "calls_by_role": {
+        "planner": 1,
+        "worker1": 3,
+        "worker2": 3,
+        "orchestrator": 1,
+        "reviewer": 1
+      },
+      "complexity": "complex",
+      "route": "team",
+      "escalated": false,
+      "review_rounds": 1,
+      "parallel_turns": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "plan",
+          "role": "planner",
+          "t": 3.45,
+          "model": "gpt-6-luna",
+          "domain": "in_domain",
+          "reason": "The question concerns degradation and lifetime in blue phosphorescent OLEDs.",
+          "complexity": "complex",
+          "sequential": false,
+          "subquestions": [
+            "What design or operating changes reduce triplet–polaron annihilation in blue phosphorescent OLEDs?",
+            "How does reducing triplet–polaron annihilation improve the lifetime of blue phosphorescent OLEDs?"
+          ]
+        },
+        {
+          "step": 2,
+          "type": "route",
+          "role": "planner",
+          "t": 3.45,
+          "route": "team"
+        },
+        {
+          "step": 3,
+          "type": "worker_start",
+          "role": "worker1",
+          "t": 3.45,
+          "model": "gpt-6-luna",
+          "subquestions": [
+            "What design or operating changes reduce triplet–polaron annihilation in blue phosphorescent OLEDs?"
+          ]
+        },
+        {
+          "step": 4,
+          "type": "worker_start",
+          "role": "worker2",
+          "t": 3.45,
+          "model": "gpt-6-luna",
+          "subquestions": [
+            "How does reducing triplet–polaron annihilation improve the lifetime of blue phosphorescent OLEDs?"
+          ]
+        },
+        {
+          "step": 5,
+          "type": "search",
+          "role": "worker2",
+          "t": 5.92,
+          "query": "How does reducing triplet–polaron annihilation improve the operational lifetime of blue phosphorescent OLEDs?",
+          "status": "ok",
+          "max_relevance": 0.926,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 6,
+          "type": "search",
+          "role": "worker1",
+          "t": 6.81,
+          "query": "What device design or operating changes reduce triplet–polaron annihilation in blue phosphorescent OLEDs?",
+          "status": "ok",
+          "max_relevance": 0.885,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 7,
+          "type": "search",
+          "role": "worker2",
+          "t": 8.56,
+          "query": "Triplet-polaron annihilation in blue phosphorescent OLED causes device degradation and lifetime loss; how does suppression help?",
+          "status": "ok",
+          "max_relevance": 0.895,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 2
+        },
+        {
+          "step": 8,
+          "type": "search",
+          "role": "worker1",
+          "t": 8.6,
+          "query": "What specific layer profile, thickness, current density, or stacked-device strategy was used to lower exciton and polaron density?",
+          "status": "no_relevant_documents",
+          "max_relevance": 0.377,
+          "survivor_count": 0,
+          "result_count": 0,
+          "new_chunks": 0
+        },
+        {
+          "step": 9,
+          "type": "worker_done",
+          "role": "worker1",
+          "t": 11.44,
+          "status": "found",
+          "citations": 2
+        },
+        {
+          "step": 10,
+          "type": "worker_done",
+          "role": "worker2",
+          "t": 11.62,
+          "status": "found",
+          "citations": 2
+        },
+        {
+          "step": 11,
+          "type": "orchestrate",
+          "role": "orchestrator",
+          "t": 11.62,
+          "model": "gpt-6.1-sol",
+          "chunks": 3
+        },
+        {
+          "step": 12,
+          "type": "review",
+          "role": "reviewer",
+          "t": 25.86,
+          "model": "gpt-6.1-sol",
+          "round": 1,
+          "claims": 9,
+          "unsupported": 0,
+          "core_question_answered": true,
+          "unsupported_claims": []
+        },
+        {
+          "step": 13,
+          "type": "stop",
+          "role": null,
+          "t": 25.86,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "original_question": "How was the lifetime of blue phosphorescent OLEDs improved by reducing triplet-polaron annihilation?",
+      "standalone_question": "How was the lifetime of blue phosphorescent OLEDs improved by reducing triplet-polaron annihilation?",
+      "run": 0,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": true,
+      "claims": [
+        {
+          "claim": "Lifetime was improved by using a broadened emissive layer with a graded dopant-concentration profile.",
+          "verdict": "supported",
+          "reason": "E1 states a blue electrophosphorescent device with a graded dopant concentration profile in a broadened emissive layer was demonstrated."
+        },
+        {
+          "claim": "This design lowered the exciton density relative to a conventional device.",
+          "verdict": "supported",
+          "reason": "E1: the graded profile in a broadened emissive layer led to a lower exciton density compared with a conventional device."
+        },
+        {
+          "claim": "Lower exciton density suppresses triplet–polaron annihilation.",
+          "verdict": "supported",
+          "reason": "E1: lower exciton density suppresses triplet–polaron annihilation that leads to degradation."
+        },
+        {
+          "claim": "Suppressing triplet–polaron annihilation reduces long-term luminescent degradation.",
+          "verdict": "supported",
+          "reason": "E1: suppression of triplet–polaron annihilation that leads to long-term luminescent degradation is stated."
+        },
+        {
+          "claim": "The design alone produced a more than threefold lifetime improvement.",
+          "verdict": "supported",
+          "reason": "E1: suppression resulted in a more than threefold lifetime improvement."
+        },
+        {
+          "claim": "Mechanism: a triplet exciton can transfer energy to a nearby polaron, creating a high-energy state capable of bond cleavage and degradation of emissive molecules.",
+          "verdict": "supported",
+          "reason": "E2 describes bimolecular triplet–polaron quenching where the polaron is excited to >6 eV, sufficient to break bonds and degrade emissive molecules."
+        },
+        {
+          "claim": "Applying the same strategy to a two-unit stacked device achieved 616 ± 10 hours to 80% of the initial luminance of 1,000 cd/m².",
+          "verdict": "supported",
+          "reason": "E1 reports a lifetime of 616±10 h to 80% of 1,000 cd/m² for a two-unit stacked device using this strategy; E2 echoes this result."
+        },
+        {
+          "claim": "This represented a tenfold lifetime improvement over a conventional blue electrophosphorescent OLED.",
+          "verdict": "supported",
+          "reason": "E1 states the result represents a tenfold lifetime improvement over a conventional blue electrophosphorescent device."
+        }
+      ],
+      "claim_count": 8,
+      "unsupported_claims": 0,
+      "partial_claims": 0,
+      "key_points_covered": 1.0,
+      "judge_cost_usd": 0.01424875
+    },
+    {
+      "id": "n05",
+      "category": "normal",
+      "pair_id": "blue_lifetime",
+      "question": "How was the lifetime of blue phosphorescent OLEDs improved by reducing triplet-polaron annihilation?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "Blue phosphorescent OLED lifetime was improved by using **a broadened emissive layer with a graded dopant-concentration profile** to suppress triplet–polaron quenching (TPQ). The reported sky-blue FIrpic device reached **616 hours to 80% of its initial luminance**, starting at **1000 cd m⁻²**. [1]\n\nThe benefit comes from suppressing a destructive degradation pathway: a triplet exciton on the phosphor encounters a polaron on a nearby host molecule, quenching the exciton and exciting the polaron to a high-energy state. That high-energy polaron can cause bond cleavage and degradation of blue emissive molecules; for FIrpic, the cited example involves Ir–O bond breaking, CO₂ loss, and formation of FIrpic⁺. [1]\n\nReducing triplet and polaron densities in the emissive layer is also identified as a strategy for addressing annihilation-driven molecular dissociation. [2] However, the retrieved evidence does not specify the microscopic density redistribution produced by the graded, broadened layer or give a baseline lifetime for calculating the improvement factor. [1]",
+      "latency_s": 26.68,
+      "cost_usd": 0.01912676,
+      "used_files": [
+        "Chapter 6 Organic Light Emitters.pdf",
+        "[Review] Approaches to high performance white organic light-emitting diodes for general lighting.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "c3eaca76a",
+          "title": "Approaches to high performance white organic light-emitting diodes for general lighting",
+          "url": "https://doi.org/10.1039/c6qm00365f",
+          "file_name": "[Review] Approaches to high performance white organic light-emitting diodes for general lighting.pdf",
+          "page": 6
+        },
+        {
+          "chunk_id": "c931180cf",
+          "title": "Chapter 6 Organic Light Emitters",
+          "url": null,
+          "file_name": "Chapter 6 Organic Light Emitters.pdf",
+          "page": 348
+        }
+      ],
+      "searches": 3,
+      "llm_calls": 9,
+      "prompt_tokens": 22904,
+      "completion_tokens": 1918,
+      "cached_tokens": 6956,
+      "reasoning_tokens": 130,
+      "usage_by_model": {
+        "gpt-6-luna": {
+          "calls": 7,
+          "input_tokens": 19123,
+          "output_tokens": 937,
+          "cached_tokens": 6956,
+          "reasoning_tokens": 130
+        },
+        "gpt-6.1-sol": {
+          "calls": 2,
+          "input_tokens": 3781,
+          "output_tokens": 981,
+          "cached_tokens": 0,
+          "reasoning_tokens": 0
+        }
+      },
+      "calls_by_role": {
+        "planner": 1,
+        "worker1": 3,
+        "worker2": 3,
+        "orchestrator": 1,
+        "reviewer": 1
+      },
+      "complexity": "complex",
+      "route": "team",
+      "escalated": false,
+      "review_rounds": 1,
+      "parallel_turns": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "plan",
+          "role": "planner",
+          "t": 2.74,
+          "model": "gpt-6-luna",
+          "domain": "in_domain",
+          "reason": "The question concerns triplet–polaron annihilation and lifetime in blue phosphorescent OLEDs.",
+          "complexity": "complex",
+          "sequential": false,
+          "subquestions": [
+            "What approaches reduce triplet–polaron annihilation in blue phosphorescent OLEDs?",
+            "How does reducing triplet–polaron annihilation improve the lifetime of blue phosphorescent OLEDs?"
+          ]
+        },
+        {
+          "step": 2,
+          "type": "route",
+          "role": "planner",
+          "t": 2.74,
+          "route": "team"
+        },
+        {
+          "step": 3,
+          "type": "worker_start",
+          "role": "worker1",
+          "t": 2.74,
+          "model": "gpt-6-luna",
+          "subquestions": [
+            "What approaches reduce triplet–polaron annihilation in blue phosphorescent OLEDs?"
+          ]
+        },
+        {
+          "step": 4,
+          "type": "worker_start",
+          "role": "worker2",
+          "t": 2.74,
+          "model": "gpt-6-luna",
+          "subquestions": [
+            "How does reducing triplet–polaron annihilation improve the lifetime of blue phosphorescent OLEDs?"
+          ]
+        },
+        {
+          "step": 5,
+          "type": "search",
+          "role": "worker2",
+          "t": 5.24,
+          "query": "How does reducing triplet–polaron annihilation improve the lifetime of blue phosphorescent OLEDs?",
+          "status": "ok",
+          "max_relevance": 0.927,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 6,
+          "type": "search",
+          "role": "worker1",
+          "t": 6.19,
+          "query": "What device design or material approaches reduce triplet-polaron annihilation in blue phosphorescent OLEDs?",
+          "status": "ok",
+          "max_relevance": 0.897,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 3
+        },
+        {
+          "step": 7,
+          "type": "search",
+          "role": "worker1",
+          "t": 8.05,
+          "query": "How does broadening the emissive layer and grading phosphor dopant concentration suppress triplet polaron quenching?",
+          "status": "ok",
+          "max_relevance": 0.596,
+          "survivor_count": 13,
+          "result_count": 4,
+          "new_chunks": 3
+        },
+        {
+          "step": 8,
+          "type": "findings_rejected",
+          "role": "worker2",
+          "t": 8.62,
+          "errors": [
+            "Unknown chunk IDs: c3eaca76."
+          ]
+        },
+        {
+          "step": 9,
+          "type": "worker_done",
+          "role": "worker1",
+          "t": 9.97,
+          "status": "found",
+          "citations": 1
+        },
+        {
+          "step": 10,
+          "type": "worker_done",
+          "role": "worker2",
+          "t": 11.0,
+          "status": "found",
+          "citations": 2
+        },
+        {
+          "step": 11,
+          "type": "orchestrate",
+          "role": "orchestrator",
+          "t": 11.0,
+          "model": "gpt-6.1-sol",
+          "chunks": 2
+        },
+        {
+          "step": 12,
+          "type": "review",
+          "role": "reviewer",
+          "t": 26.67,
+          "model": "gpt-6.1-sol",
+          "round": 1,
+          "claims": 9,
+          "unsupported": 0,
+          "core_question_answered": true,
+          "unsupported_claims": []
+        },
+        {
+          "step": 13,
+          "type": "stop",
+          "role": null,
+          "t": 26.68,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "original_question": "How was the lifetime of blue phosphorescent OLEDs improved by reducing triplet-polaron annihilation?",
+      "standalone_question": "How was the lifetime of blue phosphorescent OLEDs improved by reducing triplet-polaron annihilation?",
+      "run": 1,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": false,
+      "claims": [
+        {
+          "claim": "Blue phosphorescent OLED lifetime was improved by using a broadened emissive layer with a graded dopant-concentration profile to suppress triplet–polaron quenching (TPQ).",
+          "verdict": "supported",
+          "reason": "E1 states that a graded dopant concentration profile in a broadened emissive layer was used to suppress TPQ in a blue phosphorescent device, improving lifetime."
+        },
+        {
+          "claim": "The reported sky-blue FIrpic device reached 616 hours to 80% of its initial luminance at 1000 cd m⁻².",
+          "verdict": "supported",
+          "reason": "E1 reports a lifetime of 616 ± 10 hours to 80% at an initial luminance of 1000 cd m⁻2."
+        },
+        {
+          "claim": "Triplet–polaron quenching involves a triplet exciton encountering a polaron, quenching the exciton and exciting the polaron to a high-energy state.",
+          "verdict": "supported",
+          "reason": "E1 explains TPQ: a triplet exciton on the phosphor encounters a polaron, the exciton is quenched, and the polaron is excited to a higher energy level."
+        },
+        {
+          "claim": "The high-energy polaron can cause bond cleavage and degradation of blue emissive molecules.",
+          "verdict": "supported",
+          "reason": "E1 states that the high-energy polaron in blue emitting materials is sufficient to break and degrade emissive molecules through bond cleavage."
+        },
+        {
+          "claim": "For FIrpic, degradation involves Ir–O bond breaking, CO₂ loss, and formation of FIrpic+.",
+          "verdict": "supported",
+          "reason": "E1 gives this specific example for FIrpic after excitation."
+        },
+        {
+          "claim": "Reducing triplet and polaron densities in the emissive layer is identified as a strategy for addressing annihilation-driven molecular dissociation.",
+          "verdict": "supported",
+          "reason": "E2 lists reducing triplet and polaron densities in the EML as a path toward eliminating annihilation-induced molecular dissociation."
+        },
+        {
+          "claim": "The retrieved evidence does not specify the microscopic density redistribution produced by the graded, broadened layer.",
+          "verdict": "supported",
+          "reason": "Neither E1 nor E2 provides details on microscopic density redistribution from the graded/broadened EML."
+        },
+        {
+          "claim": "The retrieved evidence does not give a baseline lifetime for calculating the improvement factor.",
+          "verdict": "supported",
+          "reason": "E1 reports a lifetime value but does not provide a baseline for comparison; E2 does not provide such a baseline either."
+        }
+      ],
+      "claim_count": 8,
+      "unsupported_claims": 0,
+      "partial_claims": 0,
+      "key_points_covered": 0.0,
+      "judge_cost_usd": 0.0134025
+    },
+    {
+      "id": "n05",
+      "category": "normal",
+      "pair_id": "blue_lifetime",
+      "question": "How was the lifetime of blue phosphorescent OLEDs improved by reducing triplet-polaron annihilation?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "Blue phosphorescent OLED lifetime was improved by **using a graded dopant concentration profile in a broadened emissive layer**. This lowered the exciton density relative to a conventional device, suppressing triplet–polaron annihilation and the associated long-term luminescence degradation. [1]\n\nThe mechanism is that a triplet exciton encountering a polaron can transfer its energy to that polaron, creating a high-energy state capable of breaking molecular bonds and degrading blue-emitting molecules. Suppressing these encounters therefore reduces this destructive degradation pathway. [2]\n\nThe graded, broadened emissive-layer design produced **more than a threefold lifetime improvement**. Applied to a **two-unit stacked device**, it achieved **616 ± 10 hours to 80% of an initial luminance of 1,000 cd m⁻²**, a **tenfold improvement** over a conventional blue phosphorescent OLED. [1] Intrinsic chemical degradation of the blue phosphorescent emitters nevertheless remained a lifetime limitation. [2]",
+      "latency_s": 24.04,
+      "cost_usd": 0.01949256,
+      "used_files": [
+        "[Review] Approaches to high performance white organic light-emitting diodes for general lighting.pdf",
+        "[Yifan] Tenfold increase in the lifetime of blue phosphorescent organic light-emitting diodes.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "c41f07193",
+          "title": "Tenfold increase in the lifetime of blue phosphorescent organic light-emitting diodes",
+          "url": "https://doi.org/10.1038/ncomms6008",
+          "file_name": "[Yifan] Tenfold increase in the lifetime of blue phosphorescent organic light-emitting diodes.pdf",
+          "page": 1
+        },
+        {
+          "chunk_id": "c3eaca76a",
+          "title": "Approaches to high performance white organic light-emitting diodes for general lighting",
+          "url": "https://doi.org/10.1039/c6qm00365f",
+          "file_name": "[Review] Approaches to high performance white organic light-emitting diodes for general lighting.pdf",
+          "page": 6
+        }
+      ],
+      "searches": 3,
+      "llm_calls": 9,
+      "prompt_tokens": 22776,
+      "completion_tokens": 1607,
+      "cached_tokens": 6996,
+      "reasoning_tokens": 53,
+      "usage_by_model": {
+        "gpt-6-luna": {
+          "calls": 7,
+          "input_tokens": 18437,
+          "output_tokens": 681,
+          "cached_tokens": 6996,
+          "reasoning_tokens": 53
+        },
+        "gpt-6.1-sol": {
+          "calls": 2,
+          "input_tokens": 4339,
+          "output_tokens": 926,
+          "cached_tokens": 0,
+          "reasoning_tokens": 0
+        }
+      },
+      "calls_by_role": {
+        "planner": 1,
+        "worker1": 3,
+        "worker2": 3,
+        "orchestrator": 1,
+        "reviewer": 1
+      },
+      "complexity": "complex",
+      "route": "team",
+      "escalated": false,
+      "review_rounds": 1,
+      "parallel_turns": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "plan",
+          "role": "planner",
+          "t": 1.94,
+          "model": "gpt-6-luna",
+          "domain": "in_domain",
+          "reason": "The question concerns degradation and lifetime mechanisms in blue phosphorescent OLEDs.",
+          "complexity": "complex",
+          "sequential": false,
+          "subquestions": [
+            "What strategies reduced triplet–polaron annihilation in blue phosphorescent OLEDs?",
+            "How did reducing triplet–polaron annihilation improve their lifetime?"
+          ]
+        },
+        {
+          "step": 2,
+          "type": "route",
+          "role": "planner",
+          "t": 1.94,
+          "route": "team"
+        },
+        {
+          "step": 3,
+          "type": "worker_start",
+          "role": "worker1",
+          "t": 1.94,
+          "model": "gpt-6-luna",
+          "subquestions": [
+            "What strategies reduced triplet–polaron annihilation in blue phosphorescent OLEDs?"
+          ]
+        },
+        {
+          "step": 4,
+          "type": "worker_start",
+          "role": "worker2",
+          "t": 1.94,
+          "model": "gpt-6-luna",
+          "subquestions": [
+            "How did reducing triplet–polaron annihilation improve their lifetime?"
+          ]
+        },
+        {
+          "step": 5,
+          "type": "search",
+          "role": "worker2",
+          "t": 3.92,
+          "query": "How does reducing triplet–polaron annihilation improve the lifetime of blue phosphorescent OLEDs?",
+          "status": "ok",
+          "max_relevance": 0.927,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 6,
+          "type": "search",
+          "role": "worker1",
+          "t": 4.81,
+          "query": "What device design strategies reduced triplet-polaron annihilation in blue phosphorescent OLEDs?",
+          "status": "ok",
+          "max_relevance": 0.812,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 3
+        },
+        {
+          "step": 7,
+          "type": "search",
+          "role": "worker1",
+          "t": 6.21,
+          "query": "How does broadened emissive layer and graded dopant concentration suppress triplet-polaron annihilation?",
+          "status": "ok",
+          "max_relevance": 0.571,
+          "survivor_count": 4,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 8,
+          "type": "findings_rejected",
+          "role": "worker2",
+          "t": 6.46,
+          "errors": [
+            "Unknown chunk IDs: c3eaca76."
+          ]
+        },
+        {
+          "step": 9,
+          "type": "worker_done",
+          "role": "worker2",
+          "t": 8.07,
+          "status": "found",
+          "citations": 1
+        },
+        {
+          "step": 10,
+          "type": "worker_done",
+          "role": "worker1",
+          "t": 8.45,
+          "status": "found",
+          "citations": 2
+        },
+        {
+          "step": 11,
+          "type": "orchestrate",
+          "role": "orchestrator",
+          "t": 8.45,
+          "model": "gpt-6.1-sol",
+          "chunks": 3
+        },
+        {
+          "step": 12,
+          "type": "review",
+          "role": "reviewer",
+          "t": 24.04,
+          "model": "gpt-6.1-sol",
+          "round": 1,
+          "claims": 9,
+          "unsupported": 0,
+          "core_question_answered": true,
+          "unsupported_claims": []
+        },
+        {
+          "step": 13,
+          "type": "stop",
+          "role": null,
+          "t": 24.04,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "original_question": "How was the lifetime of blue phosphorescent OLEDs improved by reducing triplet-polaron annihilation?",
+      "standalone_question": "How was the lifetime of blue phosphorescent OLEDs improved by reducing triplet-polaron annihilation?",
+      "run": 2,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": true,
+      "claims": [
+        {
+          "claim": "Blue phosphorescent OLED lifetime was improved by using a graded dopant concentration profile in a broadened emissive layer.",
+          "verdict": "supported",
+          "reason": "E1 states a novel device with a graded dopant concentration profile in a broadened emissive layer and discusses lifetime improvement."
+        },
+        {
+          "claim": "The graded, broadened emissive-layer design led to a lower exciton density compared with a conventional device.",
+          "verdict": "supported",
+          "reason": "E1 explicitly says this design leads to a lower exciton density compared with a conventional device."
+        },
+        {
+          "claim": "Lower exciton density suppressed triplet–polaron annihilation that leads to long-term luminescent degradation.",
+          "verdict": "supported",
+          "reason": "E1 states that triplet–polaron annihilation that leads to long-term luminescent degradation is suppressed due to the lower exciton density."
+        },
+        {
+          "claim": "In triplet–polaron annihilation, a triplet exciton transfers energy to a polaron, creating a high-energy polaron that can break bonds and degrade blue-emitting molecules.",
+          "verdict": "supported",
+          "reason": "E2 explains TPQ/TPA: triplet exciton encounters a polaron, exciton quenched, polaron excited to higher energy sufficient to break bonds and degrade emissive molecules."
+        },
+        {
+          "claim": "Suppressing these triplet–polaron encounters reduces this destructive degradation pathway.",
+          "verdict": "supported",
+          "reason": "E1 links suppression of triplet–polaron annihilation to reducing long-term luminescent degradation and improving lifetime; E2 describes the destructive mechanism, implying suppression reduces it."
+        },
+        {
+          "claim": "The emissive-layer design produced more than a threefold lifetime improvement.",
+          "verdict": "supported",
+          "reason": "E1 states a more than threefold lifetime improvement."
+        },
+        {
+          "claim": "Applied to a two-unit stacked device, the lifetime to 80% at an initial luminance of 1,000 cd m−2 was 616 ± 10 hours.",
+          "verdict": "supported",
+          "reason": "E1 reports 616 ± 10 h to 80% of 1,000 cd m−2 for a two-unit stacked device; E2 also reports the same value (with OCR artifacts)."
+        },
+        {
+          "claim": "This represented a tenfold lifetime improvement over a conventional blue phosphorescent OLED.",
+          "verdict": "supported",
+          "reason": "E1 states it represents a tenfold lifetime improvement over a conventional blue electrophosphorescent device."
+        },
+        {
+          "claim": "Intrinsic chemical degradation of blue phosphorescent emitters remained a lifetime limitation.",
+          "verdict": "supported",
+          "reason": "E2 states that the reported lifetime still lags behind practical values due to intrinsic chemical degradation of blue phosphorescent emitters."
+        }
+      ],
+      "claim_count": 9,
+      "unsupported_claims": 0,
+      "partial_claims": 0,
+      "key_points_covered": 1.0,
+      "judge_cost_usd": 0.01839625
+    },
+    {
+      "id": "e04",
+      "category": "easy",
+      "pair_id": null,
+      "question": "How much longer can a tandem OLED last than a single-unit OLED?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "A tandem OLED can last **at least N times as long** as a conventional single-unit OLED when operated at the same luminance; the source explains that its lower required current density enables that lifetime scaling. For example, the cited theoretical estimates are **2.82×** for a two-stack tandem and **5.20×** for a three-stack tandem. [1] [2]",
+      "latency_s": 12.19,
+      "cost_usd": 0.007291,
+      "used_files": [
+        "OLED Display Fundamentals and Applications - 2017 - Tsujimura.pdf",
+        "[Franky So] Organic Electronics Materials, Processing, Devices and Applications.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "c80847ff0",
+          "title": "Organic Electronics Materials, Processing, Devices and Applications",
+          "url": null,
+          "file_name": "[Franky So] Organic Electronics Materials, Processing, Devices and Applications.pdf",
+          "page": 456
+        },
+        {
+          "chunk_id": "cdeb9d002",
+          "title": "OLED Display Fundamentals and Applications - 2017 - Tsujimura",
+          "url": null,
+          "file_name": "OLED Display Fundamentals and Applications - 2017 - Tsujimura.pdf",
+          "page": 268
+        }
+      ],
+      "searches": 1,
+      "llm_calls": 4,
+      "prompt_tokens": 6698,
+      "completion_tokens": 577,
+      "cached_tokens": 0,
+      "reasoning_tokens": 46,
+      "usage_by_model": {
+        "gpt-6-luna": {
+          "calls": 3,
+          "input_tokens": 4975,
+          "output_tokens": 255,
+          "cached_tokens": 0,
+          "reasoning_tokens": 46
+        },
+        "gpt-6.1-sol": {
+          "calls": 1,
+          "input_tokens": 1723,
+          "output_tokens": 322,
+          "cached_tokens": 0,
+          "reasoning_tokens": 0
+        }
+      },
+      "calls_by_role": {
+        "planner": 1,
+        "light": 2,
+        "reviewer": 1
+      },
+      "complexity": "simple",
+      "route": "light",
+      "escalated": false,
+      "review_rounds": 1,
+      "parallel_turns": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "plan",
+          "role": "planner",
+          "t": 1.89,
+          "model": "gpt-6-luna",
+          "domain": "in_domain",
+          "reason": "This asks about the lifetime of tandem versus single-unit OLEDs.",
+          "complexity": "simple",
+          "sequential": false,
+          "subquestions": [
+            "How much longer can a tandem OLED last than a single-unit OLED?"
+          ]
+        },
+        {
+          "step": 2,
+          "type": "route",
+          "role": "planner",
+          "t": 1.89,
+          "route": "light"
+        },
+        {
+          "step": 3,
+          "type": "search",
+          "role": "light",
+          "t": 4.5,
+          "query": "How much longer does tandem OLED lifetime last compared with single-unit OLED?",
+          "status": "ok",
+          "max_relevance": 0.849,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 4,
+          "type": "review",
+          "role": "reviewer",
+          "t": 12.19,
+          "model": "gpt-6.1-sol",
+          "round": 1,
+          "claims": 4,
+          "unsupported": 0,
+          "core_question_answered": true,
+          "unsupported_claims": []
+        },
+        {
+          "step": 5,
+          "type": "stop",
+          "role": null,
+          "t": 12.19,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "original_question": "How much longer can a tandem OLED last than a single-unit OLED?",
+      "standalone_question": "How much longer can a tandem OLED last than a single-unit OLED?",
+      "run": 0,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": true,
+      "claims": [
+        {
+          "claim": "A tandem OLED can last at least N times as long as a conventional single-unit OLED when operated at the same luminance.",
+          "verdict": "supported",
+          "reason": "E1 states that for the same luminance, the tandem OLED results in an operational lifetime at least N times that of the conventional OLED."
+        },
+        {
+          "claim": "The lower required current density in a tandem OLED enables the lifetime scaling.",
+          "verdict": "supported",
+          "reason": "E1 links reduced current density needed for the same luminance to an operational lifetime at least N times longer."
+        },
+        {
+          "claim": "The theoretical estimate for a two-stack tandem OLED lifetime increase is 2.82×.",
+          "verdict": "supported",
+          "reason": "E2 explicitly states that a two-stack tandem OLED gives 2.82 times the lifetime."
+        },
+        {
+          "claim": "The theoretical estimate for a three-stack tandem OLED lifetime increase is 5.20×.",
+          "verdict": "supported",
+          "reason": "E2 explicitly states that a three-stack tandem OLED gives 5.20 times the lifetime."
+        }
+      ],
+      "claim_count": 4,
+      "unsupported_claims": 0,
+      "partial_claims": 0,
+      "key_points_covered": 0.5,
+      "judge_cost_usd": 0.012885
+    },
+    {
+      "id": "e04",
+      "category": "easy",
+      "pair_id": null,
+      "question": "How much longer can a tandem OLED last than a single-unit OLED?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "A reported stacked OLED had a 20% decay lifetime (t80) of 366 hours, which was 4.4 times the lifetime of the single-unit OLED. [1]",
+      "latency_s": 19.51,
+      "cost_usd": 0.01003592,
+      "used_files": [
+        "[Review - IMP!] Approaches for Long Lifetime Organic Light Emitting Diodes.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "c2a88074c",
+          "title": "Approaches for Long Lifetime Organic Light Emitting Diodes",
+          "url": "https://doi.org/10.1002/advs.202002254",
+          "file_name": "[Review - IMP!] Approaches for Long Lifetime Organic Light Emitting Diodes.pdf",
+          "page": 20
+        }
+      ],
+      "searches": 1,
+      "llm_calls": 7,
+      "prompt_tokens": 16511,
+      "completion_tokens": 817,
+      "cached_tokens": 8042,
+      "reasoning_tokens": 87,
+      "usage_by_model": {
+        "gpt-6-luna": {
+          "calls": 5,
+          "input_tokens": 14042,
+          "output_tokens": 395,
+          "cached_tokens": 8042,
+          "reasoning_tokens": 54
+        },
+        "gpt-6.1-sol": {
+          "calls": 2,
+          "input_tokens": 2469,
+          "output_tokens": 422,
+          "cached_tokens": 0,
+          "reasoning_tokens": 33
+        }
+      },
+      "calls_by_role": {
+        "planner": 1,
+        "light": 4,
+        "reviewer": 2
+      },
+      "complexity": "simple",
+      "route": "light",
+      "escalated": false,
+      "review_rounds": 2,
+      "parallel_turns": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "plan",
+          "role": "planner",
+          "t": 2.2,
+          "model": "gpt-6-luna",
+          "domain": "in_domain",
+          "reason": "The question asks about OLED architecture and operational lifetime.",
+          "complexity": "simple",
+          "sequential": false,
+          "subquestions": [
+            "How much longer can a tandem OLED last than a single-unit OLED?"
+          ]
+        },
+        {
+          "step": 2,
+          "type": "route",
+          "role": "planner",
+          "t": 2.2,
+          "route": "light"
+        },
+        {
+          "step": 3,
+          "type": "search",
+          "role": "light",
+          "t": 5.0,
+          "query": "How much longer does a tandem OLED last compared with a single-unit OLED?",
+          "status": "ok",
+          "max_relevance": 0.842,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 4,
+          "type": "answer_rejected",
+          "role": "light",
+          "t": 6.4,
+          "errors": [
+            "Unknown chunk IDs: c2a88074. Only cite chunk_id values returned by search_documents in this conversation.",
+            "Cite evidence inline as [chunk_id] right after the statements it supports.",
+            "Chunk IDs must appear only inside square brackets, e.g. [c2a88074]."
+          ],
+          "revision": 1
+        },
+        {
+          "step": 5,
+          "type": "review",
+          "role": "reviewer",
+          "t": 13.82,
+          "model": "gpt-6.1-sol",
+          "round": 1,
+          "claims": 3,
+          "unsupported": 1,
+          "core_question_answered": true,
+          "unsupported_claims": [
+            "The OLED in the reported lifetime comparison was a two-stack tandem OLED."
+          ]
+        },
+        {
+          "step": 6,
+          "type": "review",
+          "role": "reviewer",
+          "t": 19.5,
+          "model": "gpt-6.1-sol",
+          "round": 2,
+          "claims": 2,
+          "unsupported": 0,
+          "core_question_answered": true,
+          "unsupported_claims": []
+        },
+        {
+          "step": 7,
+          "type": "stop",
+          "role": null,
+          "t": 19.5,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "original_question": "How much longer can a tandem OLED last than a single-unit OLED?",
+      "standalone_question": "How much longer can a tandem OLED last than a single-unit OLED?",
+      "run": 1,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": false,
+      "claims": [
+        {
+          "claim": "A reported stacked OLED had a 20% decay lifetime (t80) of 366 hours.",
+          "verdict": "supported",
+          "reason": "Evidence E1 explicitly states the stacked OLED had a t80 of 366 h."
+        },
+        {
+          "claim": "This 366-hour lifetime was 4.4 times the lifetime of the single-unit OLED.",
+          "verdict": "supported",
+          "reason": "Evidence E1 explicitly states the t80 was 4.4 times that of the single-unit OLED."
+        }
+      ],
+      "claim_count": 2,
+      "unsupported_claims": 0,
+      "partial_claims": 0,
+      "key_points_covered": 0.0,
+      "judge_cost_usd": 0.00417125
+    },
+    {
+      "id": "e04",
+      "category": "easy",
+      "pair_id": null,
+      "question": "How much longer can a tandem OLED last than a single-unit OLED?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "A tandem OLED can last **4.4 times as long as a single-unit OLED** in one reported comparison: its lifetime to 20% luminance decay (t80) was **366 hours**, versus approximately **83 hours** for the single-unit device (366 ÷ 4.4). [1]\n\nMore generally, the retrieved text describes a lifetime of **at least N times** that of a conventional OLED when the tandem is operated at the lower current density needed to achieve the same luminance. The improvement therefore depends on the tandem configuration and operating conditions, rather than being one fixed multiplier. [2]",
+      "latency_s": 21.15,
+      "cost_usd": 0.01603678,
+      "used_files": [
+        "[Franky So] Organic Electronics Materials, Processing, Devices and Applications.pdf",
+        "[Review - IMP!] Approaches for Long Lifetime Organic Light Emitting Diodes.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "c2a88074c",
+          "title": "Approaches for Long Lifetime Organic Light Emitting Diodes",
+          "url": "https://doi.org/10.1002/advs.202002254",
+          "file_name": "[Review - IMP!] Approaches for Long Lifetime Organic Light Emitting Diodes.pdf",
+          "page": 20
+        },
+        {
+          "chunk_id": "c80847ff0",
+          "title": "Organic Electronics Materials, Processing, Devices and Applications",
+          "url": null,
+          "file_name": "[Franky So] Organic Electronics Materials, Processing, Devices and Applications.pdf",
+          "page": 456
+        }
+      ],
+      "searches": 3,
+      "llm_calls": 8,
+      "prompt_tokens": 19531,
+      "completion_tokens": 1152,
+      "cached_tokens": 3688,
+      "reasoning_tokens": 179,
+      "usage_by_model": {
+        "gpt-6-luna": {
+          "calls": 6,
+          "input_tokens": 15207,
+          "output_tokens": 560,
+          "cached_tokens": 3688,
+          "reasoning_tokens": 179
+        },
+        "gpt-6.1-sol": {
+          "calls": 2,
+          "input_tokens": 4324,
+          "output_tokens": 592,
+          "cached_tokens": 0,
+          "reasoning_tokens": 0
+        }
+      },
+      "calls_by_role": {
+        "planner": 1,
+        "worker1": 2,
+        "worker2": 3,
+        "orchestrator": 1,
+        "reviewer": 1
+      },
+      "complexity": "complex",
+      "route": "team",
+      "escalated": false,
+      "review_rounds": 1,
+      "parallel_turns": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "plan",
+          "role": "planner",
+          "t": 2.62,
+          "model": "gpt-6-luna",
+          "domain": "in_domain",
+          "reason": "The question compares the operational lifetime of two OLED architectures.",
+          "complexity": "complex",
+          "sequential": false,
+          "subquestions": [
+            "What is the operational lifetime of a tandem OLED?",
+            "What is the operational lifetime of a single-unit OLED?"
+          ]
+        },
+        {
+          "step": 2,
+          "type": "route",
+          "role": "planner",
+          "t": 2.62,
+          "route": "team"
+        },
+        {
+          "step": 3,
+          "type": "worker_start",
+          "role": "worker1",
+          "t": 2.62,
+          "model": "gpt-6-luna",
+          "subquestions": [
+            "What is the operational lifetime of a tandem OLED?"
+          ]
+        },
+        {
+          "step": 4,
+          "type": "worker_start",
+          "role": "worker2",
+          "t": 2.62,
+          "model": "gpt-6-luna",
+          "subquestions": [
+            "What is the operational lifetime of a single-unit OLED?"
+          ]
+        },
+        {
+          "step": 5,
+          "type": "search",
+          "role": "worker1",
+          "t": 5.1,
+          "query": "What operational lifetime is reported for a tandem OLED?",
+          "status": "ok",
+          "max_relevance": 0.88,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 6,
+          "type": "search",
+          "role": "worker2",
+          "t": 6.06,
+          "query": "What is the operational lifetime of a single-unit OLED?",
+          "status": "ok",
+          "max_relevance": 0.814,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 2
+        },
+        {
+          "step": 7,
+          "type": "worker_done",
+          "role": "worker1",
+          "t": 6.65,
+          "status": "found",
+          "citations": 1
+        },
+        {
+          "step": 8,
+          "type": "search",
+          "role": "worker2",
+          "t": 8.38,
+          "query": "Typical operational lifetime of conventional single-unit OLED compared with tandem OLED",
+          "status": "ok",
+          "max_relevance": 0.865,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 2
+        },
+        {
+          "step": 9,
+          "type": "worker_done",
+          "role": "worker2",
+          "t": 10.34,
+          "status": "found",
+          "citations": 1
+        },
+        {
+          "step": 10,
+          "type": "orchestrate",
+          "role": "orchestrator",
+          "t": 10.34,
+          "model": "gpt-6.1-sol",
+          "chunks": 2
+        },
+        {
+          "step": 11,
+          "type": "review",
+          "role": "reviewer",
+          "t": 21.14,
+          "model": "gpt-6.1-sol",
+          "round": 1,
+          "claims": 5,
+          "unsupported": 0,
+          "core_question_answered": true,
+          "unsupported_claims": []
+        },
+        {
+          "step": 12,
+          "type": "stop",
+          "role": null,
+          "t": 21.14,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "original_question": "How much longer can a tandem OLED last than a single-unit OLED?",
+      "standalone_question": "How much longer can a tandem OLED last than a single-unit OLED?",
+      "run": 2,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": true,
+      "claims": [
+        {
+          "claim": "A tandem OLED can last 4.4 times as long as a single-unit OLED in one reported comparison.",
+          "verdict": "supported",
+          "reason": "E1 states the stacked OLED t80 is 4.4 times that of the single-unit OLEDs."
+        },
+        {
+          "claim": "In that comparison, the t80 of the stacked OLED was 366 hours.",
+          "verdict": "supported",
+          "reason": "E1 explicitly gives t80 = 366 h for the stacked OLED."
+        },
+        {
+          "claim": "This implies approximately 83 hours for the single-unit device.",
+          "verdict": "supported",
+          "reason": "From E1, 366 h is 4.4 times the single-unit lifetime; 366/4.4 ≈ 83 h is a direct implication by calculation."
+        },
+        {
+          "claim": "More generally, at the lower current density needed to achieve the same luminance, a tandem OLED has a lifetime at least N times that of a conventional OLED.",
+          "verdict": "supported",
+          "reason": "E2 explains that for N stacked units achieving the same luminance at reduced current density results in operational lifetime at least N times that of a conventional OLED."
+        },
+        {
+          "claim": "The improvement depends on tandem configuration and operating conditions, not a fixed multiplier.",
+          "verdict": "supported",
+          "reason": "E2 notes material/connector selection significantly impacts performance and describes alternative operating conditions (same current density gives higher luminance with similar lifetime), implying dependence on configuration and operating conditions."
+        }
+      ],
+      "claim_count": 5,
+      "unsupported_claims": 0,
+      "partial_claims": 0,
+      "key_points_covered": 0.5,
+      "judge_cost_usd": 0.01408
+    },
+    {
+      "id": "sq2",
+      "category": "sequential",
+      "pair_id": null,
+      "question": "Which blue phosphorescent emitter was doped at 10 wt% in the sky-blue OLED with 34.1% EQE, and why is that emitter considered unstable?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "The emitter was **FIrpic**, identified in the sky-blue PhOLED reporting a maximum EQE of **34.1%**. The retrieved evidence does not independently confirm the **10 wt%** loading. [1]\n\nFIrpic is considered relatively unstable because it can chemically dissociate during OLED operation: its **picolinate ligand can detach reversibly**, or it can undergo **irreversible CO₂ loss from that ligand followed by further dissociation**. FIrpic fragments can also form complexes with neighboring host or hole-blocking materials; these degradation products may be associated with the short lifetime of FIrpic-based OLEDs. [2][3]",
+      "latency_s": 30.8,
+      "cost_usd": 0.02729207,
+      "used_files": [
+        "! Analysis of chemical degradation mechanism within sky blue phosphorescent organic light emitting diodes.pdf",
+        "Chemical degradation mechanisms of highly efficient blue phosphorescent emitters used for organic light emitting diodes.pdf",
+        "[J.J.Kim] Sky-Blue Phosphorescent OLEDs with 34.1% External Quantum Efficiency Using a Low Refractive.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "c169eeaf1",
+          "title": "Sky‐Blue Phosphorescent OLEDs with 34.1% External Quantum Efficiency Using a Low Refractive Index Electron Transporting Layer",
+          "url": "https://doi.org/10.1002/adma.201506065",
+          "file_name": "[J.J.Kim] Sky-Blue Phosphorescent OLEDs with 34.1% External Quantum Efficiency Using a Low Refractive.pdf",
+          "page": 4
+        },
+        {
+          "chunk_id": "ce841eb40",
+          "title": "Analysis of chemical degradation mechanism within sky blue phosphorescent organic light emitting diodes by laser-desorption/ionization time-of-flight mass spectrometry",
+          "url": "https://doi.org/10.1016/j.orgel.2010.11.004",
+          "file_name": "! Analysis of chemical degradation mechanism within sky blue phosphorescent organic light emitting diodes.pdf",
+          "page": 2
+        },
+        {
+          "chunk_id": "cb88b1b16",
+          "title": "Chemical degradation mechanisms of highly efficient blue phosphorescent emitters used for organic light emitting diodes",
+          "url": "https://doi.org/10.1016/j.orgel.2012.10.003",
+          "file_name": "Chemical degradation mechanisms of highly efficient blue phosphorescent emitters used for organic light emitting diodes.pdf",
+          "page": 2
+        }
+      ],
+      "searches": 4,
+      "llm_calls": 10,
+      "prompt_tokens": 32606,
+      "completion_tokens": 1273,
+      "cached_tokens": 10827,
+      "reasoning_tokens": 56,
+      "usage_by_model": {
+        "gpt-6-luna": {
+          "calls": 7,
+          "input_tokens": 23465,
+          "output_tokens": 536,
+          "cached_tokens": 10827,
+          "reasoning_tokens": 56
+        },
+        "gpt-6.1-sol": {
+          "calls": 3,
+          "input_tokens": 9141,
+          "output_tokens": 737,
+          "cached_tokens": 0,
+          "reasoning_tokens": 0
+        }
+      },
+      "calls_by_role": {
+        "planner": 1,
+        "worker1": 4,
+        "worker2": 2,
+        "orchestrator": 2,
+        "reviewer": 1
+      },
+      "complexity": "complex",
+      "route": "team",
+      "escalated": false,
+      "review_rounds": 1,
+      "parallel_turns": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "plan",
+          "role": "planner",
+          "t": 2.29,
+          "model": "gpt-6-luna",
+          "domain": "in_domain",
+          "reason": "This asks about a phosphorescent OLED emitter and its stability.",
+          "complexity": "complex",
+          "sequential": true,
+          "subquestions": [
+            "Which blue phosphorescent emitter was doped at 10 wt% in the sky-blue OLED with 34.1% external quantum efficiency (EQE)?",
+            "Why is that emitter considered unstable?"
+          ]
+        },
+        {
+          "step": 2,
+          "type": "route",
+          "role": "planner",
+          "t": 2.29,
+          "route": "team"
+        },
+        {
+          "step": 3,
+          "type": "worker_start",
+          "role": "worker1",
+          "t": 2.29,
+          "model": "gpt-6-luna",
+          "subquestions": [
+            "Which blue phosphorescent emitter was doped at 10 wt% in the sky-blue OLED with 34.1% external quantum efficiency (EQE)?"
+          ]
+        },
+        {
+          "step": 4,
+          "type": "search",
+          "role": "worker1",
+          "t": 5.08,
+          "query": "Which blue phosphorescent emitter was doped at 10 wt% in a sky-blue OLED reporting 34.1% external quantum efficiency?",
+          "status": "ok",
+          "max_relevance": 0.889,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 5,
+          "type": "search",
+          "role": "worker1",
+          "t": 8.71,
+          "query": "The 34.1% sky-blue phosphorescent OLED device structure and emitter dopant concentration 10 wt%",
+          "status": "ok",
+          "max_relevance": 0.847,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 3
+        },
+        {
+          "step": 6,
+          "type": "findings_rejected",
+          "role": "worker1",
+          "t": 10.7,
+          "errors": [
+            "Unknown chunk IDs: c169eeaf."
+          ]
+        },
+        {
+          "step": 7,
+          "type": "worker_done",
+          "role": "worker1",
+          "t": 12.02,
+          "status": "found",
+          "citations": 1
+        },
+        {
+          "step": 8,
+          "type": "worker_start",
+          "role": "worker2",
+          "t": 12.02,
+          "model": "gpt-6-luna",
+          "subquestions": [
+            "Why is that emitter considered unstable?"
+          ]
+        },
+        {
+          "step": 9,
+          "type": "search",
+          "role": "worker2",
+          "t": 14.09,
+          "query": "Why is the blue phosphorescent emitter FIrpic considered unstable?",
+          "status": "ok",
+          "max_relevance": 0.611,
+          "survivor_count": 8,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 10,
+          "type": "worker_done",
+          "role": "worker2",
+          "t": 15.97,
+          "status": "found",
+          "citations": 2
+        },
+        {
+          "step": 11,
+          "type": "orchestrate",
+          "role": "orchestrator",
+          "t": 15.97,
+          "model": "gpt-6.1-sol",
+          "chunks": 3
+        },
+        {
+          "step": 12,
+          "type": "search",
+          "role": "orchestrator",
+          "t": 18.03,
+          "query": "\"34.1%\" \"FIrpic\" \"10 wt%\"",
+          "status": "no_relevant_documents",
+          "max_relevance": 0.361,
+          "survivor_count": 0,
+          "result_count": 0,
+          "new_chunks": 0
+        },
+        {
+          "step": 13,
+          "type": "review",
+          "role": "reviewer",
+          "t": 30.79,
+          "model": "gpt-6.1-sol",
+          "round": 1,
+          "claims": 7,
+          "unsupported": 0,
+          "core_question_answered": true,
+          "unsupported_claims": []
+        },
+        {
+          "step": 14,
+          "type": "stop",
+          "role": null,
+          "t": 30.79,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "original_question": "Which blue phosphorescent emitter was doped at 10 wt% in the sky-blue OLED with 34.1% EQE, and why is that emitter considered unstable?",
+      "standalone_question": "Which blue phosphorescent emitter was doped at 10 wt% in the sky-blue OLED with 34.1% EQE, and why is that emitter considered unstable?",
+      "run": 0,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": true,
+      "claims": [
+        {
+          "claim": "The emitter in the sky-blue PhOLED with a maximum EQE of 34.1% was FIrpic.",
+          "verdict": "supported",
+          "reason": "E1 explicitly states highly efficient sky-blue-emitting PhOLEDs with FIrpic show a maximum EQE of 34.1%."
+        },
+        {
+          "claim": "The retrieved evidence does not independently confirm the 10 wt% doping level.",
+          "verdict": "supported",
+          "reason": "None of the provided passages mention a 10 wt% loading for the emitter."
+        },
+        {
+          "claim": "FIrpic is considered relatively unstable.",
+          "verdict": "supported",
+          "reason": "E2 describes FIrpic as unfortunately known to be relative unstable."
+        },
+        {
+          "claim": "FIrpic can undergo reversible dissociation by cleavage of its picolinate ligand.",
+          "verdict": "supported",
+          "reason": "E2 and E3 state a reversible pathway where the picolinate ligand is removed/cleaved."
+        },
+        {
+          "claim": "FIrpic can undergo an irreversible loss of CO2 from the picolinate ligand followed by further dissociation.",
+          "verdict": "supported",
+          "reason": "E2 and E3 describe an irreversible pathway with CO2 loss from the picolinate ligand and further dissociation."
+        },
+        {
+          "claim": "Fragments from FIrpic can form complexes with neighboring host or hole-blocking materials.",
+          "verdict": "supported",
+          "reason": "E2 and E3 mention complex formation between FIrpic fragments and host/HBL materials such as TPBi."
+        },
+        {
+          "claim": "These degradation products may be associated with the short lifetime of FIrpic-based OLEDs.",
+          "verdict": "supported",
+          "reason": "E2 links newly formed complexes/degradation products to the short lifetime of FIrpic-based OLEDs."
+        }
+      ],
+      "claim_count": 7,
+      "unsupported_claims": 0,
+      "partial_claims": 0,
+      "key_points_covered": 0.5,
+      "judge_cost_usd": 0.01757625
+    },
+    {
+      "id": "sq2",
+      "category": "sequential",
+      "pair_id": null,
+      "question": "Which blue phosphorescent emitter was doped at 10 wt% in the sky-blue OLED with 34.1% EQE, and why is that emitter considered unstable?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "The emitter was **FIrpic**, bis(2-(4,6-difluorophenyl)pyridyl)iridium(III) picolinate; the reported sky-blue device achieved a maximum EQE of **34.1%**. [1][2] The retrieved evidence identifies the emitter but does not verify the **10 wt%** loading. [2]\n\nFIrpic is considered relatively unstable because it can undergo **chemical dissociation during OLED operation** through two pathways: reversible cleavage of its picolinate ligand, and irreversible loss of CO₂ from that ligand followed by further dissociation. Its fragments can also form complexes with neighboring materials; these degradation products may be associated with the short lifetime of FIrpic-based OLEDs. [1]",
+      "latency_s": 31.63,
+      "cost_usd": 0.02379478,
+      "used_files": [
+        "! Analysis of chemical degradation mechanism within sky blue phosphorescent organic light emitting diodes.pdf",
+        "[J.J.Kim] Sky-Blue Phosphorescent OLEDs with 34.1% External Quantum Efficiency Using a Low Refractive.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "ce841eb40",
+          "title": "Analysis of chemical degradation mechanism within sky blue phosphorescent organic light emitting diodes by laser-desorption/ionization time-of-flight mass spectrometry",
+          "url": "https://doi.org/10.1016/j.orgel.2010.11.004",
+          "file_name": "! Analysis of chemical degradation mechanism within sky blue phosphorescent organic light emitting diodes.pdf",
+          "page": 2
+        },
+        {
+          "chunk_id": "c169eeaf1",
+          "title": "Sky‐Blue Phosphorescent OLEDs with 34.1% External Quantum Efficiency Using a Low Refractive Index Electron Transporting Layer",
+          "url": "https://doi.org/10.1002/adma.201506065",
+          "file_name": "[J.J.Kim] Sky-Blue Phosphorescent OLEDs with 34.1% External Quantum Efficiency Using a Low Refractive.pdf",
+          "page": 4
+        }
+      ],
+      "searches": 4,
+      "llm_calls": 9,
+      "prompt_tokens": 23456,
+      "completion_tokens": 1309,
+      "cached_tokens": 3788,
+      "reasoning_tokens": 121,
+      "usage_by_model": {
+        "gpt-6-luna": {
+          "calls": 6,
+          "input_tokens": 16172,
+          "output_tokens": 541,
+          "cached_tokens": 3788,
+          "reasoning_tokens": 121
+        },
+        "gpt-6.1-sol": {
+          "calls": 3,
+          "input_tokens": 7284,
+          "output_tokens": 768,
+          "cached_tokens": 0,
+          "reasoning_tokens": 0
+        }
+      },
+      "calls_by_role": {
+        "planner": 1,
+        "worker1": 3,
+        "worker2": 2,
+        "orchestrator": 2,
+        "reviewer": 1
+      },
+      "complexity": "complex",
+      "route": "team",
+      "escalated": false,
+      "review_rounds": 1,
+      "parallel_turns": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "plan",
+          "role": "planner",
+          "t": 4.05,
+          "model": "gpt-6-luna",
+          "domain": "in_domain",
+          "reason": "The question concerns a blue phosphorescent emitter used in an OLED and its material stability.",
+          "complexity": "complex",
+          "sequential": true,
+          "subquestions": [
+            "Which blue phosphorescent emitter was doped at 10 wt% in the sky-blue OLED with 34.1% external quantum efficiency (EQE)?",
+            "Why is that emitter considered unstable?"
+          ]
+        },
+        {
+          "step": 2,
+          "type": "route",
+          "role": "planner",
+          "t": 4.05,
+          "route": "team"
+        },
+        {
+          "step": 3,
+          "type": "worker_start",
+          "role": "worker1",
+          "t": 4.05,
+          "model": "gpt-6-luna",
+          "subquestions": [
+            "Which blue phosphorescent emitter was doped at 10 wt% in the sky-blue OLED with 34.1% external quantum efficiency (EQE)?"
+          ]
+        },
+        {
+          "step": 4,
+          "type": "search",
+          "role": "worker1",
+          "t": 6.78,
+          "query": "Which blue phosphorescent emitter was used at 10 wt% in the sky-blue OLED with 34.1% EQE?",
+          "status": "ok",
+          "max_relevance": 0.894,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 5,
+          "type": "search",
+          "role": "worker1",
+          "t": 9.2,
+          "query": "In the 34.1% EQE sky-blue OLED device structure, identify the phosphorescent dopant and its concentration.",
+          "status": "ok",
+          "max_relevance": 0.881,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 3
+        },
+        {
+          "step": 6,
+          "type": "worker_done",
+          "role": "worker1",
+          "t": 11.24,
+          "status": "found",
+          "citations": 1
+        },
+        {
+          "step": 7,
+          "type": "worker_start",
+          "role": "worker2",
+          "t": 11.24,
+          "model": "gpt-6-luna",
+          "subquestions": [
+            "Why is that emitter considered unstable?"
+          ]
+        },
+        {
+          "step": 8,
+          "type": "search",
+          "role": "worker2",
+          "t": 13.96,
+          "query": "Why is FIrpic considered unstable as a blue phosphorescent OLED emitter?",
+          "status": "ok",
+          "max_relevance": 0.848,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 3
+        },
+        {
+          "step": 9,
+          "type": "worker_done",
+          "role": "worker2",
+          "t": 16.0,
+          "status": "found",
+          "citations": 1
+        },
+        {
+          "step": 10,
+          "type": "orchestrate",
+          "role": "orchestrator",
+          "t": 16.0,
+          "model": "gpt-6.1-sol",
+          "chunks": 2
+        },
+        {
+          "step": 11,
+          "type": "search",
+          "role": "orchestrator",
+          "t": 18.07,
+          "query": "\"34.1%\" \"FIrpic\" \"10\" doping wt sky blue",
+          "status": "ok",
+          "max_relevance": 0.551,
+          "survivor_count": 1,
+          "result_count": 1,
+          "new_chunks": 1
+        },
+        {
+          "step": 12,
+          "type": "review",
+          "role": "reviewer",
+          "t": 31.62,
+          "model": "gpt-6.1-sol",
+          "round": 1,
+          "claims": 8,
+          "unsupported": 0,
+          "core_question_answered": true,
+          "unsupported_claims": []
+        },
+        {
+          "step": 13,
+          "type": "stop",
+          "role": null,
+          "t": 31.62,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "original_question": "Which blue phosphorescent emitter was doped at 10 wt% in the sky-blue OLED with 34.1% EQE, and why is that emitter considered unstable?",
+      "standalone_question": "Which blue phosphorescent emitter was doped at 10 wt% in the sky-blue OLED with 34.1% EQE, and why is that emitter considered unstable?",
+      "run": 1,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": true,
+      "claims": [
+        {
+          "claim": "The emitter was FIrpic.",
+          "verdict": "supported",
+          "reason": "E2 states the sky-blue PhOLEDs were demonstrated with FIrpic."
+        },
+        {
+          "claim": "FIrpic is bis(2-(4,6-difluorophenyl)pyridyl)iridium(III) picolinate.",
+          "verdict": "supported",
+          "reason": "E1 provides the chemical name for FIrpic."
+        },
+        {
+          "claim": "The reported sky-blue device achieved a maximum EQE of 34.1%.",
+          "verdict": "supported",
+          "reason": "E2 reports a maximum EQE of 34.1% for the FIrpic-based sky-blue OLEDs."
+        },
+        {
+          "claim": "The retrieved evidence identifies the emitter but does not verify the 10 wt% loading.",
+          "verdict": "supported",
+          "reason": "Neither E1 nor E2 mentions a 10 wt% doping level."
+        },
+        {
+          "claim": "FIrpic is relatively unstable.",
+          "verdict": "supported",
+          "reason": "E1 explicitly notes FIrpic is known to be relatively unstable."
+        },
+        {
+          "claim": "FIrpic can undergo reversible cleavage of its picolinate ligand.",
+          "verdict": "supported",
+          "reason": "E1 describes a reversible dissociation where the picolinate ligand is removed."
+        },
+        {
+          "claim": "FIrpic can undergo irreversible loss of CO2 from the picolinate ligand followed by further dissociation.",
+          "verdict": "supported",
+          "reason": "E1 details an irreversible pathway involving CO2 loss from the picolinate ligand and further dissociation."
+        },
+        {
+          "claim": "Fragments of FIrpic can form complexes with neighboring materials.",
+          "verdict": "supported",
+          "reason": "E1 mentions formation of chemical complexes between fragments of FIrpic and neighboring materials like TPBi."
+        },
+        {
+          "claim": "These degradation products may be associated with the short lifetime of FIrpic-based OLEDs.",
+          "verdict": "supported",
+          "reason": "E1 states new degradation products may be associated with the short lifetime of FIrpic-based OLEDs."
+        }
+      ],
+      "claim_count": 9,
+      "unsupported_claims": 0,
+      "partial_claims": 0,
+      "key_points_covered": 1.0,
+      "judge_cost_usd": 0.0165325
+    },
+    {
+      "id": "sq2",
+      "category": "sequential",
+      "pair_id": null,
+      "question": "Which blue phosphorescent emitter was doped at 10 wt% in the sky-blue OLED with 34.1% EQE, and why is that emitter considered unstable?",
+      "expected_mode": "RAG",
+      "mode": "RAG",
+      "answer": "The emitter was **FIrpic**, bis(2-(4,6-difluorophenyl)pyridyl)iridium(III) picolinate; the retrieved device summary identifies FIrpic in the sky-blue OLED achieving **34.1% maximum EQE**, although the retrieved evidence does not independently confirm the **10 wt%** loading. [1][2]\n\nFIrpic is considered unstable because it can chemically dissociate through **reversible loss of the picolinate ligand** or **irreversible CO₂ loss from that ligand**, followed by further dissociation; these pathways are reported during OLED operation. [1] Dissociated emitter fragments can undergo further reactions with neighboring materials, forming charged complexes that promote quenching and alter molecular-orbital energies, thereby degrading the OLED. [1][3]",
+      "latency_s": 28.63,
+      "cost_usd": 0.022367269999999998,
+      "used_files": [
+        "! Analysis of chemical degradation mechanism within sky blue phosphorescent organic light emitting diodes.pdf",
+        "Role of oxygen-bonds in the degradation process of phosphorescent organic light emitting diodes.pdf",
+        "[J.J.Kim] Sky-Blue Phosphorescent OLEDs with 34.1% External Quantum Efficiency Using a Low Refractive.pdf"
+      ],
+      "evidence": [
+        {
+          "chunk_id": "ce841eb40",
+          "title": "Analysis of chemical degradation mechanism within sky blue phosphorescent organic light emitting diodes by laser-desorption/ionization time-of-flight mass spectrometry",
+          "url": "https://doi.org/10.1016/j.orgel.2010.11.004",
+          "file_name": "! Analysis of chemical degradation mechanism within sky blue phosphorescent organic light emitting diodes.pdf",
+          "page": 2
+        },
+        {
+          "chunk_id": "c169eeaf1",
+          "title": "Sky‐Blue Phosphorescent OLEDs with 34.1% External Quantum Efficiency Using a Low Refractive Index Electron Transporting Layer",
+          "url": "https://doi.org/10.1002/adma.201506065",
+          "file_name": "[J.J.Kim] Sky-Blue Phosphorescent OLEDs with 34.1% External Quantum Efficiency Using a Low Refractive.pdf",
+          "page": 4
+        },
+        {
+          "chunk_id": "c4bf57793",
+          "title": "Role of oxygen-bonds in the degradation process of phosphorescent organic light emitting diodes",
+          "url": "https://doi.org/10.1063/1.3617459",
+          "file_name": "Role of oxygen-bonds in the degradation process of phosphorescent organic light emitting diodes.pdf",
+          "page": 2
+        }
+      ],
+      "searches": 4,
+      "llm_calls": 9,
+      "prompt_tokens": 30970,
+      "completion_tokens": 1397,
+      "cached_tokens": 10057,
+      "reasoning_tokens": 83,
+      "usage_by_model": {
+        "gpt-6-luna": {
+          "calls": 7,
+          "input_tokens": 24804,
+          "output_tokens": 580,
+          "cached_tokens": 10057,
+          "reasoning_tokens": 83
+        },
+        "gpt-6.1-sol": {
+          "calls": 2,
+          "input_tokens": 6166,
+          "output_tokens": 817,
+          "cached_tokens": 0,
+          "reasoning_tokens": 0
+        }
+      },
+      "calls_by_role": {
+        "planner": 1,
+        "worker1": 4,
+        "worker2": 2,
+        "orchestrator": 1,
+        "reviewer": 1
+      },
+      "complexity": "complex",
+      "route": "team",
+      "escalated": false,
+      "review_rounds": 1,
+      "parallel_turns": 0,
+      "stop_reason": "answered",
+      "trace": [
+        {
+          "step": 1,
+          "type": "plan",
+          "role": "planner",
+          "t": 1.96,
+          "model": "gpt-6-luna",
+          "domain": "in_domain",
+          "reason": "It asks about a phosphorescent emitter and performance and stability in an OLED.",
+          "complexity": "complex",
+          "sequential": true,
+          "subquestions": [
+            "Which blue phosphorescent emitter was doped at 10 wt% in the sky-blue OLED with 34.1% EQE?",
+            "Why is that emitter considered unstable?"
+          ]
+        },
+        {
+          "step": 2,
+          "type": "route",
+          "role": "planner",
+          "t": 1.96,
+          "route": "team"
+        },
+        {
+          "step": 3,
+          "type": "worker_start",
+          "role": "worker1",
+          "t": 1.97,
+          "model": "gpt-6-luna",
+          "subquestions": [
+            "Which blue phosphorescent emitter was doped at 10 wt% in the sky-blue OLED with 34.1% EQE?"
+          ]
+        },
+        {
+          "step": 4,
+          "type": "search",
+          "role": "worker1",
+          "t": 4.31,
+          "query": "Which blue phosphorescent emitter was used at 10 wt% in the sky-blue OLED achieving 34.1% EQE?",
+          "status": "ok",
+          "max_relevance": 0.901,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 4
+        },
+        {
+          "step": 5,
+          "type": "search",
+          "role": "worker1",
+          "t": 6.54,
+          "query": "In the 34.1% external quantum efficiency sky-blue phosphorescent OLED, what dopant and concentration were used in emitting layer?",
+          "status": "ok",
+          "max_relevance": 0.864,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 3
+        },
+        {
+          "step": 6,
+          "type": "search",
+          "role": "worker1",
+          "t": 9.02,
+          "query": "The emissive layer formulation and phosphorescent dopant concentration in the sky-blue 34.1% EQE OLED device.",
+          "status": "ok",
+          "max_relevance": 0.929,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 3
+        },
+        {
+          "step": 7,
+          "type": "worker_done",
+          "role": "worker1",
+          "t": 10.54,
+          "status": "found",
+          "citations": 1
+        },
+        {
+          "step": 8,
+          "type": "worker_start",
+          "role": "worker2",
+          "t": 10.54,
+          "model": "gpt-6-luna",
+          "subquestions": [
+            "Why is that emitter considered unstable?"
+          ]
+        },
+        {
+          "step": 9,
+          "type": "search",
+          "role": "worker2",
+          "t": 12.52,
+          "query": "Why is FIrpic considered unstable as a blue phosphorescent OLED emitter?",
+          "status": "ok",
+          "max_relevance": 0.848,
+          "survivor_count": 20,
+          "result_count": 4,
+          "new_chunks": 3
+        },
+        {
+          "step": 10,
+          "type": "worker_done",
+          "role": "worker2",
+          "t": 15.01,
+          "status": "found",
+          "citations": 2
+        },
+        {
+          "step": 11,
+          "type": "orchestrate",
+          "role": "orchestrator",
+          "t": 15.01,
+          "model": "gpt-6.1-sol",
+          "chunks": 3
+        },
+        {
+          "step": 12,
+          "type": "review",
+          "role": "reviewer",
+          "t": 28.62,
+          "model": "gpt-6.1-sol",
+          "round": 1,
+          "claims": 8,
+          "unsupported": 0,
+          "core_question_answered": true,
+          "unsupported_claims": []
+        },
+        {
+          "step": 13,
+          "type": "stop",
+          "role": null,
+          "t": 28.63,
+          "reason": "answered",
+          "detail": ""
+        }
+      ],
+      "original_question": "Which blue phosphorescent emitter was doped at 10 wt% in the sky-blue OLED with 34.1% EQE, and why is that emitter considered unstable?",
+      "standalone_question": "Which blue phosphorescent emitter was doped at 10 wt% in the sky-blue OLED with 34.1% EQE, and why is that emitter considered unstable?",
+      "run": 2,
+      "mode_correct": true,
+      "false_rejection": false,
+      "false_acceptance": false,
+      "error": false,
+      "source_hit": true,
+      "claims": [
+        {
+          "claim": "The emitter was FIrpic, bis(2-(4,6-difluorophenyl)pyridyl)iridium(III) picolinate.",
+          "verdict": "supported",
+          "reason": "E1 names FIrpic with that chemical name; E2 identifies the sky-blue PhOLEDs as using FIrpic."
+        },
+        {
+          "claim": "The retrieved device summary identifies FIrpic in the sky-blue OLED achieving 34.1% maximum EQE.",
+          "verdict": "supported",
+          "reason": "E2 states sky-blue PhOLEDs with FIrpic show a maximum EQE of 34.1%."
+        },
+        {
+          "claim": "The retrieved evidence does not independently confirm the 10 wt% loading.",
+          "verdict": "supported",
+          "reason": "None of E1–E3 mention a 10 wt% dopant concentration for FIrpic."
+        },
+        {
+          "claim": "FIrpic is considered unstable.",
+          "verdict": "supported",
+          "reason": "E1 notes FIrpic is known to be relatively unstable."
+        },
+        {
+          "claim": "FIrpic can chemically dissociate through reversible loss of the picolinate ligand.",
+          "verdict": "supported",
+          "reason": "E1 describes a reversible dissociation pathway where the picolinate ligand is removed."
+        },
+        {
+          "claim": "FIrpic can dissociate through irreversible CO2 loss from the picolinate ligand, followed by further dissociation.",
+          "verdict": "supported",
+          "reason": "E1 details an irreversible pathway with CO2 loss from the picolinate ligand leading to further dissociation."
+        },
+        {
+          "claim": "These dissociation pathways occur during OLED operation.",
+          "verdict": "supported",
+          "reason": "E1 states evidence that both dissociation pathways may occur during OLED operation."
+        },
+        {
+          "claim": "Dissociated emitter fragments can undergo further reactions with neighboring materials.",
+          "verdict": "supported",
+          "reason": "E1 mentions formation of chemical complexes between FIrpic fragments and neighboring materials such as TPBi; E3 describes further reactions after dissociation."
+        },
+        {
+          "claim": "These reactions form charged complexes that promote quenching.",
+          "verdict": "supported",
+          "reason": "E3 states dissociated emitters react to create charged complexes and that quenching mechanisms on these complexes contribute to degradation."
+        },
+        {
+          "claim": "These reactions alter molecular-orbital energies.",
+          "verdict": "supported",
+          "reason": "E3 notes changed energetic molecular orbital states of the charged complexes."
+        },
+        {
+          "claim": "These processes degrade the OLED.",
+          "verdict": "supported",
+          "reason": "E3 explicitly links the complex formation, quenching, and orbital changes to OLED degradation."
+        }
+      ],
+      "claim_count": 11,
+      "unsupported_claims": 0,
+      "partial_claims": 0,
+      "key_points_covered": 1.0,
+      "judge_cost_usd": 0.0141725
+    }
+  ],
+  "chunk_text_removed": true
+}

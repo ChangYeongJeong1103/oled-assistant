@@ -1,32 +1,18 @@
-"""
-Multi-Agent Patterns for OLED Assistant
-Built on top of the single-agent runtime (agent_runtime.py).
+"""Multi-agent patterns built on top of the shared OLED agent runtime.
 
-Orchestrator-worker (AGENT_WORKERS >= 2, used when the plan has 2+ sub-questions)
-  - We split the sub-questions across workers. Each worker has its OWN context
-    and tool loop (light model), but all workers share the request's search
-    budget, search cache, and evidence ledger.
-  - Independent sub-questions run in parallel threads. Dependent ones
-    (plan["sequential"]) run in order, and each worker sees what the earlier
-    workers found.
-  - Workers return findings plus citations. The orchestrator (heavy model)
-    receives the ORIGINAL text of every cited chunk, checks the findings
-    against it, and writes the final answer.
+Orchestrator-worker (`AGENT_WORKERS >= 2`) is used when the plan has at least two sub-questions.
 
-Reviewer (AGENT_REVIEWER)
-  - The reviewer only sees the question, the answer, and the cited chunk
-    text. It never sees the research trace, so it judges the answer the way
-    a reader would.
-  - We approve an answer only if the review is readable, the core question
-    is answered, and no unsupported claim is left.
-  - Otherwise the answer goes back to the writer as feedback (delete the
-    claim, or search again), at most AGENT_MAX_REVIEW_ROUNDS times. Every
-    revised answer is reviewed again.
-  - If the last review still fails, the run ends with NO_ANSWER_IN_DOCS.
-    We don't return partial answers.
+- Each light-model worker has its own context and tool loop, while all workers share the request's search budget, cache and evidence ledger.
+- Independent sub-questions run in parallel. Dependent sub-questions run in order, and each worker sees the earlier findings.
+- Workers return findings and citations. The heavy-model orchestrator checks them against the original cited chunks and writes the final answer.
 
-Every function takes the AgentAssistant (`agent`) and the per-request AgentRun
-(`run`), so budgets, usage, and the trace stay in one place.
+Reviewer (`AGENT_REVIEWER`) checks the question, answer and cited chunk text without seeing the research trace.
+
+- An answer passes only when the review is readable, the core question is answered and no unsupported claim remains.
+- Otherwise feedback returns to the same writer for deletion or further research, up to `AGENT_MAX_REVIEW_ROUNDS`.
+- If the final review still fails, the run returns `NO_ANSWER_IN_DOCS` rather than a partial answer.
+
+Every function receives the shared `AgentAssistant` and per-request `AgentRun`, so budgets, usage and trace data stay in one place.
 """
 
 import json
@@ -44,8 +30,7 @@ from agent_prompts import (
 )
 from agent_tools import AgentStop, format_evidence, inline_citation_ids, validate_findings
 
-# Run-level stops. These end the whole request, even when they happen
-# inside a worker.
+# Run-level stops end the whole request even when they occur inside a worker.
 _FATAL_STOPS = ("deadline_exceeded", "api_timeout", "api_error")
 
 
@@ -53,12 +38,10 @@ _FATAL_STOPS = ("deadline_exceeded", "api_timeout", "api_error")
 # Orchestrator-worker
 # ================================
 def split_subquestions(subquestions, worker_count):
-    """
-    Split sub-questions into contiguous groups, one per worker.
+    """Split sub-questions into one contiguous group per worker.
 
-    We use contiguous groups instead of round-robin so that dependent hops
-    keep their order. For example, 3 sub-questions on 2 workers become
-    [[q1, q2], [q3]].
+    Contiguous groups preserve dependent-hop order.
+    For example, three sub-questions on two workers become `[[q1, q2], [q3]]`.
     """
     worker_count = max(1, min(worker_count, len(subquestions)))
     size, extra = divmod(len(subquestions), worker_count)
@@ -88,8 +71,7 @@ def _findings_handler(run, role):
                 return "done", {"status": "failed", "missing": "; ".join(errors)}
             return "continue", {"status": "rejected", "errors": errors}
 
-        # Keep only ids that exist in the ledger. validate_findings has
-        # already rejected unknown ones.
+        # Keep only IDs that exist in the ledger after validation rejects unknown values.
         citations = [c for c in args["citations"] if c in run.ledger]
         return "done", {"status": "found", "findings": args["findings"].strip(), "citations": citations}
 
@@ -106,8 +88,7 @@ def _run_worker(agent, run, number, subquestions, earlier_reports):
         f"Overall question (for context only): {run.question}\n\n"
         "Your sub-question(s):\n" + "\n".join(f"- {s}" for s in subquestions)
     )
-    # For sequential hops, a later worker needs what the earlier ones found
-    # to know what to search for (e.g., the material named in hop 1).
+    # A sequential worker receives earlier findings so it knows what to search next.
     if earlier_reports:
         content += "\n\nFindings from earlier steps:\n" + "\n".join(
             f"- {r.get('findings') or r.get('missing', '')}" for r in earlier_reports
@@ -126,8 +107,8 @@ def _run_worker(agent, run, number, subquestions, earlier_reports):
     except AgentStop as stop:
         if stop.reason in _FATAL_STOPS:
             raise
-        # A worker running out of turns or searches doesn't end the request.
-        # The orchestrator still decides with whatever the other workers found.
+        # One worker exhausting its loop does not stop the full request.
+        # The orchestrator continues with the remaining reports.
         result = {"status": "failed", "missing": f"{stop.reason}: {stop.detail}"[:300]}
 
     report = {"worker": number, "model": model, "subquestions": subquestions, **result}
@@ -141,41 +122,29 @@ def _run_worker(agent, run, number, subquestions, earlier_reports):
 
 
 def answer_with_team(agent, run):
-    """
-    Answer the question with a team of workers and an orchestrator.
+    """Answer with research workers followed by a heavy-model orchestrator.
 
-    The workers research their groups of sub-questions first. Then the
-    orchestrator checks their findings against the cited chunks and writes
-    the final answer.
-
-    Args:
-        agent: The AgentAssistant (models, client, and the research loop).
-        run: The AgentRun for the current question.
-
-    Returns:
-        tuple: (answer, citations) accepted from the orchestrator.
+    Workers first research their assigned sub-question groups.
+    The orchestrator then checks their findings against the cited chunks and returns the accepted answer and citations.
+    `agent` supplies models, the API client and research loop, while `run` contains current request state.
     """
     groups = split_subquestions(run.plan["subquestions"], config.AGENT_WORKERS)
 
     reports = []
     if run.plan["sequential"]:
-        # Dependent hops run one after another, and each worker sees the
-        # earlier findings.
+        # Dependent hops run in order, and each worker receives earlier findings.
         for number, group in enumerate(groups, 1):
             reports.append(_run_worker(agent, run, number, group, list(reports)))
     else:
-        # Independent sub-questions let the workers run at the same time.
-        # SearchTool still runs one search at a time (the retrieval models
-        # run locally on CPU), so what we gain is that the workers' LLM
-        # turns overlap.
+        # Independent workers overlap LLM calls.
+        # Their local CPU searches still run one at a time through `SearchTool`.
         with ThreadPoolExecutor(max_workers=len(groups)) as pool:
             futures = [
                 pool.submit(_run_worker, agent, run, number, group, [])
                 for number, group in enumerate(groups, 1)
             ]
             reports = [future.result() for future in futures]
-        # Worker threads can't call the UI callback, so we send their queued
-        # events from the main thread now.
+        # Flush queued worker events from the main thread because workers cannot update Streamlit directly.
         run.flush_events()
     run.worker_reports = reports
 
@@ -230,30 +199,14 @@ def _orchestrate(agent, run, reports):
 # Reviewer
 # ================================
 def review_answer(agent, run, answer, citations):
-    """
-    Check every claim of a citation-valid answer against the cited chunks.
+    """Check every claim in a citation-valid answer against its cited chunks.
 
-    Why we need this:
-    validate_submission only proves that the citations point to evidence the
-    model really saw. It can't tell whether each claim is actually supported
-    by that evidence, so a reviewer model reads the answer next to the cited
-    chunks and checks the claims one by one.
-
-    Args:
-        agent: The AgentAssistant (used for respond() and the heavy model).
-        run: The AgentRun for the current question.
-        answer: The answer text the writer submitted.
-        citations: The chunk ids in the citations list. Ids cited inline in
-            the answer text are added to these.
-
-    Returns:
-        None to accept the answer, or a feedback dict that we send back to
-        the writer as the submit_answer tool output.
-
-    Note:
-        Raises AgentStop("review_failed") when the review is unreadable, or
-        when the final round still finds an unsupported claim or an
-        unanswered core question.
+    `validate_submission` proves only that citations reference evidence shown to the model.
+    The reviewer determines whether that evidence supports each claim.
+    Inline citation IDs are combined with the submitted citation list.
+    The function returns `None` to accept the answer or structured feedback for the same writer context.
+    An unreadable final review, unsupported claim, or unanswered core question raises `AgentStop("review_failed")`.
+    The system therefore fails closed instead of returning an unverified answer.
     """
     role = "reviewer"
     cited_ids = []
@@ -285,8 +238,7 @@ def review_answer(agent, run, answer, citations):
 
     review = _parse_review(response.output_text)
     if review is None:
-        # We only approve based on a review we can actually read, so an
-        # unreadable review rejects the answer.
+        # An unreadable review cannot approve an answer.
         run.record("review_unreadable", role=role, round=review_round)
         raise AgentStop("review_failed", f"reviewer output unreadable (round {review_round})")
 
@@ -302,9 +254,8 @@ def review_answer(agent, run, answer, citations):
         core_question_answered=core_answered,
         unsupported_claims=[claim["claim"][:160] for claim in unsupported],
     )
-    # We approve only when the core question is answered and every claim is
-    # supported. A revised answer comes back through submit_answer and gets
-    # reviewed again.
+    # Approval requires an answered core question and support for every claim.
+    # Revised answers return through `submit_answer` and are reviewed again.
     if core_answered and not unsupported:
         return None
 
@@ -353,9 +304,8 @@ def _parse_review(output_text):
         return None
     if not isinstance(review, dict) or not isinstance(review.get("core_question_answered"), bool):
         return None
-    # A cited answer always makes at least one claim. An empty claims list
-    # means the reviewer checked nothing, so we don't let it approve the
-    # answer.
+    # A cited answer must contain at least one claim.
+    # An empty list means the reviewer checked nothing and cannot approve the answer.
     claims = review.get("claims")
     if not isinstance(claims, list) or not claims:
         return None

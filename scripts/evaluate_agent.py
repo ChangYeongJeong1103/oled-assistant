@@ -1,20 +1,15 @@
-"""
-Evaluate the OLED agent on a fixed question set.
+"""Evaluate the OLED agent on a fixed question set.
 
-What we measure for every question
-----------------------------------
-- Mode: we compare the agent's mode with the expected mode, which gives us
-  the false rejections and false acceptances.
-- Unsupported claims: an independent judge model splits the answer into
-  claims and checks each one against the chunks the agent cited.
-- Key-point coverage: does the answer contain the expected facts?
-- Source hit: did the agent use any of the expected source papers?
+Each result includes:
+- Mode accuracy, false rejection, and false acceptance.
+- Unsupported claims, graded against cited chunks by an independent judge.
+- Expected key-point coverage.
+- Expected source-paper usage.
 - Searches, LLM calls, latency, tokens, and estimated cost.
 
-The judge is only part of this evaluation. It never runs inside the app.
+The independent judge is used only by this evaluation script, not by the application.
 
 Usage (run from the project root, e.g. inside the Docker image)
------
     python scripts/evaluate_agent.py --run --label final
     python scripts/evaluate_agent.py --run --ids t01,mh1 --repeat 3
     AGENT_REVIEWER=false python scripts/evaluate_agent.py --run --label no_reviewer
@@ -22,15 +17,11 @@ Usage (run from the project root, e.g. inside the Docker image)
     python scripts/evaluate_agent.py --make-public eval/results/*.json
     python scripts/evaluate_agent.py --rejudge eval/results/raw/A.json [B.json ...]
 
-Each run is saved twice:
-- eval/results/raw/ keeps the full result, including the text of the evidence
-  chunks. This folder is git-ignored because the papers are not ours to
-  publish.
-- eval/results/ gets the same result without the chunk text.
+Each run is saved twice.
+`eval/results/raw/` keeps the full result, including evidence text, and is git-ignored because the papers are not ours to publish.
+`eval/results/` keeps the same result without chunk text.
 
-The agent features (models, parallel search, routing, workers, reviewer) are
-read from the environment exactly as in the app, and we save them with each
-result file.
+The active models and feature flags come from the same environment settings as the application and are recorded in each result file.
 """
 
 import argparse
@@ -39,9 +30,14 @@ import os
 import statistics
 import sys
 import time
+import hashlib
+import platform
+from importlib.metadata import version, PackageNotFoundError
+from uuid import uuid4
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
+from pathlib import Path
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(PROJECT_ROOT, "src"))
@@ -53,46 +49,50 @@ from utils import estimate_cost_usd  # noqa: E402
 
 QUESTIONS_FILE = os.path.join(PROJECT_ROOT, "eval", "questions.json")
 RESULTS_DIR = os.path.join(PROJECT_ROOT, "eval", "results")
-# Full results, including the text of every evidence chunk from the source
-# papers. This folder is git-ignored. We only publish the copies in
-# RESULTS_DIR, which have no chunk text.
+# Raw results contain source text and stay git-ignored; public results omit it.
 RAW_RESULTS_DIR = os.path.join(RESULTS_DIR, "raw")
 
 JUDGE_MODEL = os.getenv("EVAL_JUDGE_MODEL", "gpt-5")
 JUDGE_REASONING_EFFORT = os.getenv("EVAL_JUDGE_REASONING_EFFORT", "low")
 JUDGE_THREADS = 4
-REJECTION_MODES = {"NO_ANSWER_IN_DOCS", "OFF_TOPIC"}
+REJECTION_MODES = {"NO_ANSWER_IN_DOCS", "OFF_TOPIC", "CLARIFICATION"}
 
 
 # ================================
 # Agent setup
 # ================================
-def build_agent():
+def build_agent(engine="graph", session_db=None):
     """Create the agent the same way the app does."""
-    # Imported here so --compare, --make-public, and --rejudge don't have to
-    # load the embedding model and the reranker.
+    # Lazy imports keep reporting commands from loading retrieval models.
     from agent_runtime import AgentAssistant
     from retrieval import build_retriever
 
-    return AgentAssistant(build_retriever())
+    if engine == "legacy":
+        if session_db:
+            raise ValueError("The legacy baseline has no session memory")
+        return AgentAssistant(build_retriever())
+    from agent_graph import GraphAgentAssistant
+    retriever = build_retriever()
+    return (GraphAgentAssistant.with_sqlite(retriever, session_db)
+            if session_db else GraphAgentAssistant(retriever))
 
 
 # ================================
 # Running one question
 # ================================
-def run_agent(agent, question):
-    """
-    Run the agent, which reports its own usage, evidence, and trace.
+def run_agent(agent, question, thread_id=None):
+    """Run one question and collect the agent's usage, evidence and trace.
 
-    The agent may use several models in one request (routing, workers,
-    reviewer), so we take its cost from the per-model usage it reports.
+    One request may use several models for routing, workers and review.
+    Its cost therefore comes from the per-model usage reported by the agent.
     """
-    result = agent.query(question)
+    result = agent.query(question, thread_id=thread_id) if thread_id else agent.query(question)
     report = result.get("agent", {})
     usage = report.get("usage", {})
     plan = report.get("plan") or {}
     return result, {
         "evidence": report.get("evidence", []),
+        "retrieved_evidence": report.get("retrieved_evidence", []),
         "searches": report.get("searches", 0),
         "llm_calls": usage.get("llm_calls", 0),
         "prompt_tokens": usage.get("prompt_tokens", 0),
@@ -109,13 +109,15 @@ def run_agent(agent, question):
         "parallel_turns": report.get("parallel_turns", 0),
         "stop_reason": report.get("stop_reason", ""),
         "trace": report.get("trace", []),
+        "original_question": result.get("original_question", question),
+        "standalone_question": result.get("standalone_question", question),
     }
 
 
-def run_question(agent, item):
+def run_question(agent, item, thread_id=None):
     """Run one question and return a record with every raw measurement."""
     start = time.time()
-    result, extra = run_agent(agent, item["question"])
+    result, extra = run_agent(agent, item["question"], thread_id=thread_id)
     cost = extra.pop("cost_usd")
     latency = time.time() - start
 
@@ -138,7 +140,7 @@ def run_question(agent, item):
 # ================================
 # Independent judge
 # ================================
-JUDGE_SCHEMA = {
+GROUNDING_SCHEMA = {
     "type": "object",
     "properties": {
         "claims": {
@@ -147,16 +149,25 @@ JUDGE_SCHEMA = {
                 "type": "object",
                 "properties": {
                     "claim": {"type": "string"},
+                    "answer_quote": {"type": "string"},
                     "verdict": {
                         "type": "string",
                         "enum": ["supported", "partially_supported", "unsupported"],
                     },
                     "reason": {"type": "string"},
                 },
-                "required": ["claim", "verdict", "reason"],
+                "required": ["claim", "answer_quote", "verdict", "reason"],
                 "additionalProperties": False,
             },
         },
+    },
+    "required": ["claims"],
+    "additionalProperties": False,
+}
+
+COVERAGE_SCHEMA = {
+    "type": "object",
+    "properties": {
         "key_points": {
             "type": "array",
             "items": {
@@ -170,15 +181,17 @@ JUDGE_SCHEMA = {
             },
         },
     },
-    "required": ["claims", "key_points"],
+    "required": ["key_points"],
     "additionalProperties": False,
 }
 
-JUDGE_INSTRUCTIONS = """You are a strict grader for a document-grounded OLED assistant.
+GROUNDING_INSTRUCTIONS = """You are a strict grounding grader for a document-grounded OLED assistant.
 
-Task 1 - Grounding. Split the ANSWER into its atomic factual claims (at most 12;
-skip greetings, hedges, and restatements of the question). Judge each claim
-ONLY against the EVIDENCE passages, not against your own knowledge:
+Split only the ANSWER into its atomic factual claims (at most 12; skip greetings,
+hedges, and restatements of the question). For every claim, include an exact
+contiguous quote from the ANSWER that expresses it. Never create a claim from
+the question, expected answer, or evidence. Judge each claim ONLY against the
+EVIDENCE passages, not against your own knowledge:
 - supported: the evidence states it or directly implies it.
 - partially_supported: the gist is in the evidence but a specific detail
   (number, material, condition, causal link) is not.
@@ -188,35 +201,44 @@ ONLY against the EVIDENCE passages, not against your own knowledge:
   A broader statement about the whole document collection remains unsupported,
   because only the supplied passages can be checked.
 
-Task 2 - Coverage. For each EXPECTED POINT (by index), mark covered=true when
-the ANSWER conveys that point, regardless of the evidence.
+Return JSON only."""
+
+COVERAGE_INSTRUCTIONS = """You are a strict answer-coverage grader.
+
+For each EXPECTED POINT, mark covered=true only when the ANSWER conveys that
+point. This task measures coverage only. Do not extract or judge factual claims.
 
 Return JSON only."""
 
-# Version of the grading rules above. We save it in every result file because
-# rates graded under different policies can't be compared directly.
-# "strict_absence_v1": earlier runs, where every absence statement could be
-#                      marked unsupported.
-# "scoped_absence_v2": a statement scoped to the supplied evidence is supported
-#                      when the evidence indeed lacks it.
-JUDGE_POLICY = "scoped_absence_v2"
+# Save the grading-policy version because rates from different policies are not directly comparable.
+# `"strict_absence_v1"` allowed every absence statement to be marked unsupported.
+# `"scoped_absence_v2"` supports an absence statement scoped to supplied evidence when that evidence lacks the stated information.
+# `"separate_grounding_coverage_v3"` hides expected points from grounding and requires an answer quote for every extracted claim.
+JUDGE_POLICY = "separate_grounding_coverage_v3"
+
+
+def _judge_request(client, schema_name, schema, instructions, content):
+    """Run one independent judge task and return its JSON plus call cost."""
+    response = client.chat.completions.create(
+        model=JUDGE_MODEL,
+        reasoning_effort=JUDGE_REASONING_EFFORT,
+        response_format={
+            "type": "json_schema",
+            "json_schema": {"name": schema_name, "strict": True, "schema": schema},
+        },
+        messages=[
+            {"role": "system", "content": instructions},
+            {"role": "user", "content": content},
+        ],
+    )
+    result = json.loads(response.choices[0].message.content)
+    usage = response.usage
+    cost = estimate_cost_usd(JUDGE_MODEL, usage.prompt_tokens, usage.completion_tokens)
+    return result, cost or 0.0
 
 
 def judge_answer(client, item, record):
-    """
-    Ask the judge model to grade the answer's claims and key-point coverage.
-
-    The judge only sees the evidence the agent actually cited, so each claim
-    is graded against that evidence and nothing else.
-
-    Args:
-        client: OpenAI client used for the judge call
-        item: Question entry from eval/questions.json (question, expected_points)
-        record: Result of run_question() for this item (answer, evidence)
-
-    Returns:
-        dict: The judge's "claims" and "key_points", plus "judge_cost_usd"
-    """
+    """Grade grounding and expected-point coverage in separate model calls."""
     evidence_text = "\n\n".join(
         f"[E{index}] {entry['title']} (p.{entry.get('page')})\n{entry['text']}"
         for index, entry in enumerate(record["evidence"], 1)
@@ -225,41 +247,33 @@ def judge_answer(client, item, record):
         f"{index}. {point}" for index, point in enumerate(item["expected_points"])
     ) or "(none)"
 
-    response = client.chat.completions.create(
-        model=JUDGE_MODEL,
-        reasoning_effort=JUDGE_REASONING_EFFORT,
-        response_format={
-            "type": "json_schema",
-            "json_schema": {"name": "grounding_judgment", "strict": True, "schema": JUDGE_SCHEMA},
-        },
-        messages=[
-            {"role": "system", "content": JUDGE_INSTRUCTIONS},
-            {
-                "role": "user",
-                "content": (
-                    f"QUESTION:\n{item['question']}\n\n"
-                    f"ANSWER:\n{record['answer']}\n\n"
-                    f"EXPECTED POINTS:\n{points_text}\n\n"
-                    f"EVIDENCE:\n{evidence_text}"
-                ),
-            },
-        ],
+    grounding, grounding_cost = _judge_request(
+        client,
+        "grounding_judgment",
+        GROUNDING_SCHEMA,
+        GROUNDING_INSTRUCTIONS,
+        f"QUESTION:\n{item['question']}\n\nANSWER:\n{record['answer']}\n\nEVIDENCE:\n{evidence_text}",
     )
-    judgment = json.loads(response.choices[0].message.content)
-    usage = response.usage
-    judgment["judge_cost_usd"] = estimate_cost_usd(
-        JUDGE_MODEL, usage.prompt_tokens, usage.completion_tokens
+    coverage, coverage_cost = _judge_request(
+        client,
+        "coverage_judgment",
+        COVERAGE_SCHEMA,
+        COVERAGE_INSTRUCTIONS,
+        f"QUESTION:\n{item['question']}\n\nANSWER:\n{record['answer']}\n\nEXPECTED POINTS:\n{points_text}",
     )
-    return judgment
+    return {
+        "claims": grounding["claims"],
+        "key_points": coverage["key_points"],
+        "judge_cost_usd": grounding_cost + coverage_cost,
+        "judge_policy": JUDGE_POLICY,
+    }
 
 
 def add_scores(item, record, judgment):
-    """
-    Turn the raw results and the judgment into per-question metrics.
+    """Add mode, grounding, coverage and source metrics to one result record.
 
-    Note:
-        judgment is None when the judge did not run (--no-judge, or the agent
-        did not answer), so the claim metrics are left empty.
+    `judgment` is `None` when the judge is disabled or the agent does not return a RAG answer.
+    In that case, claim metrics remain empty.
     """
     expected, mode = record["expected_mode"], record["mode"]
     record["mode_correct"] = mode == expected
@@ -276,13 +290,28 @@ def add_scores(item, record, judgment):
 
     if judgment is None:
         record.update(claims=[], claim_count=0, unsupported_claims=0,
-                      partial_claims=0, key_points_covered=None, judge_cost_usd=0.0)
+                      partial_claims=0, claim_extraction_errors=[],
+                      grounding_valid=False, key_points_covered=None, judge_cost_usd=0.0)
         return record
 
-    verdicts = [claim["verdict"] for claim in judgment["claims"]]
+    answer_text = " ".join(record["answer"].split())
+    valid_claims = []
+    extraction_errors = []
+    for claim in judgment["claims"]:
+        quote = claim.get("answer_quote")
+        normalized_quote = " ".join(quote.split()) if isinstance(quote, str) else ""
+        legacy_claim = quote is None and judgment.get("judge_policy") != JUDGE_POLICY
+        if legacy_claim or (normalized_quote and normalized_quote in answer_text):
+            valid_claims.append(claim)
+        else:
+            extraction_errors.append(claim)
+
+    verdicts = [claim["verdict"] for claim in valid_claims]
     covered = [point["covered"] for point in judgment["key_points"]]
     record.update(
-        claims=judgment["claims"],
+        claims=valid_claims,
+        claim_extraction_errors=extraction_errors,
+        grounding_valid=bool(valid_claims) and not extraction_errors,
         claim_count=len(verdicts),
         unsupported_claims=verdicts.count("unsupported"),
         partial_claims=verdicts.count("partially_supported"),
@@ -316,6 +345,10 @@ def summarize(records):
     unanswerable = [r for r in records if r["expected_mode"] != "RAG"]
     answered = [r for r in records if r["mode"] == "RAG"]
     claims = sum(r["claim_count"] for r in answered)
+    invalid_grounding = sum(
+        not r.get("grounding_valid", bool(r["claim_count"]) and not r.get("claim_extraction_errors"))
+        for r in answered
+    )
     latencies = [r["latency_s"] for r in records]
 
     return {
@@ -327,6 +360,9 @@ def summarize(records):
         "unsupported_claim_rate": round(sum(r["unsupported_claims"] for r in answered) / claims, 4) if claims else None,
         "partial_claim_rate": round(sum(r["partial_claims"] for r in answered) / claims, 4) if claims else None,
         "answers_with_unsupported": sum(1 for r in answered if r["unsupported_claims"] > 0),
+        "judge_extraction_errors": sum(len(r.get("claim_extraction_errors", [])) for r in answered),
+        "grounding_invalid_answers": invalid_grounding,
+        "grounding_evaluation_complete": invalid_grounding == 0 if answered else None,
         "answered_count": len(answered),
         "key_point_coverage": mean([r["key_points_covered"] for r in answered]),
         "source_hit_rate": mean([1.0 if r["source_hit"] else 0.0 for r in answered if r["source_hit"] is not None]),
@@ -345,8 +381,7 @@ def summarize(records):
         "variant_only_rejections": sum(
             pair["variant_only_rejections"] for pair in pair_report(records).values()
         ),
-        # Result files from the first agent version don't have all of the
-        # fields below, so we read them with .get().
+        # Result files from the first agent version lack some fields below, so read them with `.get()`.
         "stop_reasons": dict(Counter(r.get("stop_reason") or "n/a" for r in records)),
         "routes": dict(Counter(r.get("route") or "n/a" for r in records)),
         "escalations": sum(1 for r in records if r.get("escalated")),
@@ -356,10 +391,9 @@ def summarize(records):
 
 
 def cost_from_usage(usage_by_model):
-    """
-    Compute the USD cost of one agent run from its per-model token counts.
+    """Calculate one run's USD cost from per-model token counts.
 
-    Returns None if any model used in the run has no price.
+    Return `None` when any model used by the run has no configured price.
     """
     total = 0.0
     for model, usage in usage_by_model.items():
@@ -390,14 +424,9 @@ def summarize_by_category(records):
 
 
 def pair_report(records):
-    """
-    For each pair, compare the normal question with its variants.
+    """Compare normally worded questions with their variants.
 
-    Why we need this:
-    A "variant-only rejection" is the failure this evaluation is looking for.
-    It happens when the agent answers the normal wording but rejects the
-    typo, paraphrase, or abbreviation of the same question, which means the
-    wording alone caused the rejection.
+    A variant-only rejection occurs when the normal question is answered but its typo, paraphrase, or abbreviation is rejected.
     """
     report = {}
     pairs = sorted({r["pair_id"] for r in records if r["pair_id"]})
@@ -426,6 +455,9 @@ SUMMARY_ROWS = [
     ("unsupported_claim_rate", "Unsupported claim rate"),
     ("partial_claim_rate", "Partially supported claim rate"),
     ("answers_with_unsupported", "Answers with >=1 unsupported claim"),
+    ("judge_extraction_errors", "Judge claim-extraction errors"),
+    ("grounding_invalid_answers", "Answers without valid grounding evaluation"),
+    ("grounding_evaluation_complete", "Grounding evaluation complete"),
     ("answered_count", "Answered (RAG)"),
     ("key_point_coverage", "Key-point coverage"),
     ("source_hit_rate", "Expected-source hit rate"),
@@ -472,30 +504,29 @@ def print_records(records):
 # Commands
 # ================================
 def evaluate(args):
-    """
-    Run the agent over the question set and save the results.
+    """Run the selected questions and save raw and public result files.
 
-    Args:
-        args: Parsed command line arguments (--label, --ids, --repeat,
-            --no-judge)
+    `args` contains the selected engine, question IDs, repeat count, label, session database and judge setting.
     """
-    with open(QUESTIONS_FILE, encoding="utf-8") as handle:
+    questions_path = args.questions or QUESTIONS_FILE
+    with open(questions_path, encoding="utf-8") as handle:
         questions = json.load(handle)["questions"]
     if args.ids:
         wanted = set(args.ids.split(","))
         questions = [q for q in questions if q["id"] in wanted]
 
-    agent = build_agent()
+    agent = build_agent(args.engine, args.session_db)
     client = None if args.no_judge else OpenAI()
 
-    # The judge only waits on the API, so we let it grade in background
-    # threads while the next question runs. The agent itself still runs one
-    # question at a time, so other questions don't affect its latency.
+    # Judge calls wait mostly on the API, so they run in background threads while agent questions remain sequential.
+    # Sequential agent execution keeps one question from affecting another question's latency.
     pending = []  # (item, record, future or None), in question order
     with ThreadPoolExecutor(max_workers=JUDGE_THREADS) as judge_pool:
         for item in questions:
             for run_index in range(args.repeat):
-                record = run_question(agent, item)
+                # A fresh thread prevents evaluation questions from sharing history.
+                thread_id = str(uuid4()) if args.session_db else None
+                record = run_question(agent, item, thread_id=thread_id)
                 record["run"] = run_index
                 future = None
                 if client and record["mode"] == "RAG" and record["answer"]:
@@ -510,9 +541,12 @@ def evaluate(args):
 
     output = {
         # Kept as a field so --compare can still read older result files.
-        "engine": "agent",
+        "engine": args.engine,
         "label": args.label,
         "created_at": datetime.now().isoformat(timespec="seconds"),
+        "manifest": evaluation_manifest(questions_path),
+        "repeat": args.repeat,
+        "history_policy": "fresh_thread_per_question" if args.session_db else "stateless",
         "config": {
             "judge_model": None if args.no_judge else JUDGE_MODEL,
             "judge_policy": None if args.no_judge else JUDGE_POLICY,
@@ -544,6 +578,36 @@ def evaluate(args):
     print("\nPairs:", json.dumps(output["pairs"], indent=1))
     print(f"\nJudge cost (not part of agent cost): ${output['judge_cost_usd']}")
     print(f"Saved {path} (public, no chunk text) and {raw_path} (local only)")
+    if hasattr(agent, "close"):
+        agent.close()
+
+
+def evaluation_manifest(questions_path):
+    """Record actual code/data/settings; a git revision alone misses local edits."""
+    def digest(path):
+        if not os.path.isfile(path):
+            return None
+        h = hashlib.sha256()
+        with open(path, "rb") as handle:
+            for block in iter(lambda: handle.read(1024 * 1024), b""):
+                h.update(block)
+        return h.hexdigest()
+    src = os.path.join(PROJECT_ROOT, "src")
+    packages = {}
+    for name in ("langgraph", "langgraph-checkpoint-sqlite", "langchain-core", "langchain-community",
+                 "langchain-text-splitters", "chromadb", "sentence-transformers", "openai"):
+        try: packages[name] = version(name)
+        except PackageNotFoundError: packages[name] = None
+    return {"python": platform.python_version(), "packages": packages,
+            "code_sha256": {name: digest(os.path.join(src, name)) for name in sorted(os.listdir(src)) if name.endswith(".py")},
+            "questions_sha256": digest(questions_path),
+            "corpus_sqlite_sha256": digest(os.path.join(config.DB_PATH, "chroma.sqlite3")),
+            "judge_policy": JUDGE_POLICY, "judge_model": JUDGE_MODEL,
+            "judge_reasoning_effort": JUDGE_REASONING_EFFORT,
+            "reasoning_effort": config.AGENT_REASONING_EFFORT or config.MODEL_REASONING_EFFORT,
+            "embedding": config.EMBEDDING_MODEL, "reranker": config.RERANKER_MODEL,
+            "reranker_enabled": config.RERANKER_ENABLED,
+            "sigmoid": [config.SIGMOID_MIDPOINT, config.SIGMOID_STEEPNESS]}
 
 
 # ================================
@@ -556,31 +620,26 @@ def write_json(path, data):
 
 
 def public_copy(output):
-    """
-    Return a copy of the results that is safe to publish.
+    """Return a publishable copy without source-paper text.
 
-    Why we need this:
-    The source papers are not ours to publish, so we keep everything except
-    their text. Each evidence entry still keeps its chunk id, title, URL, file
-    name, and page, so every citation can still be traced back to its paper.
+    Chunk IDs, titles, URLs, file names and pages remain so citations can still be traced to their papers.
     """
     public = json.loads(json.dumps(output, default=str))
     for record in public.get("records", []):
-        record["evidence"] = [
-            {key: value for key, value in entry.items() if key != "text"}
-            for entry in record.get("evidence", [])
-        ]
+        for field in ("evidence", "retrieved_evidence"):
+            record[field] = [
+                {key: value for key, value in entry.items() if key != "text"}
+                for entry in record.get(field, [])
+            ]
     public["chunk_text_removed"] = True
     return public
 
 
 def make_public(paths):
-    """
-    Back up result files to eval/results/raw/ and write their public copies.
+    """Back up result files and write public copies.
 
-    NOTE: This is safe to re-run. We skip a file that is already public, so it
-    can never overwrite its raw backup, and we keep any raw backup that
-    already exists instead of replacing it.
+    The operation is safe to repeat.
+    Files already marked public are skipped, and existing raw backups are never overwritten.
     """
     for path in paths:
         with open(path, encoding="utf-8") as handle:
@@ -598,24 +657,52 @@ def make_public(paths):
         print(f"{name}: public copy written, original in {raw_path}")
 
 
-def rejudge(paths):
-    """
-    Re-run only the judge against saved agent results.
+def resolve_conversation_dataset(output, dataset_path=None):
+    """Reuse the recorded rubric by hash; a changed rubric needs an explicit path."""
+    if dataset_path:
+        return str(Path(dataset_path))
+    judge_manifest = output.get("judge_manifest", {})
+    engine_manifest = output.get("engine_manifest", output.get("manifest", {}))
+    expected = judge_manifest.get("dataset_sha256") or engine_manifest.get("questions_sha256")
+    for path in sorted(Path(PROJECT_ROOT, "eval").glob("conversations*.json")):
+        if hashlib.sha256(path.read_bytes()).hexdigest() == expected:
+            return str(path)
+    raise ValueError("Conversation dataset does not match a saved hash; supply --dataset explicitly")
 
-    Why we need this:
-    Judge instructions can improve independently of the agent. The raw result
-    already contains the exact answer and evidence from the original run, so we
-    can apply the new grading rule without paying for or changing the agent
-    run itself.
 
-    Args:
-        paths: Raw or public result JSON files. For a public file, the matching
-            file in eval/results/raw/ supplies the evidence text.
+def judge_manifest(questions_path, dataset_path=None):
+    """Describe only the current grading, never relabel the original agent run."""
+    def digest(path):
+        return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+    manifest = {
+        "created_at": datetime.now().isoformat(timespec="seconds"),
+        "judge_policy": JUDGE_POLICY, "judge_model": JUDGE_MODEL,
+        "judge_reasoning_effort": JUDGE_REASONING_EFFORT,
+        "questions_file": Path(questions_path).name,
+        "questions_sha256": digest(questions_path),
+        "code_sha256": {name: digest(Path(__file__).with_name(name))
+                        for name in ("evaluate_agent.py", "evaluate_multiturn.py")},
+    }
+    if dataset_path:
+        dataset = json.loads(Path(dataset_path).read_text(encoding="utf-8"))
+        manifest.update(dataset_file=Path(dataset_path).name,
+                        dataset_sha256=digest(dataset_path),
+                        dataset_version=dataset.get("version", 1))
+    return manifest
+
+
+def rejudge(paths, questions_path=None, dataset_path=None):
+    """Rejudge saved answers without rerunning the agent.
+
+    Raw results already contain the original answers and cited evidence, so a new judge policy can be applied without repeating agent calls.
+    Public inputs use the corresponding raw file.
+    Multi-turn results use the recorded conversation-rubric hash unless `dataset_path` explicitly overrides it.
     """
-    with open(QUESTIONS_FILE, encoding="utf-8") as handle:
+    questions_path = questions_path or QUESTIONS_FILE
+    with open(questions_path, encoding="utf-8") as handle:
         questions = {item["id"]: item for item in json.load(handle)["questions"]}
 
-    client = OpenAI()
     for path in paths:
         with open(path, encoding="utf-8") as handle:
             output = json.load(handle)
@@ -628,19 +715,57 @@ def rejudge(paths):
             with open(raw_path, encoding="utf-8") as handle:
                 output = json.load(handle)
 
+        is_conversation = "conversation_metrics" in output or any(
+            "conversation_id" in record for record in output["records"]
+        )
+        rubric_path = None
+        items = questions
+        if is_conversation:
+            from evaluate_multiturn import build_turn_item, conversation_metrics, grade_interpretation
+
+            rubric_path = resolve_conversation_dataset(output, dataset_path)
+            with open(rubric_path, encoding="utf-8") as handle:
+                conversations = json.load(handle)["conversations"]
+            items = {}
+            for conversation in conversations:
+                for index in range(len(conversation["turns"])):
+                    item = build_turn_item(conversation, index, questions)
+                    items[item["id"]] = item
+        elif dataset_path:
+            raise ValueError("--dataset is only valid for conversation results")
+
+        # Check all inputs before paying for a judge call.
+        for record in output["records"]:
+            if record["id"] not in items:
+                raise ValueError(f"No grading item for {record['id']}; check --questions/--dataset")
+            if record["mode"] == "RAG" and (
+                not record.get("evidence") or
+                any(not isinstance(e.get("text"), str) or not e["text"].strip()
+                    for e in record["evidence"])
+            ):
+                raise ValueError(f"Raw cited evidence required for {record['id']}")
+
+        current_judge_manifest = judge_manifest(questions_path, rubric_path)
+        client = OpenAI()
         pending = []
         with ThreadPoolExecutor(max_workers=JUDGE_THREADS) as judge_pool:
             for record in output["records"]:
-                item = questions[record["id"]]
+                item = items[record["id"]]
+                record["expected_mode"] = item["expected_mode"]
                 future = None
                 if record["mode"] == "RAG" and record.get("answer"):
-                    future = judge_pool.submit(judge_answer, client, item, record)
-                pending.append((item, record, future))
+                    grounding_item = {**item, "question": item.get("reference_question", item["question"])}
+                    future = judge_pool.submit(judge_answer, client, grounding_item, record)
+                interpretation = (judge_pool.submit(grade_interpretation, client, item, record)
+                                  if is_conversation else None)
+                pending.append((item, record, future, interpretation))
 
-            records = [
+            records = []
+            for item, record, future, interpretation in pending:
                 add_scores(item, record, future.result() if future else None)
-                for item, record, future in pending
-            ]
+                if interpretation is not None:
+                    record["interpretation"] = interpretation.result()
+                records.append(record)
 
         original_label = output.get("label") or "run"
         output["engine_created_at"] = output.get("engine_created_at", output.get("created_at"))
@@ -648,11 +773,25 @@ def rejudge(paths):
         output["label"] = f"{original_label}_rejudged"
         output.setdefault("config", {})["judge_model"] = JUDGE_MODEL
         output["config"]["judge_policy"] = JUDGE_POLICY
+        output["config"]["judge_reasoning_effort"] = JUDGE_REASONING_EFFORT
+        output.setdefault("engine_manifest", output.get("manifest", {}))
+        output.pop("manifest", None)
+        output["judge_manifest"] = current_judge_manifest
         output["summary"] = summarize(records)
         output["by_category"] = summarize_by_category(records)
         output["pairs"] = pair_report(records)
         output["judge_cost_usd"] = round(sum(r["judge_cost_usd"] for r in records), 4)
         output["records"] = records
+        if is_conversation:
+            output["conversation_metrics"] = conversation_metrics(records)
+            output["grounding_judge_cost_usd"] = output["judge_cost_usd"]
+            output["interpretation_judge_cost_usd"] = sum(
+                r["interpretation"].get("judge_cost_usd") or 0 for r in records
+            )
+        output["evaluation_note"] = (
+            "Rejudged saved answers; the agent was not rerun. engine_manifest describes "
+            "the original execution; judge_manifest describes this grading and rubric."
+        )
 
         stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         name = f"{output['engine']}_{output['label']}_{stamp}.json"
@@ -665,12 +804,9 @@ def rejudge(paths):
 
 
 def compare(paths, output_name="comparison.md"):
-    """
-    Print and save a side-by-side comparison of two or more result files.
+    """Print and save a side-by-side comparison of two or more result files.
 
-    Args:
-        paths: Result JSON files to compare (two or more)
-        output_name: Markdown file name for the report, saved in eval/results
+    The Markdown report is written to `eval/results/<output_name>`.
     """
     runs = []
     for path in paths:
@@ -678,8 +814,7 @@ def compare(paths, output_name="comparison.md"):
             runs.append(json.load(handle))
     names = [run["engine"] + (f" ({run['label']})" if run.get("label") else "") for run in runs]
 
-    # Recompute the summaries from the records, so older result files also get
-    # every metric and agent costs use the current price table.
+    # Recompute summaries so older files use the current metrics and prices.
     for run in runs:
         for record in run["records"]:
             if record.get("usage_by_model"):
@@ -693,7 +828,11 @@ def compare(paths, output_name="comparison.md"):
             "|---|" + "---|" * len(names),
         ]
 
-    lines = table_header("Metric")
+    policies = {run.get("config", {}).get("judge_policy") for run in runs}
+    lines = []
+    if len(policies) > 1:
+        lines += ["> Judge policies differ. Claim-grounding rates are not directly comparable; rejudge under one policy.", ""]
+    lines += table_header("Metric")
     for key, label in SUMMARY_ROWS:
         lines.append(f"| {label} | " + " | ".join(str(run["summary"].get(key)) for run in runs) + " |")
 
@@ -710,8 +849,7 @@ def compare(paths, output_name="comparison.md"):
             )
         lines.append(f"| {category} | " + " | ".join(cells) + " |")
 
-    # List the questions whose mode differs between runs. We only look at the
-    # first run of each question.
+    # Compare the first run of each question across configurations.
     firsts = [{r["id"]: r for r in run["records"] if r.get("run", 0) == 0} for run in runs]
     common_ids = [qid for qid in firsts[0] if all(qid in f for f in firsts)]
     lines += ["", "Questions whose mode differs:", ""]
@@ -736,6 +874,10 @@ def compare(paths, output_name="comparison.md"):
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--run", action="store_true", help="Run the agent on the question set (paid API calls)")
+    parser.add_argument("--engine", choices=("legacy", "graph"), default="graph")
+    parser.add_argument("--questions", help="Question-set JSON; default: eval/questions.json")
+    parser.add_argument("--dataset", help="Conversation rubric override for --rejudge; default: match the saved dataset hash")
+    parser.add_argument("--session-db", help="SQLite checkpointer path; use a fresh thread per question")
     parser.add_argument("--label", default="", help="Tag added to the results file name")
     parser.add_argument("--ids", default="", help="Comma-separated question ids to run")
     parser.add_argument("--repeat", type=int, default=1, help="Runs per question (stochastic checks)")
@@ -747,11 +889,15 @@ def main():
     parser.add_argument("--rejudge", nargs="+", metavar="RESULT_JSON",
                         help="Re-run the judge on saved results without re-running the agent")
     args = parser.parse_args()
+    if args.repeat < 1:
+        parser.error("--repeat must be >= 1")
+    if args.dataset and not args.rejudge:
+        parser.error("--dataset requires --rejudge")
 
     if args.make_public:
         make_public(args.make_public)
     elif args.rejudge:
-        rejudge(args.rejudge)
+        rejudge(args.rejudge, args.questions, args.dataset)
     elif args.compare:
         if len(args.compare) < 2:
             parser.error("--compare needs at least two result files.")

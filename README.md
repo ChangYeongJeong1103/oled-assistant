@@ -2,7 +2,9 @@
 
 ![Agent](https://img.shields.io/badge/Agent-Plan_%2B_Tool_Calling-8A2BE2.svg) ![Multi-Agent](https://img.shields.io/badge/Multi--Agent-Orchestrator--Worker_%2B_Reviewer-8A2BE2.svg) ![Model Routing](https://img.shields.io/badge/Model_Routing-GPT--6--Luna_%2F_GPT--6.1--Sol-10a37f.svg) ![RAG](https://img.shields.io/badge/RAG-Strict_Document--Grounded-green.svg) ![Kubernetes](https://img.shields.io/badge/Kubernetes-Deployment-326CE5.svg) ![Deployment](https://img.shields.io/badge/Deployment-Google_Cloud_Run-blue.svg) ![License](https://img.shields.io/badge/License-MIT-green.svg)
 
-An agentic RAG (Retrieval-Augmented Generation) assistant for OLED display engineers, with multi-agent patterns, model routing, and a Kubernetes deployment.
+An agentic RAG assistant for OLED display engineers, with LangGraph orchestration, SQLite session memory, multi-agent patterns, and model routing.
+
+**Upgrade validation:** The three 50-question comparisons and the 21-turn multi-turn evaluation are complete. The empty-history graph scored 98% mode accuracy, the multi-turn run scored 100%, and neither produced a false acceptance or unsupported claim. Public results and the judge audit are linked in [Upgrade Validation](docs/upgrade_validation.md).
 
 ## Overview
 
@@ -18,6 +20,9 @@ The answers follow a **Strict RAG** policy: there is no fallback to the model's 
 
 ### Key Features
 
+- **LangGraph orchestration**: explicit nodes for initialization, planning, routing, research, team execution, escalation and completion. Conditional edges select routes and escalation. Existing review/revision loops retain their writer context.
+- **Session and multi-turn memory**: SQLite checkpoints store conversations by `thread_id`. The planner uses the last five bounded user/assistant pairs to interpret follow-ups; all downstream steps use the standalone question and newly retrieved evidence. Ambiguous follow-ups return `CLARIFICATION`. The UI shows **Interpreted as** when wording changes; **New chat** starts an independent thread.
+
 - **Strict Document-Grounded RAG**: The system has no unrestricted LLM fallback. It rejects off-topic questions at the planning step and returns `NO_ANSWER_IN_DOCS` when the retrieved evidence does not answer the core of the question.
 - **Agent Planning and Re-Search**: The planner fixes typos and abbreviations and splits multi-part questions, and the agent searches again when the results are weak. A per-request evidence ledger makes sure it can only cite chunks it was actually shown.
 - **Multi-Model Routing and Multi-Agent Patterns**: The planner rates how complex a question is, Python sends easy questions to the light model and hard ones to the heavy model, and a failed light run can escalate once in a fresh context. The orchestrator-worker and reviewer share the same ledger and budgets. In our tests, workers improved multi-step retrieval while the reviewer caught answers that only covered related facts, so both are on by default.
@@ -26,7 +31,7 @@ The answers follow a **Strict RAG** policy: there is no fallback to the model's 
 - **Kubernetes Deployment**: The same Docker image runs on Kubernetes with resource requests/limits, readiness and liveness probes, rolling back through `kubectl rollout undo`, and the API key stored in a Kubernetes Secret.
 - **Public Cloud Demo**: The application is deployed on Google Cloud Run and calls GPT-6-Luna and GPT-6.1-Sol through the OpenAI Responses API.
 - **Public Reproduction of an Apple-Internal System**: Because Apple-internal code and data are confidential, this repository independently reproduces the project on a public corpus. See [Apple-Internal Version and This Public Reproduction](#apple-internal-version-and-this-public-reproduction).
-- **Production-Style Vector DB Lifecycle**: In cloud deployment, the image ships with a prebuilt `chroma_db` for fast startup. The app only rebuilds from `data/` when the DB is missing or incompatible.
+- **Production-Style Vector DB Lifecycle**: In cloud deployment, the image ships with a prebuilt `chroma_db` for fast startup. A missing DB can be built from `data/`; an existing DB that cannot be opened is preserved and requires an explicit rebuild.
 - **Wide Retrieval + BGE Reranking**: Every search retrieves a wider candidate pool, filters it by a per-document relevance threshold, then uses a `BAAI/bge-reranker-base` cross-encoder to select the strongest chunks for the agent.
 - **Measured, Not Guessed, Thresholds**: `scripts/measure_relevance_distribution.py` dumps the relevance distribution of every retrieved candidate across representative queries, so the document filter comes from observed separation between on-topic and off-topic questions.
 
@@ -109,44 +114,40 @@ In the evaluated OLED question set, PhD-level experts found the optimized Mistra
 
 ## Tech Stack
 
-![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg) ![Streamlit](https://img.shields.io/badge/Streamlit-1.31%2B-FF4B4B.svg) ![OpenAI](https://img.shields.io/badge/OpenAI-Responses_API-10a37f.svg) ![LangChain](https://img.shields.io/badge/LangChain-0.1%2B-1C3C3C.svg) ![Cloud Run](https://img.shields.io/badge/Google_Cloud-Cloud_Run-4285F4.svg) ![Kubernetes](https://img.shields.io/badge/Kubernetes-Deployment-326CE5.svg) ![ChromaDB](https://img.shields.io/badge/Vector_DB-ChromaDB-orange.svg) ![License](https://img.shields.io/badge/License-MIT-green.svg)
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg) ![Streamlit](https://img.shields.io/badge/Streamlit-1.31%2B-FF4B4B.svg) ![OpenAI](https://img.shields.io/badge/OpenAI-Responses_API-10a37f.svg) ![LangGraph](https://img.shields.io/badge/LangGraph-1.2.12-1C3C3C.svg) ![Cloud Run](https://img.shields.io/badge/Google_Cloud-Cloud_Run-4285F4.svg) ![Kubernetes](https://img.shields.io/badge/Kubernetes-Deployment-326CE5.svg) ![ChromaDB](https://img.shields.io/badge/Vector_DB-ChromaDB-orange.svg) ![License](https://img.shields.io/badge/License-MIT-green.svg)
 
 ### Architecture Choices
 
 - **App Interface**: `Streamlit` was chosen for rapid prototyping and its native support for chat interfaces (`st.chat_message`).
-- **Agent Runtime**: Plain Python on the OpenAI **Responses API** (function tools with reasoning), without an agent framework, so every limit, check, and route is visible in our own code. **GPT-6-Luna** is the light model (planner, workers, simple questions) and **GPT-6.1-Sol** the heavy model (complex questions, orchestrator, reviewer).
+- **Agent Runtime**: **LangGraph** controls routing, escalation, streaming and session checkpoints. Existing Python tool loops call the OpenAI **Responses API** and enforce budgets, evidence and citation checks. **GPT-6-Luna** is the light model (planner, workers, simple questions) and **GPT-6.1-Sol** the heavy model (complex questions, orchestrator, reviewer).
 - **Apple-Internal Version**: The privacy-first internal version used **Mistral-Nemo 12B via Ollama** on on-premise hardware. Its code and data are confidential and not part of this repository.
 - **Retrieval**: Custom retrieval logic performs wide vector search, sigmoid relevance scoring, per-document filtering, and BGE cross-encoder reranking. The agent can only reach it through its `search_documents` tool.
 - **Modular Data Pipeline**: `src/document_pipeline.py` isolates document loading, chunking, embedding, and ChromaDB lifecycle management from `src/retrieval.py`.
-- **Vector Database**: `ChromaDB` is prebuilt into the cloud image for low cold-start latency, then reused at runtime ("rebuild only if missing/incompatible").
+- **Vector Database**: `ChromaDB` is prebuilt into the cloud image for low cold-start latency, then reused at runtime. Existing data is never deleted automatically after an open failure.
 - **Container Orchestration**: The same Docker image also runs on Kubernetes (`k8s/oled-assistant.yaml`): a Deployment with resource requests/limits and readiness/liveness probes, a Service for access, and the API key injected from a Kubernetes Secret.
 
 ---
 
 ## System Architecture
 
-Every request starts as a user query in Streamlit. The planner (GPT-6-Luna) reads it first, Python picks the route, and the chosen agent (or team) researches the question with a search tool before a reviewer checks the answer. The detailed flow is in [System Architecture](docs/architecture.md).
+Streamlit calls `GraphAgentAssistant.stream(question, thread_id=...)`. The planner resolves follow-ups, then the graph selects the existing research or team function. SQLite persists conversation state; each request starts with a new evidence ledger and budget. See [Architecture](docs/architecture.md) and [System design](docs/system_design.md).
 
 ```mermaid
 flowchart TD
-    Query["1. User Query"] --> UI["2. Streamlit Interface"]
-    UI --> Planner["3. Planner (GPT-6-Luna)<br/>domain · complexity · subquestions"]
-    Planner -->|"in_domain / uncertain"| Route{"4. Python Route Selector"}
-    Route -->|"simple"| Luna["Luna Agent"]
-    Route -->|"complex"| Sol["Sol Agent"]
-    Route -->|"2 or more subquestions"| Team["Two Luna Workers<br/>+ Sol Orchestrator"]
-    Luna & Sol & Team --> SearchLoop["5. Tool-calling Search Loop<br/>retrieval stack + evidence ledger"]
-    SearchLoop --> Reviewer["6. Citation check + Sol Reviewer"]
-
-    Reviewer --> Decision{"7. RAG / NO_ANSWER_IN_DOCS / OFF_TOPIC"}
-    SearchLoop -->|"declare_insufficient"| Decision
-    Planner -->|"out_of_domain"| Decision
-    Decision --> Response["8. Final Response<br/>shown in Streamlit"]
+    I["Initialize fresh request"] --> P["Plan and interpret"]
+    P -->|"OFF_TOPIC or CLARIFICATION"| F["Finish and save history"]
+    P -->|"researchable"| R{"Route"}
+    R -->|"single, light or heavy"| A["Research with internal review"]
+    R -->|"multiple subquestions"| T["Team with internal review"]
+    A -->|"complete or terminal failure"| F
+    A -->|"eligible light failure"| E["Escalate once"]
+    E --> A
+    T --> F
 ```
 
 **Key Decision Points:**
 
-- **Planner (domain check)**: Only a clear `out_of_domain` question ends at the planning step as `OFF_TOPIC`. Uncertain questions are still searched, so an oddly phrased OLED question is never rejected before the documents are checked
+- **Planner (domain check)**: A clear `out_of_domain` question ends as `OFF_TOPIC`; unresolved contextual ambiguity ends as `CLARIFICATION`. Uncertain questions are still searched, so an oddly phrased OLED question is never rejected before the documents are checked
 - **Route (Python, not the model)**: Two or more sub-questions go to the orchestrator-worker team; otherwise `simple` goes to Luna and `complex` to Sol
 - **One score, one scale**: every retrieval threshold is compared against `relevance = sigmoid(cosine similarity)`. Raw similarity is only ever the sigmoid's input, because scientific text clusters too tightly in raw space to threshold reliably
 - **Candidate Top-K (20)**: Each search retrieves a wider pool first to reduce missed relevant chunks
@@ -162,7 +163,7 @@ A single retrieval of the literal question is fragile: a typo or an informal que
 
 ```mermaid
 graph TD
-    Q[User Query] --> Runtime["AgentAssistant.query()"]
+    Q[User Query] --> Runtime["GraphAgentAssistant.query()"]
     Runtime --> Plan["Planner (GPT-6-Luna)<br/>1 structured-output call<br/>domain + complexity + subquestions + sequential"]
     Plan -->|out_of_domain| Off[🔴 OFF_TOPIC]
     Plan -->|in_domain / uncertain| LLM[Agent chooses tools<br/>several searches per turn allowed]
@@ -180,14 +181,22 @@ graph TD
     LLM --> D["declare_insufficient(missing)"] --> NA[🟠 NO_ANSWER_IN_DOCS]
 ```
 
-- **Plan First**: `AgentAssistant.query()` sends the original user query and planner instructions to the light model (GPT-6-Luna by default). Luna returns `in_domain / out_of_domain / uncertain`, complexity, search-ready subquestions (typos fixed and abbreviations expanded), and whether the searches are sequential. Python validates the plan and selects the route; the planner itself does not search or answer. Only a clear `out_of_domain` ends the run here, so a low score on the first search can never produce `OFF_TOPIC` by itself.
+- **Plan First**: `GraphAgentAssistant` starts a fresh request and sends the standalone question and planner instructions to the light model (GPT-6-Luna by default). Luna returns `in_domain / out_of_domain / uncertain`, complexity, search-ready subquestions (typos fixed and abbreviations expanded), and whether the searches are sequential. Python validates the plan and selects the route; the planner itself does not search or answer. Only a clear `out_of_domain` ends the run here, so a low score on the first search can never produce `OFF_TOPIC` by itself.
 - **Tool Calling**: The model works through `search_documents`, `submit_answer`, and `declare_insufficient`, called via the OpenAI Responses API (function tools with reasoning). It can issue independent searches in the same turn (parallel tool calling), but the finishing tools have to be called alone. If the model sends malformed arguments, an unknown tool, or plain text, we return that to it as an error.
 - **Fixed Relevance Filter**: The model only chooses the query. `MIN_DOC_RELEVANCE`, `CANDIDATE_TOP_K`, and `FINAL_TOP_N` stay in Python, so the agent has no way to bypass the filter.
 - **Citation Check**: Each chunk shown to the model gets a stable ID (a hash of file, page, and text). We accept an answer only if every ID it cites was returned in **this** request. Otherwise the errors are sent back so the model can revise.
 - **Budgets Enforced in Python**: A single agent gets 3 searches, 6 LLM calls (including planning and corrections), 2 answer revisions, 90 s per question, and 60 s per API call. The budgets grow with each pattern we enable (the default with routing + workers + reviewer has 4 searches, 19 LLM calls, and 150 s), and all agents working on a question share one budget. We check the deadline before every API attempt, around every search, and right before the final answer is accepted. Transient API errors get one retry, but only if it still fits in the time left. Repeated queries are served from a cache. When a limit is reached, the run stops with a recorded reason and we never force an unverified answer.
-- **Answer Modes**: `RAG`, `NO_ANSWER_IN_DOCS`, and `OFF_TOPIC`, plus `ERROR` for API failures or timeouts. The UI also shows live search progress, numbered sources with verified DOI links, and an **Agent Trace** expander (plan, queries, result counts, stop reason). The same traces are appended to `logs/agent_traces.jsonl`.
+- **Answer Modes**: `RAG`, `NO_ANSWER_IN_DOCS`, `OFF_TOPIC`, and `CLARIFICATION`, plus `ERROR` for API failures or timeouts. The UI also shows live search progress, numbered sources with verified DOI links, and an **Agent Trace** expander (plan, queries, result counts, stop reason). The same traces are appended to `logs/agent_traces.jsonl`.
 
-### Model Routing and Multi-Agent (measured, GPT-6)
+### Conversation behavior
+
+History is context for interpreting the question, never evidence for an answer. Only the planner sees it. Each downstream worker, writer and reviewer receives the standalone question; searches, ledger, trace, deadline and budgets start fresh each turn. Previous refusals do not establish that information is absent from the entire corpus.
+
+A clarification keeps the unresolved question so a reply such as "Phosphorescence" can complete a comparison. Explicit topic changes discard it. Empty-history requests retain the original planner prompt/schema for regression parity; clarification initially applies to contextual follow-ups.
+
+`SESSION_MEMORY_ENABLED=false` disables history while retaining LangGraph. `SESSION_DB_PATH` defaults to `sessions/checkpoints.sqlite`; this directory is excluded from git and image/upload contexts. SQLite persists across local restarts, but the UI does not yet offer reopening old chats after a browser session ends. A backend caller can reuse a trusted `thread_id`.
+
+### Model Routing and Multi-Agent (historical measurements, GPT-6)
 
 The agent runs on the OpenAI Responses API with **GPT-6-Luna** (light) and **GPT-6.1-Sol** (heavy). We added three patterns on top of the single agent, and each one has its own environment flag:
 
@@ -278,7 +287,7 @@ Visit `http://localhost:8502` in your browser.
 2. **Install dependencies**
 
    ```bash
-   pip install -r requirements.txt
+   python -m pip install -r requirements.txt
    ```
 
 3. **Set up environment** Create a `.env` file in the root:
@@ -294,8 +303,12 @@ Visit `http://localhost:8502` in your browser.
 5. **Run the app**
 
    ```bash
-   streamlit run src/app.py
+   python -m streamlit run src/app.py
    ```
+
+   Keep this terminal running and open [http://localhost:8501](http://localhost:8501).
+
+   **Blank page at localhost?** Try [http://127.0.0.1:8501](http://127.0.0.1:8501) in a new tab or private/incognito window. If it opens successfully, continue using that address; no app configuration change is required.
 
 ### Option 4: Run on Kubernetes (Local Cluster)
 
@@ -349,10 +362,10 @@ kubectl delete secret openai-secret
 
 - **Readiness**: The probe checks that the Streamlit server responds, not that the embedding model, reranker, and ChromaDB are loaded.
 - **First question**: Models load on first use, so the first response is slower than later ones.
-- **Session**: Chat history lives in the pod's memory and is lost when the pod is replaced.
+- **Session**: Conversation checkpoints use SQLite. The current deployment manifest has no persistent session volume, so pod replacement loses checkpoints. Set `SESSION_DB_PATH` to a mounted persistent volume for durable storage. Browser chat selection remains in Streamlit session state.
 - **Downtime on update**: `Recreate` stops the old pod before starting the new one (about 20 s of downtime), because two 4Gi pods do not fit on an ~8 GB single node.
 
-**Verified on Docker Desktop (single node, ~8 GB)**
+**Historical deployment verification (before LangGraph, single node, ~8 GB)**
 
 - All three modes and all routes run inside the pod:
 
@@ -378,7 +391,9 @@ oled-assistant/
 ├── src/                  # Source Code
 │   ├── __init__.py       # Package marker
 │   ├── app.py            # Main Streamlit Application
-│   ├── agent_runtime.py  # Agent engine: planning, routing, tool loop, budgets, trace
+│   ├── agent_graph.py    # LangGraph nodes/edges, SQLite checkpoints, streaming
+│   ├── session_memory.py # Bounded history and contextual planner
+│   ├── agent_runtime.py  # Shared tool loop, budgets, trace; legacy baseline
 │   ├── agent_team.py     # Orchestrator-worker and reviewer
 │   ├── agent_prompts.py  # Prompts and tool schemas for every agent role
 │   ├── agent_tools.py    # search_documents tool, evidence ledger, citation check
@@ -390,11 +405,16 @@ oled-assistant/
 │   └── utils.py          # Logging & Helper Functions
 ├── scripts/              # Tuning & Validation Utilities
 │   ├── measure_relevance_distribution.py  # Relevance distribution measurement
-│   ├── evaluate_agent.py                  # Agent-configuration evaluation (judge, latency, cost)
+│   ├── evaluate_agent.py                  # Legacy/graph evaluation (judge, latency, cost)
+│   ├── evaluate_multiturn.py              # Interpretation and grounding evaluation
+│   ├── evaluate_upgrade.py                # Resumable full upgrade evaluation
+│   ├── check_retrieval_compat.py          # Dependency compatibility fixture
 │   ├── probe_corpus.py                    # Show what the search tool returns (grounding eval questions)
 │   └── build_source_registry.py           # Crossref-verified title/DOI registry
 ├── eval/                 # Evaluation set and results
 │   ├── questions.json    # 50 questions (normal/typo/.../easy/multi-hop/sequential/off-topic)
+│   ├── conversations.json # Frozen v1 rubric used by the reported results
+│   ├── conversations_v2.json # Default rubric: same 21 turns, corrected clarification intent
 │   └── results/          # Per-run JSON results (no chunk text) and comparison tables;
 │                         # raw/ keeps full results locally (git-ignored)
 ├── data/                 # Optional local-only source docs for rebuilding vector DB
@@ -407,7 +427,9 @@ oled-assistant/
 │   └── OLED_assistant_v6_GCP.ipynb        # Cloud deployment validation notebook
 ├── chroma_db/            # Prebuilt persistent vector DB (cloud image includes this folder)
 ├── docs/                 # Documentation & Experiments
-│   ├── architecture.md   # System Flowchart
+│   ├── architecture.md   # LangGraph and retrieval flow
+│   ├── system_design.md  # State, memory and concurrency contracts
+│   ├── upgrade_validation.md # Upgrade results, audits and reproducibility
 │   ├── agent_engine.md   # Agent design, limits, evaluation
 │   ├── retrieval.md      # Relevance scale, filter, reranker
 │   ├── hyperparameter.md # Hyperparameter Tuning Guide
@@ -415,9 +437,12 @@ oled-assistant/
 │   └── experiments/      # Research Data (logs, CSVs)
 ├── k8s/                  # Kubernetes Manifests
 │   └── oled-assistant.yaml  # Deployment + Service
+├── tests/                # Deterministic graph/session regression tests
+├── sessions/             # Local SQLite checkpoints (git-ignored)
 ├── logs/                 # Usage Logs
 ├── screenshot/           # Demo Screenshots
 ├── requirements.txt      # Python Dependencies
+├── requirements-dev.txt  # Runtime dependencies plus test tools
 └── README.md             # This file
 ```
 
@@ -425,11 +450,17 @@ oled-assistant/
 
 - [System Architecture](docs/architecture.md)
 - [Agent Engine](docs/agent_engine.md)
+- [System Design](docs/system_design.md)
+- [Upgrade Validation](docs/upgrade_validation.md)
 - [Retrieval](docs/retrieval.md)
 - [Hyperparameter Tuning](docs/hyperparameter.md)
 - [LLM Comparison](docs/llm_comparison.md)
 
 ## Future Work
+
+- Split the research tool loop into smaller graph nodes only when needed. Preserve writer context when moving review feedback into graph edges.
+- Move workers to `Send` and reducers after baseline behavior is validated.
+- Use Postgres checkpoints and authenticated conversation selection when multiple app instances share sessions.
 
 ### LLM Fine-Tuning (Next Phase)
 

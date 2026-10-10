@@ -1,17 +1,14 @@
-"""
-Document pipeline for OLED Assistant.
+"""Load source documents and manage the OLED Assistant vector store.
 
-This module centralizes document loading, chunking, and ChromaDB lifecycle:
-- Reuse existing vector DB when present
-- Build a new vector DB from source documents when missing
+The module reuses an existing ChromaDB when available.
+It builds a new vector database from source documents only when the database is missing.
 """
 
 import glob
 import os
-import shutil
 from typing import List, Optional
 
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import Docx2txtLoader, PyPDFLoader
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
@@ -141,9 +138,7 @@ def get_or_create_vectorstore(
     docs_folder: str = config.DOCS_FOLDER,
     persist_directory: str = config.DB_PATH,
 ) -> Chroma:
-    """
-    Reuse existing ChromaDB when available; otherwise build a new one.
-    """
+    """Reuse an existing ChromaDB or build a new one when none exists."""
     if embeddings is None:
         embeddings = create_embeddings_model()
 
@@ -159,16 +154,18 @@ def get_or_create_vectorstore(
             logger.info("Existing ChromaDB is compatible. Reusing persisted DB.")
             return vectorstore
         except Exception as exc:  # noqa: BLE001
-            error_text = str(exc)
-            # Common mismatch symptom:
-            # "OperationalError: no such column: collections.topic"
-            logger.warning(
-                "Existing ChromaDB is incompatible with current chromadb version: %s",
-                error_text,
+            # Never delete a persisted database after a generic open failure.
+            # Permission errors, temporary filesystem problems and corruption require different recovery steps.
+            # Rebuilding must therefore be an explicit operation.
+            logger.error(
+                "Could not open the existing ChromaDB at %s: %s",
+                persist_directory,
+                exc,
             )
-            logger.warning("Rebuilding ChromaDB from source documents.")
-            # Remove incompatible persisted DB so we can rebuild cleanly.
-            shutil.rmtree(persist_directory, ignore_errors=True)
+            raise RuntimeError(
+                "The existing ChromaDB could not be opened and was left unchanged. "
+                "Back it up and rebuild it explicitly from the source documents."
+            ) from exc
 
     logger.info(
         "ChromaDB not found at %s. Creating from documents in %s.",

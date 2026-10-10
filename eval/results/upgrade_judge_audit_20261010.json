@@ -1,0 +1,76 @@
+{
+  "phase": "upgrade_legacy",
+  "question_id": "mh4",
+  "finding": "judge_false_positive",
+  "original_grade_preserved": true,
+  "claim": {
+    "claim": "Both phosphorescent and TADF emitters can in principle reach 100% internal quantum efficiency.",
+    "verdict": "unsupported",
+    "reason": "E1 supports 100% IQE for phosphorescent emitters, but the provided evidence does not state 100% IQE for TADF emitters."
+  },
+  "reason": "The answer assigns theoretical 100% IQE to phosphorescent emitters only. It makes no 100% IQE assertion for TADF. The judge invented a combined claim absent from the answer.",
+  "followup": "Rejudge the unchanged answer and evidence once, retaining both judgments.",
+  "answer": "- **Phosphorescent emitters:** Heavy atoms induce strong spin–orbit coupling, enabling intersystem crossing and harvesting of both singlet and triplet excitons. The harvested excitations populate the lowest triplet state, T₁, and emit by **phosphorescence (T₁ → S₀)**. This allows a theoretical internal quantum efficiency of 100%. [1][2]\n- **TADF emitters:** A small energy gap between T₁ and S₁ enables thermally activated upward (reverse) intersystem crossing **T₁ → S₁**, effective even at ambient temperature. Triplet-originating excitations then emit through **delayed fluorescence (S₁ → S₀)**; the cited discussion also allows competing phosphorescence. [2]\n\n**Key distinction:** Phosphorescent emitters harvest triplets for emission from the triplet state, whereas TADF emitters thermally convert triplets back into singlets for fluorescence. [2]",
+  "repeat_judgment": {
+    "claims": [
+      {
+        "claim": "Heavy atoms in phosphorescent emitters induce strong spin–orbit coupling, enabling intersystem crossing and harvesting of both singlet and triplet excitons.",
+        "verdict": "supported",
+        "reason": "E1 states heavy atoms induce strong SOC, enabling triplet harvesting via ISC, and that phosphorescent materials can harvest both singlet and triplet states."
+      },
+      {
+        "claim": "In phosphorescent emitters, harvested excitations populate the lowest triplet state T1 and emit by phosphorescence (T1 → S0).",
+        "verdict": "supported",
+        "reason": "E2 describes population of T1 and radiative T1 → S0 emission for phosphorescent triplet emitters."
+      },
+      {
+        "claim": "Phosphorescent emitters allow a theoretical internal quantum efficiency of 100%.",
+        "verdict": "supported",
+        "reason": "E1 explicitly states phosphorescent materials can theoretically achieve 100% internal quantum efficiency."
+      },
+      {
+        "claim": "For TADF emitters, a small energy gap between T1 and S1 enables thermally activated reverse intersystem crossing (T1 → S1) effective at ambient temperature.",
+        "verdict": "supported",
+        "reason": "E2 states small ΔE(S1−T1) enables upward processes from T1 to S1 effective at ambient temperature."
+      },
+      {
+        "claim": "In TADF, triplet-originating excitations then emit through delayed fluorescence (S1 → S0).",
+        "verdict": "supported",
+        "reason": "E2 notes efficient thermally activated delayed fluorescence; emission from S1 occurs following RISC."
+      },
+      {
+        "claim": "In TADF systems, competing phosphorescence can also occur.",
+        "verdict": "supported",
+        "reason": "E2 says emission of both S1 and T1 can occur, governed by a Boltzmann distribution."
+      },
+      {
+        "claim": "Key distinction: phosphorescent emitters harvest triplets for emission from the triplet state.",
+        "verdict": "supported",
+        "reason": "E2 explains triplet harvesting populates T1 and emission proceeds via T1 → S0 for phosphorescent emitters."
+      },
+      {
+        "claim": "Key distinction: TADF emitters thermally convert triplets back into singlets for fluorescence.",
+        "verdict": "supported",
+        "reason": "E2 describes upward T1 → S1 processes due to small ΔE and ensuing delayed fluorescence from S1."
+      }
+    ],
+    "key_points": [
+      {
+        "index": 0,
+        "covered": true
+      },
+      {
+        "index": 1,
+        "covered": true
+      },
+      {
+        "index": 2,
+        "covered": false
+      }
+    ],
+    "judge_cost_usd": 0.01675375
+  },
+  "method": "One additional judgment of the unchanged answer/evidence using the same model, prompt, schema and policy. Original headline metrics are unchanged.",
+  "judge_model": "gpt-5",
+  "judge_policy": "scoped_absence_v2"
+}
